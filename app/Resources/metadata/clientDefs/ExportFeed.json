@@ -1,0 +1,17 @@
+{
+  "dynamicLogic": {
+    "fields": {
+      "csvFieldDelimiter": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "fileType",
+              "value": "csv"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "fields": {
+    "name": "Key",
+    "value": "Value",
+    "exportFeed": "Export Feed"
+  },
+  "links": {
+    "exportFeed": "Export Feed"
+  }
+}

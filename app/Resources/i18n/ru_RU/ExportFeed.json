@@ -1,0 +1,13 @@
+{
+  "fields": {
+    "exportHttpHeaders": "Заголовки",
+    "httpUrl": "URL",
+    "httpMethod": "Метод"
+  },
+  "links": {
+    "exportHttpHeaders": "Заголовки"
+  },
+  "labels": {
+    "http": "HTTP Запрос"
+  }
+}

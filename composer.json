@@ -16,7 +16,7 @@
       "default": "Export Feeds: HTTP Request"
     },
     "description": {
-      "default": ""
+      "default": "The module enables to make different types of HTTP request to the URL provided."
     }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "fields": {
+    "exportHttpHeaders": "Headers",
+    "httpUrl": "URL",
+    "httpMethod": "Method"
+  },
+  "links": {
+    "exportHttpHeaders": "Headers"
+  },
+  "labels": {
+    "http": "HTTP Request"
+  }
+}

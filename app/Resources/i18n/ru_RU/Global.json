@@ -1,0 +1,8 @@
+{
+  "scopeNames": {
+    "ExportHttpHeader": "Заголовок"
+  },
+  "scopeNamesPlural": {
+    "ExportHttpHeader": "Заголовки"
+  }
+}

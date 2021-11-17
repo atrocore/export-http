@@ -1,0 +1,37 @@
+{
+  "fields": {
+    "httpMethod": {
+      "type": "enum",
+      "options": [
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "GET"
+      ],
+      "default": "POST",
+      "notStorable": true,
+      "dataField": true,
+      "prohibitedEmptyValue": true
+    },
+    "httpUrl": {
+      "type": "varchar",
+      "notStorable": true,
+      "dataField": true
+    },
+    "exportHttpHeaders": {
+      "type": "linkMultiple",
+      "layoutDetailDisabled": true,
+      "layoutMassUpdateDisabled": true,
+      "noLoad": true,
+      "importDisabled": true
+    }
+  },
+  "links": {
+    "exportHttpHeaders": {
+      "type": "hasMany",
+      "foreign": "exportFeed",
+      "entity": "ExportHttpHeader"
+    }
+  }
+}
