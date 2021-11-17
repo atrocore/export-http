@@ -1,0 +1,22 @@
+{
+  "name": "atrocore/export-feeds-http",
+  "default": "",
+  "require": {
+    "atrocore/core": "~1.3.35",
+    "atrocore/export-feeds": "~1.2.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "ExportHttp\\": "app/"
+    }
+  },
+  "extra": {
+    "treoId": "ExportHttp",
+    "name": {
+      "default": "Export Feeds: HTTP Request"
+    },
+    "description": {
+      "default": ""
+    }
+  }
+}
