@@ -1,0 +1,6 @@
+{
+  "controller": "controllers/record",
+  "modalViews": {
+    "edit": "export-http:views/export-http-header/modals/edit"
+  }
+}

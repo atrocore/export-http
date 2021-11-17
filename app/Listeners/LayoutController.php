@@ -40,20 +40,22 @@ class LayoutController extends \Treo\Listeners\AbstractListener
         }
     }
 
-//    protected function modifyScheduledJobDetail(Event $event): void
-//    {
-//        $result = Json::decode($event->getArgument('result'), true);
-//
-//        $newRows = [];
-//        foreach ($result[0]['rows'] as $row) {
-//            $newRows[] = $row;
-//            if ($row[0]['name'] === 'job') {
-//                $newRows[] = [['name' => 'importFeed'], false];
-//            }
-//        }
-//
-//        $result[0]['rows'] = $newRows;
-//
-//        $event->setArgument('result', Json::encode($result));
-//    }
+    protected function modifyExportFeedDetail(Event $event): void
+    {
+        $result = Json::decode($event->getArgument('result'), true);
+
+        $result[1]['rows'][] = [['name' => 'httpMethod'], false];
+        $result[1]['rows'][] = [['name' => 'httpUrl'], false];
+
+        $event->setArgument('result', Json::encode($result));
+    }
+
+    protected function modifyExportFeedRelationships(Event $event): void
+    {
+        $result = Json::decode($event->getArgument('result'), true);
+
+        $result = array_merge([['name' => 'exportHttpHeaders']], $result);
+
+        $event->setArgument('result', Json::encode($result));
+    }
 }
