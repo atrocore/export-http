@@ -14,6 +14,16 @@
       "dataField": true,
       "prohibitedEmptyValue": true
     },
+    "httpContentType": {
+      "type": "enum",
+      "options": [
+        "JSON"
+      ],
+      "default": "JSON",
+      "notStorable": true,
+      "dataField": true,
+      "prohibitedEmptyValue": true
+    },
     "httpUrl": {
       "type": "varchar",
       "notStorable": true,

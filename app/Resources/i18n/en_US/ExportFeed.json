@@ -2,6 +2,7 @@
   "fields": {
     "exportHttpHeaders": "Headers",
     "httpUrl": "URL",
+    "httpContentType": "Content Type",
     "httpMethod": "Method"
   },
   "links": {

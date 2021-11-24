@@ -35,6 +35,26 @@
           ]
         }
       },
+      "httpContentType": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "http"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "http"
+            }
+          ]
+        }
+      },
       "httpUrl": {
         "visible": {
           "conditionGroup": [
