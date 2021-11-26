@@ -35,6 +35,13 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
+    },
+    "exportHttpBody": {
+      "type": "text",
+      "notStorable": true,
+      "dataField": true,
+      "required": false,
+      "default": "{{configurator}}"
     }
   },
   "links": {

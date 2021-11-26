@@ -74,6 +74,26 @@
             }
           ]
         }
+      },
+      "exportHttpBody": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "http"
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "equals",
+              "attribute": "type",
+              "value": "http"
+            }
+          ]
+        }
       }
     }
   }

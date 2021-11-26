@@ -3,7 +3,8 @@
     "exportHttpHeaders": "Headers",
     "httpUrl": "URL",
     "httpContentType": "Content Type",
-    "httpMethod": "Method"
+    "httpMethod": "Method",
+    "exportHttpBody": "Body"
   },
   "links": {
     "exportHttpHeaders": "Headers"

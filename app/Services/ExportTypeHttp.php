@@ -66,9 +66,19 @@ class ExportTypeHttp extends \Export\Services\AbstractExportType
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        if (curl_exec($ch) === false) {
+        $output = curl_exec($ch);
+
+        if ($output === false) {
             throw new BadRequest('Curl error: ' . curl_error($ch));
         }
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $body = substr($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+
+        if (!in_array($httpCode, [200, 201])) {
+            throw new BadRequest("Response Code: $httpCode Body: $body");
+        }
+
         curl_close($ch);
 
         return $attachment;
@@ -93,7 +103,7 @@ class ExportTypeHttp extends \Export\Services\AbstractExportType
         }
         fclose($cacheFile);
 
-        file_put_contents($fileName, Json::encode($result));
+        file_put_contents($fileName, str_replace("{{configurator}}", Json::encode($result), $this->data['feed']['exportHttpBody']));
     }
 
     protected function createDir(string $fileName): void

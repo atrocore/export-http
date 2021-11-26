@@ -46,6 +46,7 @@ class LayoutController extends \Treo\Listeners\AbstractListener
 
         $result[1]['rows'][] = [['name' => 'httpMethod'], ['name' => 'httpContentType']];
         $result[1]['rows'][] = [['name' => 'httpUrl'], false];
+        $result[1]['rows'][] = [['name' => 'exportHttpBody', 'fullWidth' => true]];
 
         $event->setArgument('result', Json::encode($result));
     }
