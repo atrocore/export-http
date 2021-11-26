@@ -103,6 +103,10 @@ class ExportTypeHttp extends \Export\Services\AbstractExportType
         }
         fclose($cacheFile);
 
+        if ($this->data['feed']['limit'] === 1 && !empty($this->data['feed']['separateJob'])) {
+            $result = array_shift($result);
+        }
+
         file_put_contents($fileName, str_replace("{{configurator}}", Json::encode($result), $this->data['feed']['exportHttpBody']));
     }
 
