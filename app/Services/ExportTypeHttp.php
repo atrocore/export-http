@@ -95,12 +95,16 @@ class ExportTypeHttp extends \Export\Services\AbstractExportType
             if (empty($json)) {
                 continue;
             }
-            $pushRow = [];
-            foreach (Json::decode($json, true) as $row) {
-                $pushRow = array_merge($pushRow, $row);
+            $record = Json::decode($json, true);
+
+            $row = [];
+            foreach ($data['configuration'] as $item) {
+                $row = array_merge($row, $this->convertor->convert($record, $item));
             }
-            $result[] = $pushRow;
+
+            $result[] = $row;
         }
+
         fclose($cacheFile);
 
         if ($this->data['feed']['limit'] === 1 && !empty($this->data['feed']['separateJob'])) {
