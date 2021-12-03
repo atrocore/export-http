@@ -74,13 +74,12 @@ class ExportTypeHttp extends \Export\Services\AbstractExportType
         }
 
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $body = substr($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
 
         if (!in_array($httpCode, [200, 201])) {
-            throw new BadRequest("Response Code: $httpCode Body: $body");
+            throw new BadRequest("Response Code: $httpCode Body: $output");
         }
 
-        $exportJob->set('stateMessage', $body);
+        $exportJob->set('stateMessage', $output);
 
         curl_close($ch);
 
