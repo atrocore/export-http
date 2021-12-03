@@ -26,10 +26,11 @@ use Espo\Core\Exceptions\BadRequest;
 use Espo\Core\Utils\Json;
 use Espo\Core\Utils\Util;
 use Espo\Entities\Attachment;
+use Export\Entities\ExportJob;
 
 class ExportTypeHttp extends \Export\Services\AbstractExportType
 {
-    public function runExport(array $jobMetadata): Attachment
+    public function runExport(ExportJob $exportJob): Attachment
     {
         $repository = $this->getEntityManager()->getRepository('Attachment');
 
@@ -44,7 +45,7 @@ class ExportTypeHttp extends \Export\Services\AbstractExportType
 
         $fileName = $repository->getFilePath($attachment);
 
-        $this->storeJsonFile($jobMetadata, $fileName);
+        $this->storeJsonFile($exportJob->getData(), $fileName);
 
         $attachment->set('type', 'application/json');
         $attachment->set('size', \filesize($repository->getFilePath($attachment)));
@@ -78,6 +79,8 @@ class ExportTypeHttp extends \Export\Services\AbstractExportType
         if (!in_array($httpCode, [200, 201])) {
             throw new BadRequest("Response Code: $httpCode Body: $body");
         }
+
+        $exportJob->set('stateMessage', $body);
 
         curl_close($ch);
 
