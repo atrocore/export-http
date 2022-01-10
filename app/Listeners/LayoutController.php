@@ -48,10 +48,6 @@ class LayoutController extends \Treo\Listeners\AbstractListener
         $result[1]['rows'][] = [['name' => 'httpUrl'], false];
         $result[1]['rows'][] = [['name' => 'exportHttpBody', 'fullWidth' => true]];
 
-        unset($result[2]['rows'][4]);
-        $result[2]['rows'][] = [['name' => 'convertCollectionToString'], ['name' => 'delimiter']];
-        $result[2]['rows'][] = [['name' => 'convertRelationsToString'], ['name' => 'fieldDelimiterForRelation']];
-
         $event->setArgument('result', Json::encode($result));
     }
 

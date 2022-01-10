@@ -4,18 +4,12 @@
     "httpUrl": "URL",
     "httpContentType": "Content Type",
     "httpMethod": "Method",
-    "exportHttpBody": "Body",
-    "convertCollectionToString": "Convert collection to string",
-    "convertRelationsToString": "Convert relations to string"
+    "exportHttpBody": "Body"
   },
   "links": {
     "exportHttpHeaders": "Headers"
   },
   "labels": {
     "http": "HTTP Request"
-  },
-  "tooltips": {
-    "convertCollectionToString": "Fields and attributes of type: multi-enum, array, one-to-many relation.",
-    "convertRelationsToString": "Relation fields will be separated by Field Delimiter for Relation."
   }
 }

@@ -42,20 +42,6 @@
       "dataField": true,
       "required": false,
       "default": "{{configurator}}"
-    },
-    "convertCollectionToString": {
-      "type": "bool",
-      "notStorable": true,
-      "default": false,
-      "dataField": true,
-      "tooltip": true
-    },
-    "convertRelationsToString": {
-      "type": "bool",
-      "notStorable": true,
-      "default": false,
-      "dataField": true,
-      "tooltip": true
     }
   },
   "links": {

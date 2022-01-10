@@ -32,66 +32,6 @@ class Metadata extends \Treo\Listeners\AbstractListener
 
         $data['entityDefs']['ExportFeed']['fields']['type']['options'][] = 'http';
 
-        $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fieldDelimiterForRelation']['visible']['conditionGroup'][0]['value'][] = [
-            'type'  => 'and',
-            'value' => [
-                [
-                    'type'      => 'equals',
-                    'attribute' => 'type',
-                    'value'     => 'http',
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'convertRelationsToString'
-                ]
-            ],
-        ];
-
-        $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['fieldDelimiterForRelation']['required']['conditionGroup'][0]['value'][] = [
-            'type'  => 'and',
-            'value' => [
-                [
-                    'type'      => 'equals',
-                    'attribute' => 'type',
-                    'value'     => 'http',
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'convertRelationsToString'
-                ]
-            ],
-        ];
-
-        $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['delimiter']['visible']['conditionGroup'][0]['value'][] = [
-            'type'  => 'and',
-            'value' => [
-                [
-                    'type'      => 'equals',
-                    'attribute' => 'type',
-                    'value'     => 'http',
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'convertCollectionToString'
-                ]
-            ],
-        ];
-
-        $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['delimiter']['required']['conditionGroup'][0]['value'][] = [
-            'type'  => 'and',
-            'value' => [
-                [
-                    'type'      => 'equals',
-                    'attribute' => 'type',
-                    'value'     => 'http',
-                ],
-                [
-                    'type'      => 'isTrue',
-                    'attribute' => 'convertCollectionToString'
-                ]
-            ],
-        ];
-
         $event->setArgument('data', $data);
     }
 }
