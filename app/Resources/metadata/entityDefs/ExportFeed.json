@@ -24,6 +24,17 @@
       "dataField": true,
       "prohibitedEmptyValue": true
     },
+    "httpConnectionId": {
+      "type": "varchar",
+      "view": "export-http:views/export-feed/fields/http-connection",
+      "notStorable": true,
+      "dataField": true
+    },
+    "httpConnectionName": {
+      "type": "varchar",
+      "notStorable": true,
+      "dataField": true
+    },
     "httpUrl": {
       "type": "varchar",
       "notStorable": true,

@@ -23,9 +23,10 @@ declare(strict_types=1);
 namespace ExportHttp\Listeners;
 
 use Espo\Core\Utils\Json;
-use Treo\Core\EventManager\Event;
+use Espo\Core\EventManager\Event;
+use Espo\Listeners\AbstractListener;
 
-class LayoutController extends \Treo\Listeners\AbstractListener
+class LayoutController extends AbstractListener
 {
     public function afterActionRead(Event $event): void
     {
@@ -45,7 +46,7 @@ class LayoutController extends \Treo\Listeners\AbstractListener
         $result = Json::decode($event->getArgument('result'), true);
 
         $result[1]['rows'][] = [['name' => 'httpMethod'], ['name' => 'httpContentType']];
-        $result[1]['rows'][] = [['name' => 'httpUrl'], false];
+        $result[1]['rows'][] = [['name' => 'httpUrl'], ['name' => 'httpConnectionId']];
         $result[1]['rows'][] = [['name' => 'exportHttpBody', 'fullWidth' => true]];
 
         $event->setArgument('result', Json::encode($result));

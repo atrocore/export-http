@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace ExportHttp\Listeners;
 
-use Treo\Core\EventManager\Event;
+use Espo\Core\EventManager\Event;
 
-class Metadata extends \Treo\Listeners\AbstractListener
+class Metadata extends \Espo\Listeners\AbstractListener
 {
     public function modify(Event $event): void
     {

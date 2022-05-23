@@ -4,6 +4,7 @@
     "httpUrl": "URL",
     "httpContentType": "Inhaltstyp",
     "httpMethod": "Methode",
+    "httpConnectionId": "Verbindung",
     "exportHttpBody": "Body"
   },
   "links": {

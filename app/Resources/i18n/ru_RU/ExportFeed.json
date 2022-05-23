@@ -4,6 +4,7 @@
     "httpUrl": "URL",
     "httpContentType": "Тип содержимого",
     "httpMethod": "Метод",
+    "httpConnectionId": "Соединение",
     "exportHttpBody": "Тело Запроса"
   },
   "links": {

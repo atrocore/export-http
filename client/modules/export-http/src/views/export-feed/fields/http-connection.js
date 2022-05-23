@@ -1,4 +1,3 @@
-<?php
 /*
  * This file is part of premium software, which is NOT free.
  * Copyright (c) AtroCore UG (haftungsbeschränkt).
@@ -18,28 +17,30 @@
  * for your own needs, if source code is provided.
  */
 
-declare(strict_types=1);
+Espo.define('export-http:views/export-feed/fields/http-connection', 'views/fields/link',
+    Dep => {
+        return Dep.extend({
 
-namespace ExportHttp\Listeners;
+            createDisabled: true,
 
-use Espo\Core\EventManager\Event;
+            selectBoolFilterList: ['notEntity', 'connectionType'],
 
-class ExportFeedService extends \Espo\Listeners\AbstractListener
-{
-    public function prepareFeedData(Event $event): void
-    {
-        $result = $event->getArgument('result');
-        $result['httpHeaders'] = [];
+            boolFilterData: {
+                notEntity() {
+                    return this.model.get('id');
+                },
+                connectionType() {
+                    return ['oauth2'];
+                }
+            },
 
-        if (!empty($headers = $event->getArgument('feed')->get('exportHttpHeaders')) && count($headers) > 0) {
-            foreach ($headers as $header) {
-                $result['httpHeaders'][] = [
-                    'key'   => $header->get('name'),
-                    'value' => $header->get('value'),
-                ];
-            }
-        };
+            setup: function () {
+                this.name = 'httpConnection'
+                this.foreignScope = 'Connection'
 
-        $event->setArgument('result', $result);
-    }
-}
+                Dep.prototype.setup.call(this);
+            },
+
+        });
+
+    });
