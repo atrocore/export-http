@@ -60,6 +60,13 @@
       "dataField": true,
       "required": false,
       "default": "{{configurator}}"
+    },
+    "exportHttpMustacheBody": {
+      "type": "text",
+      "notStorable": true,
+      "dataField": true,
+      "required": false,
+      "default": ""
     }
   },
   "links": {

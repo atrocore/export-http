@@ -5,7 +5,8 @@
     "httpContentType": "Тип содержимого",
     "httpMethod": "Метод",
     "httpConnectionId": "Соединение",
-    "exportHttpBody": "Тело Запроса"
+    "exportHttpBody": "Тело Запроса",
+    "exportHttpMustacheBody": "Тело Запроса"
   },
   "links": {
     "exportHttpHeaders": "Заголовки"

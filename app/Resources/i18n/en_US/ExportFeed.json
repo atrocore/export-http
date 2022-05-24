@@ -5,7 +5,8 @@
     "httpContentType": "Content Type",
     "httpMethod": "Method",
     "httpConnectionId": "Connection",
-    "exportHttpBody": "Body"
+    "exportHttpBody": "Body",
+    "exportHttpMustacheBody": "Body"
   },
   "links": {
     "exportHttpHeaders": "Headers"
