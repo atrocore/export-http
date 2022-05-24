@@ -8,6 +8,19 @@
   },
   "dynamicLogic": {
     "fields": {
+      "httpConnectionId": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "httpPro"
+              ]
+            }
+          ]
+        }
+      },
       "httpMethod": {
         "visible": {
           "conditionGroup": [
