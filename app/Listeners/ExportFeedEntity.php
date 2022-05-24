@@ -32,10 +32,13 @@ class ExportFeedEntity extends AbstractListener
     {
         $entity = $event->getArgument('entity');
 
-        if ($entity->get('type') === 'http' && !empty($entity->get('httpConnectionId'))) {
-            $connection = $this->getEntityManager()->getEntity('Connection', $entity->get('httpConnectionId'));
-            if (!empty($connection) && !in_array($connection->get('type'), $this->getMetadata()->get('scopes.ExportFeed.connectionTypes.http', []))) {
-                throw new BadRequest('Wrong connection type.');
+        if (!empty($entity->get('httpConnectionId'))) {
+            $connectionTypes = $this->getMetadata()->get(['scopes', 'ExportFeed', 'connectionTypes', $entity->get('type')], []);
+            if (!empty($connectionTypes)) {
+                $connection = $this->getEntityManager()->getEntity('Connection', $entity->get('httpConnectionId'));
+                if (!empty($connection) && !in_array($connection->get('type'), $connectionTypes)) {
+                    throw new BadRequest('Wrong connection type.');
+                }
             }
         }
     }

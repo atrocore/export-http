@@ -30,7 +30,7 @@ Espo.define('export-http:views/export-feed/fields/http-connection', 'views/field
                     return this.model.get('httpConnectionId');
                 },
                 connectionType() {
-                    return this.getMetadata().get('scopes.ExportFeed.connectionTypes.http') || ['no-such-type'];
+                    return this.getMetadata().get(`scopes.ExportFeed.connectionTypes.${this.model.get('type')}`) || ['no-such-type'];
                 }
             },
 
