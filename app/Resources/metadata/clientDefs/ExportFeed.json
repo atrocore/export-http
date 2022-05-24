@@ -1,15 +1,8 @@
 {
-  "optionalBottomPanels": {
-    "exportHttpHeaders": [
-      {
-        "field": "type",
-        "value": "http"
-      }
-    ]
-  },
   "relationshipPanels": {
     "exportHttpHeaders": {
       "select": false,
+      "view": "export-http:views/export-feed/record/panels/headers",
       "rowActionsView": "views/record/row-actions/edit-and-remove"
     }
   },
@@ -19,18 +12,24 @@
         "visible": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         },
         "required": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         }
@@ -39,18 +38,24 @@
         "visible": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         },
         "required": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         }
@@ -59,18 +64,24 @@
         "visible": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         },
         "required": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         }
@@ -79,18 +90,24 @@
         "visible": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         },
         "required": {
           "conditionGroup": [
             {
-              "type": "equals",
+              "type": "in",
               "attribute": "type",
-              "value": "http"
+              "value": [
+                "http",
+                "httpPro"
+              ]
             }
           ]
         }

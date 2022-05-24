@@ -11,6 +11,7 @@
     "exportHttpHeaders": "Headers"
   },
   "labels": {
-    "http": "HTTP Anfrage"
+    "http": "HTTP Anfrage",
+    "httpPro": "HTTP Anfrage Pro"
   }
 }

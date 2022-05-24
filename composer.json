@@ -3,7 +3,8 @@
   "default": "",
   "require": {
     "atrocore/core": "~1.4.0",
-    "atrocore/export-feeds": "~1.4.0"
+    "atrocore/export-feeds": "~1.4.0",
+    "mustache/mustache": "^2.14"
   },
   "autoload": {
     "psr-4": {

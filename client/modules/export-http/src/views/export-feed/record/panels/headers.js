@@ -1,4 +1,3 @@
-<?php
 /*
  * This file is part of premium software, which is NOT free.
  * Copyright (c) AtroCore UG (haftungsbeschränkt).
@@ -18,21 +17,16 @@
  * for your own needs, if source code is provided.
  */
 
-declare(strict_types=1);
+Espo.define('export-http:views/export-feed/record/panels/headers', 'views/record/panels/relationship',
+    Dep => Dep.extend({
 
-namespace ExportHttp\Listeners;
+        afterRender() {
+            Dep.prototype.afterRender.call(this);
 
-use Espo\Core\EventManager\Event;
-use Espo\Listeners\AbstractListener;
+            if (!['http', 'httpPro'].includes(this.model.get('type'))) {
+                this.$el.parent().hide();
+            }
+        },
 
-class Metadata extends AbstractListener
-{
-    public function modify(Event $event): void
-    {
-        $data = $event->getArgument('data');
-
-        $data['entityDefs']['ExportFeed']['fields']['type']['options'][] = 'http';
-
-        $event->setArgument('data', $data);
-    }
-}
+    })
+);
