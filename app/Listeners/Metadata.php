@@ -23,8 +23,9 @@ declare(strict_types=1);
 namespace ExportHttp\Listeners;
 
 use Espo\Core\EventManager\Event;
+use Espo\Listeners\AbstractListener;
 
-class Metadata extends \Espo\Listeners\AbstractListener
+class Metadata extends AbstractListener
 {
     public function modify(Event $event): void
     {

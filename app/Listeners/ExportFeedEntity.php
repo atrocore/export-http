@@ -1,3 +1,4 @@
+<?php
 /*
  * This file is part of premium software, which is NOT free.
  * Copyright (c) AtroCore UG (haftungsbeschränkt).
@@ -17,30 +18,25 @@
  * for your own needs, if source code is provided.
  */
 
-Espo.define('export-http:views/export-feed/fields/http-connection', 'views/fields/link',
-    Dep => {
-        return Dep.extend({
+declare(strict_types=1);
 
-            createDisabled: true,
+namespace ExportHttp\Listeners;
 
-            selectBoolFilterList: ['notEntity', 'connectionType'],
+use Espo\Core\EventManager\Event;
+use Espo\Core\Exceptions\BadRequest;
+use Espo\Listeners\AbstractListener;
 
-            boolFilterData: {
-                notEntity() {
-                    return this.model.get('httpConnectionId');
-                },
-                connectionType() {
-                    return ['oauth2'];
-                }
-            },
+class ExportFeedEntity extends AbstractListener
+{
+    public function beforeSave(Event $event): void
+    {
+        $entity = $event->getArgument('entity');
 
-            setup: function () {
-                this.name = 'httpConnection'
-                this.foreignScope = 'Connection'
-
-                Dep.prototype.setup.call(this);
-            },
-
-        });
-
-    });
+        if ($entity->get('type') === 'http' && !empty($entity->get('httpConnectionId'))) {
+            $connection = $this->getEntityManager()->getEntity('Connection', $entity->get('httpConnectionId'));
+            if (!empty($connection) && $connection->get('type') !== 'oauth2') {
+                throw new BadRequest('Wrong connection type.');
+            }
+        }
+    }
+}
