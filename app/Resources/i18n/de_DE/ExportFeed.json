@@ -14,5 +14,8 @@
   "labels": {
     "http": "HTTP Anfrage",
     "httpPro": "HTTP Anfrage Pro"
+  },
+  "tooltips": {
+    "exportHttpMustacheBody": "Sie sollten die Syntax für die <a href=\"https://mustache.github.io\" target=\"_blank\">Mustache-Template-Engine</a> verwenden."
   }
 }

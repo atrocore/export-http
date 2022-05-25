@@ -14,5 +14,8 @@
   "labels": {
     "http": "HTTP Запрос",
     "httpPro": "HTTP Запрос Pro"
+  },
+  "tooltips": {
+    "exportHttpMustacheBody": "Вы должны использовать синтаксис шаблонизатора <a href=\"https://mustache.github.io\" target=\"_blank\">Mustache</a>."
   }
 }
