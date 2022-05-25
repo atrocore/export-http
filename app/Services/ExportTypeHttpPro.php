@@ -51,11 +51,17 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
 
         $exportJob->set('count', count($entities));
 
+        $template = $this->data['feed']['data']['feedFields']['exportHttpMustacheBody'];
+        $templateData = [
+            'entities' => $entities,
+            'config'   => $this->getConfig()->getData(),
+        ];
+
         $mustache = new \Mustache_Engine([
             'entity_flags' => ENT_QUOTES,
             'helpers'      => [],
         ]);
-        $body = $mustache->render($this->data['feed']['data']['feedFields']['exportHttpMustacheBody'], ['entities' => $entities]);
+        $body = $mustache->render($template, $templateData);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
         $body = json_encode(json_decode($body));
 
