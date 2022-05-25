@@ -22,9 +22,8 @@ declare(strict_types=1);
 
 namespace ExportHttp\Services;
 
+use Espo\ConnectionType\ConnectionOauth2;
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Utils\Json;
-use Espo\Core\Utils\Util;
 use Espo\Entities\Attachment;
 use Export\Entities\ExportJob;
 
@@ -32,26 +31,43 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
 {
     public function export(array $data, ExportJob $exportJob): Attachment
     {
-        $m = new \Mustache_Engine(['entity_flags' => ENT_QUOTES]);
+        $this->setData($data);
 
-        $template = '{{#entities}}{{#.}}{{#brand}}{{code}}{{/brand}}{{/.}}{{/entities}}';
-
-        echo $m->render($template, ['entities' => $this->getEntityManager()->getRepository('Product')->find()]);
-        die();
-
-
-        $body = $data['feed']['data']['feedFields']['exportHttpBody'];
-
-        echo '<pre>';
-        print_r($str);
-        die();
+        return $this->runExport($exportJob);
     }
 
     public function runExport(ExportJob $exportJob): Attachment
     {
-        $repository = $this->getEntityManager()->getRepository('Attachment');
+//        $m = new \Mustache_Engine(['entity_flags' => ENT_QUOTES]);
+//
+//        $template = '{{#entities}}{{#.}}{{#brand}}{{code}}{{/brand}}{{/.}}{{/entities}}';
+//
+//        echo $m->render($template, ['entities' => $this->getEntityManager()->getRepository('Product')->find()]);
+//        die();
+//
+//
+//        $body = $data['feed']['data']['feedFields']['exportHttpBody'];
+//
+//        echo '<pre>';
+//        print_r($str);
+//        die();
 
-        // create attachment
+        $body = '{"foo": 222}';
+
+
+        $count = 0;
+        while (!empty($records = $this->getRecords())) {
+            foreach ($records as $record) {
+                $count++;
+            }
+        }
+
+        $exportJob->set('count', $count);
+
+        /**
+         * Create attachment
+         */
+        $repository = $this->getEntityManager()->getRepository('Attachment');
         $attachment = $repository->get();
         $attachment->set('name', $this->getExportFileName('json'));
         $attachment->set('role', 'Export');
@@ -59,22 +75,15 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
         $attachment->set('relatedId', $this->data['id']);
         $attachment->set('storage', 'UploadDir');
         $attachment->set('storageFilePath', $this->createPath());
-
         $fileName = $repository->getFilePath($attachment);
-
-        $this->storeJsonFile($exportJob->getData(), $fileName);
-
+        file_put_contents($fileName, $body);
         $attachment->set('type', 'application/json');
         $attachment->set('size', \filesize($repository->getFilePath($attachment)));
-
         $this->getEntityManager()->saveEntity($attachment);
 
-        $ch = curl_init($this->data['feed']['httpUrl']);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->data['feed']['httpMethod']);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($fileName));
-
+        /**
+         * Prepare headers
+         */
         $headers = ['Content-Type: application/json'];
         if (!empty($this->data['feed']['httpHeaders'])) {
             foreach ($this->data['feed']['httpHeaders'] as $v) {
@@ -82,62 +91,45 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
             }
         }
 
+        if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
+            $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
+            if (!empty($connectionEntity)) {
+                $response = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+                if (!empty($response)) {
+                    $headers[] = "Authorization: {$response['token_type']} {$response['access_token']}";
+                }
+            }
+        }
+
+        /**
+         * Send request
+         */
+        $ch = curl_init($this->data['feed']['httpUrl']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->data['feed']['httpMethod']);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
         $output = curl_exec($ch);
-
         if ($output === false) {
             throw new BadRequest('Curl error: ' . curl_error($ch));
         }
-
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-        if (!in_array($httpCode, [200, 201])) {
+        if (!in_array($httpCode, [200, 201, 204])) {
             throw new BadRequest("Response Code: $httpCode Body: $output");
         }
 
         $exportJob->set('stateMessage', $output);
 
-        curl_close($ch);
-
         return $attachment;
     }
 
-    protected function storeJsonFile(array $data, string $fileName): void
+    protected function init()
     {
-        $this->createDir($fileName);
+        parent::init();
 
-        $result = [];
-
-        $cacheFile = fopen($data['fullFileName'], "r");
-        while (($json = fgets($cacheFile)) !== false) {
-            if (empty($json)) {
-                continue;
-            }
-            $record = Json::decode($json, true);
-
-            $row = [];
-            foreach ($data['configuration'] as $item) {
-                $row = array_merge($row, $this->convertor->convert($record, $item));
-            }
-
-            $result[] = $row;
-        }
-
-        fclose($cacheFile);
-
-        if ($this->data['feed']['limit'] === 1 && !empty($this->data['feed']['separateJob'])) {
-            $result = array_shift($result);
-        }
-
-        file_put_contents($fileName, str_replace("{{configurator}}", Json::encode($result), $this->data['feed']['exportHttpBody']));
-    }
-
-    protected function createDir(string $fileName): void
-    {
-        $parts = explode('/', $fileName);
-        array_pop($parts);
-
-        Util::createDir(implode('/', $parts));
+        $this->addDependency(ConnectionOauth2::class);
     }
 }
