@@ -152,7 +152,7 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
         $this->iteration++;
 
         $result = $this->getEntityService()->findEntities($params);
-        if (isset($result['collection'])) {
+        if (isset($result['collection']) && count($result['collection']) > 0) {
             return $result['collection'];
         }
 
