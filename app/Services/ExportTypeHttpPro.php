@@ -24,11 +24,15 @@ namespace ExportHttp\Services;
 
 use Espo\ConnectionType\ConnectionOauth2;
 use Espo\Core\Exceptions\BadRequest;
+use Espo\Core\Utils\Util;
 use Espo\Entities\Attachment;
+use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
 
 class ExportTypeHttpPro extends \Export\Services\AbstractExportType
 {
+    private int $iteration = 0;
+
     public function export(array $data, ExportJob $exportJob): Attachment
     {
         $this->setData($data);
@@ -38,31 +42,22 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
 
     public function runExport(ExportJob $exportJob): Attachment
     {
-//        $m = new \Mustache_Engine(['entity_flags' => ENT_QUOTES]);
-//
-//        $template = '{{#entities}}{{#.}}{{#brand}}{{code}}{{/brand}}{{/.}}{{/entities}}';
-//
-//        echo $m->render($template, ['entities' => $this->getEntityManager()->getRepository('Product')->find()]);
-//        die();
-//
-//
-//        $body = $data['feed']['data']['feedFields']['exportHttpBody'];
-//
-//        echo '<pre>';
-//        print_r($str);
-//        die();
-
-        $body = '{"foo": 222}';
-
-
-        $count = 0;
-        while (!empty($records = $this->getRecords())) {
-            foreach ($records as $record) {
-                $count++;
+        $entities = new EntityCollection();
+        while (!empty($collection = $this->getCollection())) {
+            foreach ($collection as $entity) {
+                $entities->append($entity);
             }
         }
 
-        $exportJob->set('count', $count);
+        $exportJob->set('count', count($entities));
+
+        $mustache = new \Mustache_Engine([
+            'entity_flags' => ENT_QUOTES,
+            'helpers'      => [],
+        ]);
+        $body = $mustache->render($this->data['feed']['data']['feedFields']['exportHttpMustacheBody'], ['entities' => $entities]);
+        $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
+        $body = json_encode(json_decode($body));
 
         /**
          * Create attachment
@@ -76,6 +71,7 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
         $attachment->set('storage', 'UploadDir');
         $attachment->set('storageFilePath', $this->createPath());
         $fileName = $repository->getFilePath($attachment);
+        $this->createDir($fileName);
         file_put_contents($fileName, $body);
         $attachment->set('type', 'application/json');
         $attachment->set('size', \filesize($repository->getFilePath($attachment)));
@@ -95,9 +91,7 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
             $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
             if (!empty($connectionEntity)) {
                 $response = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
-                if (!empty($response)) {
-                    $headers[] = "Authorization: {$response['token_type']} {$response['access_token']}";
-                }
+                $headers[] = "Authorization: {$response['token_type']} {$response['access_token']}";
             }
         }
 
@@ -131,5 +125,37 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
         parent::init();
 
         $this->addDependency(ConnectionOauth2::class);
+    }
+
+    protected function createDir(string $fileName): void
+    {
+        $parts = explode('/', $fileName);
+        array_pop($parts);
+        Util::createDir(implode('/', $parts));
+    }
+
+    protected function getCollection(): ?EntityCollection
+    {
+        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
+            return null;
+        }
+
+        if (!$this->getContainer()->get('acl')->check($this->data['feed']['entity'], 'read')) {
+            return null;
+        }
+
+        $params = $this->getSelectParams();
+        $params['offset'] = $this->data['offset'];
+        $params['maxSize'] = $this->data['limit'];
+
+        $this->data['offset'] = $this->data['offset'] + $this->data['limit'];
+        $this->iteration++;
+
+        $result = $this->getEntityService()->findEntities($params);
+        if (isset($result['collection'])) {
+            return $result['collection'];
+        }
+
+        return null;
     }
 }
