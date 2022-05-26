@@ -32,7 +32,7 @@
         ],
         "productNumber": "{{{sku}}}",
         "stock": {{{amount}}},
-        "active": {{{isActive}}},
+        "active": {{#isActive}}true{{/isActive}}{{^isActive}}false{{/isActive}},
         "purchasePrices": [
           {
             "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
