@@ -63,16 +63,6 @@ class ExportTypeHttpPro extends AbstractExportType
 
         $template = $this->data['feed']['data']['feedFields']['exportHttpMustacheBody'];
 
-//        // @todo temporally
-//        $template = file_get_contents('/var/www/atropim.local/src/export-feeds-http/mustache-templates/export-product-shopware.mustache');
-//        $preparedEntities = new EntityCollection();
-//        foreach ($entities as $entity) {
-//            if ($entity->get('id') === '623c4dbe2485f3306') {
-//                $preparedEntities->append($entity);
-//            }
-//        }
-//        $entities = $preparedEntities;
-
         $templateData = [
             'entities' => $entities,
             'config'   => $this->getConfig()->getData(),
