@@ -63,7 +63,10 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
         ]);
         $body = $mustache->render($template, $templateData);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
-        $body = json_encode(json_decode($body));
+        $bodyArray = @json_decode($body, true);
+        if (!empty($bodyArray)) {
+            $body = json_encode($bodyArray);
+        }
 
         /**
          * Create attachment
