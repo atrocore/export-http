@@ -28,8 +28,10 @@ use Espo\Core\Utils\Util;
 use Espo\Entities\Attachment;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
+use Export\Services\AbstractExportType;
+use ExportHttp\Util\Shopware6Uuid;
 
-class ExportTypeHttpPro extends \Export\Services\AbstractExportType
+class ExportTypeHttpPro extends AbstractExportType
 {
     private int $iteration = 0;
 
@@ -59,7 +61,11 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
 
         $mustache = new \Mustache_Engine([
             'entity_flags' => ENT_QUOTES,
-            'helpers'      => [],
+            'helpers'      => [
+                'shopwareUuid' => function () {
+                    return Shopware6Uuid::randomHex();
+                }
+            ],
         ]);
         $body = $mustache->render($template, $templateData);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
