@@ -20,14 +20,20 @@
 
 declare(strict_types=1);
 
-namespace ExportHttp\Util;
+namespace ExportHttp\MustacheHelpers;
 
-class Shopware6Uuid
+use Espo\Core\Injectable;
+
+class Shopware6Uuid extends Injectable
 {
-    /**
-     * Regular expression pattern for matching a valid UUID of any variant.
-     */
     public const VALID_PATTERN = '^[0-9a-f]{32}$';
+
+    public function __invoke($id)
+    {
+        $uuid = self::randomHex();
+
+        return $uuid;
+    }
 
     public static function randomHex(): string
     {
