@@ -10,11 +10,11 @@
         "id": "{{#shopware6Uuid}}{{id}}{{/shopware6Uuid}}",
         "taxId": "a2ba309d85eb4c70ac64f06e8d6b7f5c",
         "featureSetId": "dabceb16429a49fd9c225328d606ded5",
-        "coverId": "90b0825d45254d81970c23d8e56f138a",
+        "coverId": "{{#shopware6Uuid}}{{id}}_{{#assetIdViaAttachmentId}}{{mainImageId}}{{/assetIdViaAttachmentId}}{{/shopware6Uuid}}",
         "media": [
           {{#assets}}
           {
-            "id": "{{var.productId}}_{{{id}}}",
+            "id": "{{#shopware6Uuid}}{{var.productId}}_{{{id}}}{{/shopware6Uuid}}",
             "mediaId": "{{{id}}}",
             "position": 1
           },
