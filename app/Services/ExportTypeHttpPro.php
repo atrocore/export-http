@@ -54,15 +54,28 @@ class ExportTypeHttpPro extends AbstractExportType
         $exportJob->set('count', count($entities));
 
         $template = $this->data['feed']['data']['feedFields']['exportHttpMustacheBody'];
+
+        // @todo temporally
+//        $template = file_get_contents('/var/www/atropim.local/src/export-feeds-http/mustache-templates/export-product-shopware.mustache');
+//        $entities = $this->getEntityManager()->getRepository('Product')->where(['id' => '623c4dbe2485f3306'])->find();
+
         $templateData = [
             'entities' => $entities,
             'config'   => $this->getConfig()->getData(),
         ];
 
+//        POST http://shopware.local/api/media
+//        {"id":"de02f709dfd843b4a272f5e4a3b2f4e1"}
+
+        // POST http://shopware.local/api/_action/media/de02f709dfd843b4a272f5e4a3b2f4e1/upload?extension=jpg&fileName=CHBT02.TANGERINE_05
+        // {"url":"http://atropim.local/upload/files/uyhtu/3oj64/v5k0r/eqdu2/28hhf/knsfp/CHBT02.TANGERINE_05.jpg"}
+
         $mustache = new \Mustache_Engine([
             'entity_flags' => ENT_QUOTES,
             'helpers'      => [
-                'shopware6Uuid' => $this->getContainer()->get(Helpers\Shopware6Uuid::class)
+                'var'                  => new Helpers\TemplateVariable(),
+                'shopware6Uuid'        => $this->getContainer()->get(Helpers\Shopware6Uuid::class),
+                'shopware6UploadMedia' => $this->getContainer()->get(Helpers\Shopware6UploadMedia::class)
             ],
         ]);
         $body = $mustache->render($template, $templateData);

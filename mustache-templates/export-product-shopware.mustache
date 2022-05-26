@@ -4,11 +4,22 @@
     "action": "upsert",
     "entity": "product",
     "payload": [
-      {{#entities}}{{#.}}
+      {{#entities}}
+      {{#var}}productId={{{id}}}{{/var}}
       {
         "id": "{{#shopware6Uuid}}{{id}}{{/shopware6Uuid}}",
         "taxId": "a2ba309d85eb4c70ac64f06e8d6b7f5c",
         "featureSetId": "dabceb16429a49fd9c225328d606ded5",
+        "coverId": "90b0825d45254d81970c23d8e56f138a",
+        "media": [
+          {{#assets}}
+          {
+            "id": "{{var.productId}}_{{{id}}}",
+            "mediaId": "{{{id}}}",
+            "position": 1
+          },
+          {{/assets}}
+        ],
         "price": [
           {
             "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
@@ -17,9 +28,9 @@
             "gross": 119
           }
         ],
-        "productNumber": "{{sku}}",
-        "stock": {{amount}},
-        "active": {{#isActive}}true{{/isActive}}{{^isActive}}false{{/isActive}},
+        "productNumber": "{{{sku}}}",
+        "stock": {{{amount}}},
+        "active": {{{isActive}}},
         "purchasePrices": [
           {
             "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
@@ -28,7 +39,7 @@
             "gross": 0
           }
         ],
-        "name": "{{name}}",
+        "name": "{{{name}}}",
         "visibilities": [
           {
             "id": "3465593b57d84ab791c8753acd0e04df",
@@ -44,7 +55,7 @@
           }
         ]
       },
-    {{/.}}{{/entities}}
+    {{/entities}}
     ]
   }
 ]
