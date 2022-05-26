@@ -81,10 +81,13 @@ class ExportTypeHttpPro extends AbstractExportType
         $siteUrlData = parse_url($this->data['feed']['httpUrl']);
         $shopwareSiteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
 
+        $templateVariableHelper = new Helpers\TemplateVariable();
+
         $mustache = new \Mustache_Engine([
             'entity_flags' => ENT_QUOTES,
             'helpers'      => [
-                'var'                    => new Helpers\TemplateVariable(),
+                'var'                    => $templateVariableHelper,
+                'incrementVar'           => new Helpers\IncrementVariable($templateVariableHelper),
                 'assetIdViaAttachmentId' => $this->getContainer()->get(Helpers\AssetIdViaAttachmentId::class),
                 'shopware6Uuid'          => $this->getContainer()->get(Helpers\Shopware6Uuid::class),
                 'shopware6UploadMedia'   => ($this->getContainer()->get(Helpers\Shopware6UploadMedia::class))->setSiteUrl($shopwareSiteUrl)->setConnectionData($connectionData)
@@ -93,10 +96,6 @@ class ExportTypeHttpPro extends AbstractExportType
         $body = $mustache->render($template, $templateData);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
         $bodyArray = @json_decode($body, true);
-//
-//        echo '<pre>';
-//        print_r($bodyArray);
-//        die();
 
         if (!empty($bodyArray)) {
             $body = json_encode($bodyArray);

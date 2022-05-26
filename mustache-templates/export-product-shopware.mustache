@@ -12,12 +12,14 @@
         "featureSetId": "dabceb16429a49fd9c225328d606ded5",
         "coverId": "{{#shopware6Uuid}}{{id}}_{{#assetIdViaAttachmentId}}{{mainImageId}}{{/assetIdViaAttachmentId}}{{/shopware6Uuid}}",
         "media": [
+          {{#var}}count=1{{/var}}
           {{#assets}}
           {
             "id": "{{#shopware6Uuid}}{{var.productId}}_{{{id}}}{{/shopware6Uuid}}",
             "mediaId": "{{#shopware6UploadMedia}}{{{id}}}{{/shopware6UploadMedia}}",
-            "position": 1
+            "position": {{var.count}}
           },
+          {{#incrementVar}}count{{/incrementVar}}
           {{/assets}}
         ],
         "price": [
