@@ -85,6 +85,7 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
         $attachment->set('type', 'application/json');
         $attachment->set('size', \filesize($repository->getFilePath($attachment)));
         $this->getEntityManager()->saveEntity($attachment);
+        $exportJob->set('fileId', $attachment->get('id'));
 
         /**
          * Prepare headers
@@ -123,6 +124,7 @@ class ExportTypeHttpPro extends \Export\Services\AbstractExportType
         if (!in_array($httpCode, [200, 201, 204])) {
             throw new BadRequest("Response Code: $httpCode Body: $output");
         }
+
 
         $exportJob->set('stateMessage', $output);
 
