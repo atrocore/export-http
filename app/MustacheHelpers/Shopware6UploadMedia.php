@@ -26,8 +26,82 @@ use Espo\Core\Injectable;
 
 class Shopware6UploadMedia extends Injectable
 {
+    private string $siteUrl;
+    private array $connectionData;
+
+    public function __construct()
+    {
+        $this->addDependency('entityManager');
+        $this->addDependency('config');
+        $this->addDependency(Shopware6Uuid::class);
+    }
+
     public function __invoke(string $assetId, \Mustache_LambdaHelper $helper)
     {
-        return '1';
+        $assetId = $helper->render($assetId);
+        $asset = $this->getInjection('entityManager')->getRepository('Asset')->get($assetId);
+        if (empty($asset)) {
+            return null;
+        }
+
+        $asset->set('private', false);
+        $pathData = $this->getInjection('entityManager')->getRepository('Attachment')->getAttachmentPathsData($asset->get('fileId'));
+        if (empty($pathData['download'])) {
+            return null;
+        }
+
+        $url = rtrim($this->getInjection('config')->get('siteUrl', ''), '/') . '/' . $pathData['download'];
+
+        $uuid = $this->getInjection(Shopware6Uuid::class)($assetId);
+
+        $headers = [
+            'Content-Type: application/json',
+            "Authorization: {$this->connectionData['token_type']} {$this->connectionData['access_token']}"
+        ];
+
+        /**
+         * Create shopware media ID
+         */
+        $ch = curl_init("$this->siteUrl/api/media");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"id":"' . $uuid . '"}');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_exec($ch);
+        curl_close($ch);
+
+        $nameParts = explode('.', $asset->get('name'));
+        $extension = array_pop($nameParts);
+        $fileName = implode('.', $nameParts);
+
+        /**
+         * Upload asset to shopware media
+         */
+        $ch = curl_init("$this->siteUrl/api/_action/media/$uuid/upload?extension=$extension&fileName=$assetId");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"url":"' . $url . '"}');
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
+        curl_close($ch);
+
+        return $uuid;
+    }
+
+    public function setSiteUrl(string $siteUrl): Shopware6UploadMedia
+    {
+        $this->siteUrl = $siteUrl;
+
+        return $this;
+    }
+
+    public function setConnectionData(array $connectionData): Shopware6UploadMedia
+    {
+        $this->connectionData = $connectionData;
+
+        return $this;
     }
 }

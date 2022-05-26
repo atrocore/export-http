@@ -51,36 +51,53 @@ class ExportTypeHttpPro extends AbstractExportType
             }
         }
 
+        $connectionData = [];
+        if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
+            $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
+            if (!empty($connectionEntity)) {
+                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+            }
+        }
+
         $exportJob->set('count', count($entities));
 
         $template = $this->data['feed']['data']['feedFields']['exportHttpMustacheBody'];
 
-        // @todo temporally
+//        // @todo temporally
 //        $template = file_get_contents('/var/www/atropim.local/src/export-feeds-http/mustache-templates/export-product-shopware.mustache');
-//        $entities = $this->getEntityManager()->getRepository('Product')->where(['id' => '623c4dbe2485f3306'])->find();
+//        $preparedEntities = new EntityCollection();
+//        foreach ($entities as $entity) {
+//            if ($entity->get('id') === '623c4dbe2485f3306') {
+//                $preparedEntities->append($entity);
+//            }
+//        }
+//        $entities = $preparedEntities;
 
         $templateData = [
             'entities' => $entities,
             'config'   => $this->getConfig()->getData(),
         ];
 
-//        POST http://shopware.local/api/media
-//        {"id":"de02f709dfd843b4a272f5e4a3b2f4e1"}
-
-        // POST http://shopware.local/api/_action/media/de02f709dfd843b4a272f5e4a3b2f4e1/upload?extension=jpg&fileName=CHBT02.TANGERINE_05
-        // {"url":"http://atropim.local/upload/files/uyhtu/3oj64/v5k0r/eqdu2/28hhf/knsfp/CHBT02.TANGERINE_05.jpg"}
+        $siteUrlData = parse_url($this->data['feed']['httpUrl']);
+        $shopwareSiteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
 
         $mustache = new \Mustache_Engine([
             'entity_flags' => ENT_QUOTES,
             'helpers'      => [
-                'var'                  => new Helpers\TemplateVariable(),
-                'shopware6Uuid'        => $this->getContainer()->get(Helpers\Shopware6Uuid::class),
-                'shopware6UploadMedia' => $this->getContainer()->get(Helpers\Shopware6UploadMedia::class)
+                'var'                    => new Helpers\TemplateVariable(),
+                'assetIdViaAttachmentId' => $this->getContainer()->get(Helpers\AssetIdViaAttachmentId::class),
+                'shopware6Uuid'          => $this->getContainer()->get(Helpers\Shopware6Uuid::class),
+                'shopware6UploadMedia'   => ($this->getContainer()->get(Helpers\Shopware6UploadMedia::class))->setSiteUrl($shopwareSiteUrl)->setConnectionData($connectionData)
             ],
         ]);
         $body = $mustache->render($template, $templateData);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
         $bodyArray = @json_decode($body, true);
+//
+//        echo '<pre>';
+//        print_r($bodyArray);
+//        die();
+
         if (!empty($bodyArray)) {
             $body = json_encode($bodyArray);
         }
@@ -114,12 +131,8 @@ class ExportTypeHttpPro extends AbstractExportType
             }
         }
 
-        if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
-            $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
-            if (!empty($connectionEntity)) {
-                $response = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
-                $headers[] = "Authorization: {$response['token_type']} {$response['access_token']}";
-            }
+        if (!empty($connectionData)) {
+            $headers[] = "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}";
         }
 
         /**
