@@ -29,6 +29,7 @@ use Espo\Entities\Attachment;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
 use Export\Services\AbstractExportType;
+use ExportHttp\Factories\Mustache;
 use ExportHttp\MustacheHelpers as Helpers;
 
 class ExportTypeHttpPro extends AbstractExportType
@@ -72,17 +73,16 @@ class ExportTypeHttpPro extends AbstractExportType
         $shopwareSiteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
 
         $templateVariableHelper = new Helpers\TemplateVariable();
+        $shopware6UploadMediaHelper = $this->getContainer()->get(Helpers\Shopware6UploadMedia::class);
+        $shopware6UploadMediaHelper->setSiteUrl($shopwareSiteUrl);
+        $shopware6UploadMediaHelper->setConnectionData($connectionData);
 
-        $mustache = new \Mustache_Engine([
-            'entity_flags' => ENT_QUOTES,
-            'helpers'      => [
-                'var'                    => $templateVariableHelper,
-                'incrementVar'           => new Helpers\IncrementVariable($templateVariableHelper),
-                'assetIdViaAttachmentId' => $this->getContainer()->get(Helpers\AssetIdViaAttachmentId::class),
-                'shopware6Uuid'          => $this->getContainer()->get(Helpers\Shopware6Uuid::class),
-                'shopware6UploadMedia'   => ($this->getContainer()->get(Helpers\Shopware6UploadMedia::class))->setSiteUrl($shopwareSiteUrl)->setConnectionData($connectionData)
-            ],
-        ]);
+        /** @var \Mustache_Engine $mustache */
+        $mustache = $this->getContainer()->get(Mustache::class);
+        $mustache->addHelper('var', $templateVariableHelper);
+        $mustache->addHelper('incrementVar', new Helpers\IncrementVariable($templateVariableHelper));
+        $mustache->addHelper('shopware6UploadMedia', $shopware6UploadMediaHelper);
+
         $body = $mustache->render($template, $templateData);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
         $bodyArray = @json_decode($body, true);
