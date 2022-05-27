@@ -1,4 +1,5 @@
 {
+  "prepareEntity": "\\ExportHttp\\TwigFilter\\PrepareEntity",
   "shopware6Uuid": "\\ExportHttp\\TwigFilter\\Shopware6Uuid",
   "assetViaAttachmentId": "\\ExportHttp\\TwigFilter\\AssetViaAttachmentId",
   "shopware6UploadMedia": "\\ExportHttp\\TwigFilter\\Shopware6UploadMedia"
