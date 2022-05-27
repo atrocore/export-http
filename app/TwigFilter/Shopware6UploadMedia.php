@@ -22,13 +22,8 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFilter;
 
-use Espo\Core\Injectable;
-
-class Shopware6UploadMedia extends Injectable
+class Shopware6UploadMedia extends AbstractTwigFilter
 {
-    private string $siteUrl;
-    private array $connectionData;
-
     public function __construct()
     {
         $this->addDependency('entityManager');
@@ -36,9 +31,13 @@ class Shopware6UploadMedia extends Injectable
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function filter(string $assetId)
+    public function filter($value)
     {
-        $asset = $this->getInjection('entityManager')->getRepository('Asset')->get($assetId);
+        if (empty($value)) {
+            return null;
+        }
+
+        $asset = $this->getInjection('entityManager')->getRepository('Asset')->get($value);
         if (empty($asset)) {
             return null;
         }
@@ -49,19 +48,25 @@ class Shopware6UploadMedia extends Injectable
             return null;
         }
 
+        $siteUrlData = parse_url($this->getFeedData()['httpUrl']);
+
+        $siteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
+
         $url = rtrim($this->getInjection('config')->get('siteUrl', ''), '/') . '/' . $pathData['download'];
 
-        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($assetId);
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($value);
+
+        $connectionData = $this->getConnectionData();
 
         $headers = [
             'Content-Type: application/json',
-            "Authorization: {$this->connectionData['token_type']} {$this->connectionData['access_token']}"
+            "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"
         ];
 
         /**
          * Create shopware media ID
          */
-        $ch = curl_init("$this->siteUrl/api/media");
+        $ch = curl_init("$siteUrl/api/media");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -77,7 +82,7 @@ class Shopware6UploadMedia extends Injectable
         /**
          * Upload asset to shopware media
          */
-        $ch = curl_init("$this->siteUrl/api/_action/media/$uuid/upload?extension=$extension&fileName=$assetId");
+        $ch = curl_init("$siteUrl/api/_action/media/$uuid/upload?extension=$extension&fileName=$value");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -88,19 +93,5 @@ class Shopware6UploadMedia extends Injectable
         curl_close($ch);
 
         return $uuid;
-    }
-
-    public function setSiteUrl(string $siteUrl): Shopware6UploadMedia
-    {
-        $this->siteUrl = $siteUrl;
-
-        return $this;
-    }
-
-    public function setConnectionData(array $connectionData): Shopware6UploadMedia
-    {
-        $this->connectionData = $connectionData;
-
-        return $this;
     }
 }

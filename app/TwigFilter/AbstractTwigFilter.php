@@ -22,25 +22,32 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFilter;
 
-class AssetIdViaAttachmentId extends AbstractTwigFilter
+use Espo\Core\Injectable;
+
+abstract class AbstractTwigFilter extends Injectable
 {
-    public function __construct()
+    protected array $feedData;
+    protected array $connectionData;
+
+    abstract public function filter($value);
+
+    public function setFeedData(array $feedData): void
     {
-        $this->addDependency('entityManager');
+        $this->feedData = $feedData;
     }
 
-    public function filter($value)
+    public function getFeedData(): array
     {
-        if (empty($value)) {
-            return null;
-        }
+        return $this->feedData;
+    }
 
-        $asset = $this->getInjection('entityManager')->getRepository('Asset')->where(['fileId' => $value])->findOne();
+    public function setConnectionData(array $connectionData): void
+    {
+        $this->connectionData = $connectionData;
+    }
 
-        if (empty($asset)) {
-            return null;
-        }
-
-        return $asset->get('id');
+    public function getConnectionData(): array
+    {
+        return $this->connectionData;
     }
 }

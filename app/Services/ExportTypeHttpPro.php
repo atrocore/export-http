@@ -29,6 +29,7 @@ use Espo\Entities\Attachment;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
 use Export\Services\AbstractExportType;
+use ExportHttp\TwigFilter\AbstractTwigFilter;
 use ExportHttp\TwigFilter\Shopware6UploadMedia;
 use Twig\TwigFilter;
 
@@ -64,27 +65,21 @@ class ExportTypeHttpPro extends AbstractExportType
 
         $template = $this->data['feed']['data']['feedFields']['exportHttpMustacheBody'];
 
-        $templateData = [
-            'entities' => $entities,
-            'config'   => $this->getConfig()->getData(),
-            'feedData' => $this->data['feed'],
-        ];
-
-        $siteUrlData = parse_url($this->data['feed']['httpUrl']);
-        $shopware6UploadMediaFilter = $this->getContainer()->get(Shopware6UploadMedia::class);
-        $shopware6UploadMediaFilter->setSiteUrl($siteUrlData['scheme'] . '://' . $siteUrlData['host']);
-        $shopware6UploadMediaFilter->setConnectionData($connectionData);
-
         $twig = new \Twig\Environment(new \Twig\Loader\ArrayLoader(['httpBody' => $template]));
-        $twig->addFilter(new TwigFilter('shopware6UploadMedia', [$shopware6UploadMediaFilter, 'filter']));
         foreach ($this->getMetadata()->get(['app', 'twigFilters'], []) as $alias => $className) {
             $filter = $this->getContainer()->get($className);
-            if (method_exists($filter, 'filter')) {
+            if ($filter instanceof AbstractTwigFilter) {
+                $filter->setFeedData($this->data['feed']);
+                $filter->setConnectionData($connectionData);
                 $twig->addFilter(new TwigFilter($alias, [$filter, 'filter']));
             }
         }
 
-        $body = $twig->render('httpBody', $templateData);
+        $body = $twig->render('httpBody', [
+            'entities' => $entities,
+            'config'   => $this->getConfig()->getData(),
+            'feedData' => $this->data['feed'],
+        ]);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
         $bodyArray = @json_decode($body, true);
 
