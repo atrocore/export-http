@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace ExportHttp\MustacheHelpers;
+namespace ExportHttp\TwigFilter;
 
 use Espo\Core\Injectable;
 
@@ -31,13 +31,18 @@ class AssetIdViaAttachmentId extends Injectable
         $this->addDependency('entityManager');
     }
 
-    public function __invoke($attachmentId, \Mustache_LambdaHelper $helper)
+    public function filter($attachmentId)
     {
-        $asset = $this->getInjection('entityManager')->getRepository('Asset')->where(['fileId' => $helper->render($attachmentId)])->findOne();
-        if (!empty($asset)) {
-            return $asset->get('id');
+        if (empty($attachmentId)) {
+            return null;
         }
 
-        return null;
+        $asset = $this->getInjection('entityManager')->getRepository('Asset')->where(['fileId' => $attachmentId])->findOne();
+
+        if (empty($asset)) {
+            return null;
+        }
+
+        return $asset->get('id');
     }
 }

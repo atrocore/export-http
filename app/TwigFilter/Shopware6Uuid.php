@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace ExportHttp\MustacheHelpers;
+namespace ExportHttp\TwigFilter;
 
 use Espo\Core\Injectable;
 
@@ -28,12 +28,8 @@ class Shopware6Uuid extends Injectable
 {
     public const VALID_PATTERN = '^[0-9a-f]{32}$';
 
-    public function __invoke(string $id, \Mustache_LambdaHelper $helper = null)
+    public function filter(string $id): string
     {
-        if (!empty($helper)) {
-            $id = $helper->render($id);
-        }
-
         $hex = self::fromStringToHex($id);
         $timeHi = self::applyVersion(mb_substr($hex, 12, 4), 4);
         $clockSeqHi = self::applyVariant(hexdec(mb_substr($hex, 16, 2)));

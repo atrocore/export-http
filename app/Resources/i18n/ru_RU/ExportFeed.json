@@ -16,6 +16,6 @@
     "httpPro": "HTTP Запрос Pro"
   },
   "tooltips": {
-    "exportHttpMustacheBody": "Вы должны использовать синтаксис шаблонизатора <a href=\"https://mustache.github.io\" target=\"_blank\">Mustache</a>."
+    "exportHttpMustacheBody": "Вы должны использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
   }
 }

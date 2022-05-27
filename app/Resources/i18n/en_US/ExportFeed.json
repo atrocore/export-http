@@ -16,6 +16,6 @@
     "httpPro": "HTTP Request Pro"
   },
   "tooltips": {
-    "exportHttpMustacheBody": "You should use the syntax for <a href=\"https://mustache.github.io\" target=\"_blank\">Mustache</a> template engine."
+    "exportHttpMustacheBody": "You should use the syntax for <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
   }
 }

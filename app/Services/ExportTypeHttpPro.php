@@ -29,8 +29,8 @@ use Espo\Entities\Attachment;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
 use Export\Services\AbstractExportType;
-use ExportHttp\Factories\Mustache;
-use ExportHttp\MustacheHelpers as Helpers;
+use ExportHttp\TwigFilter\Shopware6UploadMedia;
+use Twig\TwigFilter;
 
 class ExportTypeHttpPro extends AbstractExportType
 {
@@ -67,23 +67,24 @@ class ExportTypeHttpPro extends AbstractExportType
         $templateData = [
             'entities' => $entities,
             'config'   => $this->getConfig()->getData(),
+            'feedData' => $this->data['feed'],
         ];
 
         $siteUrlData = parse_url($this->data['feed']['httpUrl']);
-        $shopwareSiteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
+        $shopware6UploadMediaFilter = $this->getContainer()->get(Shopware6UploadMedia::class);
+        $shopware6UploadMediaFilter->setSiteUrl($siteUrlData['scheme'] . '://' . $siteUrlData['host']);
+        $shopware6UploadMediaFilter->setConnectionData($connectionData);
 
-        $templateVariableHelper = new Helpers\TemplateVariable();
-        $shopware6UploadMediaHelper = $this->getContainer()->get(Helpers\Shopware6UploadMedia::class);
-        $shopware6UploadMediaHelper->setSiteUrl($shopwareSiteUrl);
-        $shopware6UploadMediaHelper->setConnectionData($connectionData);
+        $twig = new \Twig\Environment(new \Twig\Loader\ArrayLoader(['httpBody' => $template]));
+        $twig->addFilter(new TwigFilter('shopware6UploadMedia', [$shopware6UploadMediaFilter, 'filter']));
+        foreach ($this->getMetadata()->get(['app', 'twigFilters'], []) as $alias => $className) {
+            $filter = $this->getContainer()->get($className);
+            if (method_exists($filter, 'filter')) {
+                $twig->addFilter(new TwigFilter($alias, [$filter, 'filter']));
+            }
+        }
 
-        /** @var \Mustache_Engine $mustache */
-        $mustache = $this->getContainer()->get(Mustache::class);
-        $mustache->addHelper('var', $templateVariableHelper);
-        $mustache->addHelper('incrementVar', new Helpers\IncrementVariable($templateVariableHelper));
-        $mustache->addHelper('shopware6UploadMedia', $shopware6UploadMediaHelper);
-
-        $body = $mustache->render($template, $templateData);
+        $body = $twig->render('httpBody', $templateData);
         $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
         $bodyArray = @json_decode($body, true);
 

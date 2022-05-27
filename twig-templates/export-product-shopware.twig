@@ -4,27 +4,31 @@
     "action": "upsert",
     "entity": "product",
     "payload": [
-      {{#entities}}
-      {{#var}}productId={{{id}}}{{/var}}
+      {% for entity in entities %}
       {
-        "id": "{{#shopware6Uuid}}{{id}}{{/shopware6Uuid}}",
-        "name": "{{{name}}}",
-        "productNumber": "{{{sku}}}",
-        "stock": {{{amount}}},
-        "active": {{#isActive}}true{{/isActive}}{{^isActive}}false{{/isActive}},
+        "id": "{{ entity.id | shopware6Uuid }}",
+        "name": "{{ entity.name }}",
+        "productNumber": "{{ entity.sku }}",
+        "stock": {{ entity.amount }},
+        "active": {{ someBoolean ? 'true' : 'false' }},
         "taxId": "a2ba309d85eb4c70ac64f06e8d6b7f5c",
         "featureSetId": "dabceb16429a49fd9c225328d606ded5",
-        "coverId": "{{#shopware6Uuid}}{{id}}_{{#assetIdViaAttachmentId}}{{mainImageId}}{{/assetIdViaAttachmentId}}{{/shopware6Uuid}}",
+        {% set mainImageId = entity.mainImageId | assetIdViaAttachmentId %}
+        {% if mainImageId is empty %}
+          "coverId": null,
+        {% else %}
+          "coverId": "{{ (entity.id ~ '_' ~ mainImageId) | shopware6Uuid }}",
+        {% endif %}
         "media": [
-          {{#var}}count=1{{/var}}
-          {{#assets}}
+          {% set position = 1 %}
+          {% for asset in entity.assets %}
           {
-            "id": "{{#shopware6Uuid}}{{var.productId}}_{{{id}}}{{/shopware6Uuid}}",
-            "mediaId": "{{#shopware6UploadMedia}}{{{id}}}{{/shopware6UploadMedia}}",
-            "position": {{var.count}}
+            "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
+            "mediaId": "{{ asset.id | shopware6UploadMedia}}",
+            "position": {{ position }}
           },
-          {{#incrementVar}}count{{/incrementVar}}
-          {{/assets}}
+          {% set position = position + 1 %}
+          {% endfor %}
         ],
         "price": [
           {
@@ -57,7 +61,7 @@
           }
         ]
       },
-    {{/entities}}
+      {% endfor %}
     ]
   }
 ]

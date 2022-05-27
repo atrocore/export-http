@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace ExportHttp\MustacheHelpers;
+namespace ExportHttp\TwigFilter;
 
 use Espo\Core\Injectable;
 
@@ -36,9 +36,8 @@ class Shopware6UploadMedia extends Injectable
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function __invoke(string $assetId, \Mustache_LambdaHelper $helper)
+    public function filter(string $assetId)
     {
-        $assetId = $helper->render($assetId);
         $asset = $this->getInjection('entityManager')->getRepository('Asset')->get($assetId);
         if (empty($asset)) {
             return null;
@@ -52,7 +51,7 @@ class Shopware6UploadMedia extends Injectable
 
         $url = rtrim($this->getInjection('config')->get('siteUrl', ''), '/') . '/' . $pathData['download'];
 
-        $uuid = $this->getInjection(Shopware6Uuid::class)($assetId);
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($assetId);
 
         $headers = [
             'Content-Type: application/json',
