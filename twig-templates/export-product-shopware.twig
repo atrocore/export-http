@@ -13,11 +13,11 @@
         "active": {{ someBoolean ? 'true' : 'false' }},
         "taxId": "a2ba309d85eb4c70ac64f06e8d6b7f5c",
         "featureSetId": "dabceb16429a49fd9c225328d606ded5",
-        {% set mainImageId = entity.mainImageId | assetIdViaAttachmentId %}
-        {% if mainImageId is empty %}
+        {% set mainImageAsset = entity.mainImageId | assetViaAttachmentId %}
+        {% if mainImageAsset is empty %}
           "coverId": null,
         {% else %}
-          "coverId": "{{ (entity.id ~ '_' ~ mainImageId) | shopware6Uuid }}",
+          "coverId": "{{ (entity.id ~ '_' ~ mainImageAsset.id) | shopware6Uuid }}",
         {% endif %}
         "media": [
           {% set position = 1 %}

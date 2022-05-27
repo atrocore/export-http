@@ -1,5 +1,5 @@
 {
   "shopware6Uuid": "\\ExportHttp\\TwigFilter\\Shopware6Uuid",
-  "assetIdViaAttachmentId": "\\ExportHttp\\TwigFilter\\AssetIdViaAttachmentId",
+  "assetViaAttachmentId": "\\ExportHttp\\TwigFilter\\AssetViaAttachmentId",
   "shopware6UploadMedia": "\\ExportHttp\\TwigFilter\\Shopware6UploadMedia"
 }

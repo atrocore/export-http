@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFilter;
 
-class AssetIdViaAttachmentId extends AbstractTwigFilter
+class AssetViaAttachmentId extends AbstractTwigFilter
 {
     public function __construct()
     {
@@ -41,6 +41,6 @@ class AssetIdViaAttachmentId extends AbstractTwigFilter
             return null;
         }
 
-        return $asset->get('id');
+        return $asset;
     }
 }
