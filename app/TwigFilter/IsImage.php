@@ -24,22 +24,22 @@ namespace ExportHttp\TwigFilter;
 
 use Espo\ORM\Entity;
 
-class PrepareEntity extends AbstractTwigFilter
+class IsImage extends AbstractTwigFilter
 {
     public function __construct()
     {
-        $this->addDependency('serviceFactory');
+        $this->addDependency('metadata');
     }
 
     public function filter($value)
     {
-        if (empty($value) || !is_object($value) || !($value instanceof Entity)) {
-            return null;
+        if (empty($value) || !is_object($value) || !($value instanceof Entity) || $value->getEntityType() !== 'Asset') {
+            return false;
         }
 
-        $service = $this->getInjection('serviceFactory')->create($value->getEntityType());
-        $service->prepareEntityForOutput($value);
+        $fileNameParts = explode('.', $value->get("file")->get('name'));
+        $fileExt = strtolower(array_pop($fileNameParts));
 
-        return $value;
+        return in_array($fileExt, $this->getInjection('metadata')->get('dam.image.extensions', []));
     }
 }

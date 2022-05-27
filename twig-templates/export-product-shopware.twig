@@ -22,12 +22,14 @@
         "media": [
           {% set position = 1 %}
           {% for asset in entity.assets %}
-          {
-            "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
-            "mediaId": "{{ asset.id | shopware6UploadMedia}}",
-            "position": {{ position }}
-          },
-          {% set position = position + 1 %}
+            {% if asset | isImage %}
+              {
+              "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
+              "mediaId": "{{ asset.id | shopware6UploadMedia}}",
+              "position": {{ position }}
+              },
+              {% set position = position + 1 %}
+            {% endif %}
           {% endfor %}
         ],
         "price": [

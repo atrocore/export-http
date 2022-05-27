@@ -42,17 +42,18 @@ class Shopware6UploadMedia extends AbstractTwigFilter
             return null;
         }
 
-        $asset->set('private', false);
-        $pathData = $this->getInjection('entityManager')->getRepository('Attachment')->getAttachmentPathsData($asset->get('fileId'));
+        $attachment = $asset->get('file');
+        $attachment->set('private', false);
+
+        $pathData = $this->getInjection('entityManager')->getRepository('Attachment')->getAttachmentPathsData($attachment);
         if (empty($pathData['download'])) {
             return null;
         }
 
-        $siteUrlData = parse_url($this->getFeedData()['httpUrl']);
-
-        $siteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
-
         $url = rtrim($this->getInjection('config')->get('siteUrl', ''), '/') . '/' . $pathData['download'];
+
+        $siteUrlData = parse_url($this->getFeedData()['httpUrl']);
+        $siteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
 
         $uuid = $this->getInjection(Shopware6Uuid::class)->filter($value);
 
