@@ -10,57 +10,55 @@
         "name": "{{ entity.name }}",
         "productNumber": "{{ entity.sku }}",
         "stock": {{ entity.amount }},
-        "active": {{ someBoolean ? 'true' : 'false' }},
+        "active": {{ entity.isActive ? 'true' : 'false' }},
         "taxId": "a2ba309d85eb4c70ac64f06e8d6b7f5c",
         "featureSetId": "dabceb16429a49fd9c225328d606ded5",
-        {% set mainImageAsset = entity.mainImageId | assetViaAttachmentId %}
-        {% if mainImageAsset is empty %}
-          "coverId": null,
-        {% else %}
-          "coverId": "{{ (entity.id ~ '_' ~ mainImageAsset.id) | shopware6Uuid }}",
-        {% endif %}
+        {% set mainImageId = null %}
         "media": [
           {% set position = 1 %}
           {% for asset in entity.assets %}
             {% if asset | isImage %}
-              {
-              "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
-              "mediaId": "{{ asset.id | shopware6UploadMedia}}",
-              "position": {{ position }}
-              },
-              {% set position = position + 1 %}
+              {% if asset.channel == '' or asset.channel == '62fdec81582e228f4' %}
+                {
+                  "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
+                  "mediaId": "{{ asset.id | shopware6UploadMedia}}",
+                  "position": {{ position }}
+                },
+                {% set position = position + 1 %}
+                {% if asset.isMainImage == true and asset.channel == '' and mainImageId == null %}
+                  {% set mainImageId = asset.id %}
+                {% endif %}
+                {% if asset.isMainImage == true and asset.channel == '62fdec81582e228f4' %}
+                  {% set mainImageId = asset.id %}
+                {% endif %}
+              {% endif %}
             {% endif %}
           {% endfor %}
         ],
+        {% if mainImageId == null %}
+          "coverId": null,
+        {% else %}
+          "coverId": "{{ (entity.id ~ '_' ~ mainImageId) | shopware6Uuid }}",
+        {% endif %}
         "price": [
-          {
-            "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-            "net": 100,
-            "linked": true,
-            "gross": 119
-          }
-        ],
-        "purchasePrices": [
-          {
-            "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-            "net": 0,
-            "linked": true,
-            "gross": 0
-          }
-        ],
-        "visibilities": [
-          {
-            "id": "3465593b57d84ab791c8753acd0e04df",
-            "productId": "43a5f9c081b3446e93743207749df259",
-            "salesChannelId": "98432def39fc4624b33213a56b8c944d",
-            "visibility": 30
-          },
-          {
-            "id": "b6285d2a270f45b99acf47986c6afde8",
-            "productId": "43a5f9c081b3446e93743207749df259",
-            "salesChannelId": "454ca6eda8fc465bb9366dd5f47a36cb",
-            "visibility": 30
-          }
+          {% for productPrice in entity.productPrices %}
+            {% if productPrice.priceProfileId == '62fdec779e68d2bea' and productPrice.priceCurrency == 'EUR' %}
+            {
+              "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+              "net": {{ (productPrice.price / 1.077) | round(5) }},
+              "linked": true,
+              "gross": {{ productPrice.price }}
+            },
+            {% endif %}
+            {% if productPrice.priceProfileId == '62fdec779e68d2bea' and productPrice.priceCurrency == 'USD' %}
+              {
+              "currencyId": "f40bd92fdb694f06979d0c46c48cd2c3",
+              "net": {{ (productPrice.price / 1.077) | round(5) }},
+              "linked": true,
+              "gross": {{ productPrice.price }}
+              }
+            {% endif %}
+          {% endfor %}
         ]
       },
       {% endfor %}
