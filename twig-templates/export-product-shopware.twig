@@ -9,6 +9,7 @@
         "id": "{{ entity.id | shopware6Uuid }}",
         "name": "{{ entity.name }}",
         "productNumber": "{{ entity.sku }}",
+        "description": "{{ entity.longDescription | raw }}",
         "stock": {{ entity.amount }},
         "active": {{ entity.isActive ? 'true' : 'false' }},
         "taxId": "a2ba309d85eb4c70ac64f06e8d6b7f5c",

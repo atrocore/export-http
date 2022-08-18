@@ -1,0 +1,12 @@
+{% for entity in entities %}
+    {
+    "id":"{{ entity.id | shopware6Uuid }}",
+    "name":"{{ entity.name }}",
+    "description":"",
+    "displayType":"text",
+    "sortingType":"alphanumeric",
+    "filterable":true,
+    "visibleOnProductDetailPage":true,
+    "position":1
+    }
+{% endfor %}
