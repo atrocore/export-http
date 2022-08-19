@@ -31,7 +31,9 @@ use Export\Entities\ExportJob;
 use Export\Services\AbstractExportType;
 use ExportHttp\TwigFilter\AbstractTwigFilter;
 use ExportHttp\TwigFilter\Shopware6UploadMedia;
+use ExportHttp\TwigFunction\AbstractTwigFunction;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class ExportTypeHttpPro extends AbstractExportType
 {
@@ -72,6 +74,15 @@ class ExportTypeHttpPro extends AbstractExportType
                 $filter->setFeedData($this->data['feed']);
                 $filter->setConnectionData($connectionData);
                 $twig->addFilter(new TwigFilter($alias, [$filter, 'filter']));
+            }
+        }
+
+        foreach ($this->getMetadata()->get(['app', 'twigFunctions'], []) as $alias => $className) {
+            $twigFunction = $this->getContainer()->get($className);
+            if ($twigFunction instanceof AbstractTwigFunction) {
+                $twigFunction->setFeedData($this->data['feed']);
+                $twigFunction->setConnectionData($connectionData);
+                $twig->addFunction(new TwigFunction($alias, [$twigFunction, 'run']));
             }
         }
 

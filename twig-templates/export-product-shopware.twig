@@ -14,6 +14,14 @@
         "active": {{ entity.isActive ? 'true' : 'false' }},
         "taxId": "a2ba309d85eb4c70ac64f06e8d6b7f5c",
         "featureSetId": "dabceb16429a49fd9c225328d606ded5",
+        "properties": [
+          {% for pav in entity.productAttributeValues %}
+            {% if pav.language == 'main' %}
+              {% set optionId = shopware6CreatePropertyOptionId(pav.id,'62fdec81582e228f4') %}
+              {% if optionId != null %}{"id": "{{ optionId }}"},{% endif %}
+            {% endif %}
+          {% endfor %}
+        ],
         {% set mainImageId = null %}
         "media": [
           {% set position = 1 %}
