@@ -112,7 +112,7 @@ class Shopware6CreatePropertyOptionId extends AbstractTwigFunction
             $value = (string)$value;
         }
 
-        $optionId = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('attributeId') . md5($value));
+        $optionId = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('attributeId') . $pav->get('language') . md5($value));
 
         $ch = curl_init("$apiHost/api/property-group/$propertyId/options");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
