@@ -103,6 +103,9 @@ class Shopware6CreatePropertyOptionId extends AbstractTwigFunction
             return null;
         }
 
+        /**
+         * Prepare value
+         */
         $value = $pav->get('value');
         if (is_bool($value)) {
             $value = $value ? 'Yes' : 'No';
@@ -110,6 +113,14 @@ class Shopware6CreatePropertyOptionId extends AbstractTwigFunction
             $value = implode(', ', $value);
         } else {
             $value = (string)$value;
+        }
+        switch ($pav->get('attributeType')) {
+            case 'unit':
+                $value .= ' ' . $pav->get('valueUnit');
+                break;
+            case 'currency':
+                $value .= ' ' . $pav->get('valueCurrency');
+                break;
         }
 
         $optionId = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('attributeId') . $pav->get('language') . md5($value));
