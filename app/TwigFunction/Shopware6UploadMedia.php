@@ -54,7 +54,10 @@ class Shopware6UploadMedia extends AbstractTwigFunction
             return null;
         }
 
-        $url = rtrim($this->getInjection('config')->get('siteUrl', ''), '/') . '/' . $pathData['download'];
+        $dirs = explode('/', $pathData['download']);
+        $fileNameWithExtension = array_pop($dirs);
+
+        $url = rtrim($this->getInjection('config')->get('siteUrl', ''), '/') . '/' . implode('/', $dirs) . '/' . rawurlencode($fileNameWithExtension);
 
         $siteUrlData = parse_url($this->getFeedData()['httpUrl']);
         $siteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
@@ -80,14 +83,15 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         curl_exec($ch);
         curl_close($ch);
 
-        $nameParts = explode('.', $asset->get('name'));
+        $nameParts = explode('.', $fileNameWithExtension);
         $extension = array_pop($nameParts);
-        $fileName = implode('.', $nameParts);
+
+        $fileName = urlencode(implode('.', $nameParts));
 
         /**
          * Upload asset to shopware media
          */
-        $ch = curl_init("$siteUrl/api/_action/media/$uuid/upload?extension=$extension&fileName=$assetId");
+        $ch = curl_init("$siteUrl/api/_action/media/$uuid/upload?extension=$extension&fileName=$fileName");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
