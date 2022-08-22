@@ -30,7 +30,6 @@ use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
 use Export\Services\AbstractExportType;
 use ExportHttp\TwigFilter\AbstractTwigFilter;
-use ExportHttp\TwigFilter\Shopware6UploadMedia;
 use ExportHttp\TwigFunction\AbstractTwigFunction;
 use Twig\TwigFilter;
 use Twig\TwigFunction;

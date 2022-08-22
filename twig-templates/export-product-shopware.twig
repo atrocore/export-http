@@ -61,14 +61,17 @@
           {% for asset in entity.assets %}
             {% if asset | isImage %}
               {% if asset.channel == '' or asset.channel == channelId %}
+                {% set mediaId = shopware6UploadMedia(asset.id) %}
+                {% if mediaId != null %}
                 {
                   "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
-                  "mediaId": "{{ asset.id | shopware6UploadMedia}}",
+                  "mediaId": "{{ mediaId }}",
                   "position": {{ position }}
                 },
                 {% set position = position + 1 %}
                 {% if asset.isMainImage == true and asset.channel == '' and mainImageId == null %}
                   {% set mainImageId = asset.id %}
+                {% endif %}
                 {% endif %}
                 {% if asset.isMainImage == true and asset.channel == channelId %}
                   {% set mainImageId = asset.id %}

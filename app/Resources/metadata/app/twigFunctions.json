@@ -1,4 +1,5 @@
 {
+  "shopware6UploadMedia": "\\ExportHttp\\TwigFilter\\Shopware6UploadMedia",
   "shopware6CreatePropertyOptionId": "\\ExportHttp\\TwigFunction\\Shopware6CreatePropertyOptionId",
   "shopware6CreateCategoryId": "\\ExportHttp\\TwigFunction\\Shopware6CreateCategoryId"
 }

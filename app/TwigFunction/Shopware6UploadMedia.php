@@ -20,9 +20,11 @@
 
 declare(strict_types=1);
 
-namespace ExportHttp\TwigFilter;
+namespace ExportHttp\TwigFunction;
 
-class Shopware6UploadMedia extends AbstractTwigFilter
+use ExportHttp\TwigFilter\Shopware6Uuid;
+
+class Shopware6UploadMedia extends AbstractTwigFunction
 {
     public function __construct()
     {
@@ -31,13 +33,15 @@ class Shopware6UploadMedia extends AbstractTwigFilter
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function filter($value)
+    public function run(...$args)
     {
-        if (empty($value)) {
+        if (empty($args[0])) {
             return null;
         }
 
-        $asset = $this->getInjection('entityManager')->getRepository('Asset')->get($value);
+        $assetId = $args[0];
+
+        $asset = $this->getInjection('entityManager')->getRepository('Asset')->get($assetId);
         if (empty($asset)) {
             return null;
         }
@@ -55,7 +59,7 @@ class Shopware6UploadMedia extends AbstractTwigFilter
         $siteUrlData = parse_url($this->getFeedData()['httpUrl']);
         $siteUrl = $siteUrlData['scheme'] . '://' . $siteUrlData['host'];
 
-        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($value);
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($assetId);
 
         $connectionData = $this->getConnectionData();
 
@@ -83,7 +87,7 @@ class Shopware6UploadMedia extends AbstractTwigFilter
         /**
          * Upload asset to shopware media
          */
-        $ch = curl_init("$siteUrl/api/_action/media/$uuid/upload?extension=$extension&fileName=$value");
+        $ch = curl_init("$siteUrl/api/_action/media/$uuid/upload?extension=$extension&fileName=$assetId");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
