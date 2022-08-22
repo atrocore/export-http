@@ -1,3 +1,4 @@
 {
-  "shopware6CreatePropertyOptionId": "\\ExportHttp\\TwigFunction\\Shopware6CreatePropertyOptionId"
+  "shopware6CreatePropertyOptionId": "\\ExportHttp\\TwigFunction\\Shopware6CreatePropertyOptionId",
+  "shopware6CreateCategoryId": "\\ExportHttp\\TwigFunction\\Shopware6CreateCategoryId"
 }

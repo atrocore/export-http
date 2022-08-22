@@ -22,6 +22,12 @@
             "visibility": 30
          }
         ],
+        "categories": [
+        {% for category in entity.categories %}
+          {% set categoryId = shopware6CreateCategoryId(category.id,['63032850684a0185b'], 'cee189cc7e7044c9ba2642b5e4700461') %}
+          {% if categoryId != null %}{"id": "{{ categoryId }}"},{% endif %}
+        {% endfor %}
+        ],
         "properties": [
           {% for pav in entity.productAttributeValues %}
             {% if pav.language == 'main' %}
