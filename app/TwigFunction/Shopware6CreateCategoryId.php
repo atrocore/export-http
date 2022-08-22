@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace ExportHttp\TwigFunction;
 
 use Espo\ORM\Entity;
+use Espo\ORM\EntityCollection;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
 class Shopware6CreateCategoryId extends AbstractTwigFunction
@@ -49,27 +50,31 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
             return null;
         }
 
-        $categoryRoute = $this->getCategoryRoot($category);
+        $categoryRouteCollection = new EntityCollection();
+        $categoryRoot = $this->getCategoryRoot($category, $categoryRouteCollection);
 
-        if (!in_array($categoryRoute->get('id'), $rootsIds)) {
+        if (!in_array($categoryRoot->get('id'), $rootsIds)) {
             return null;
         }
 
-        $this->createCategoryTree($categoryRoute, $cmsPageId);
+        foreach (array_reverse($categoryRouteCollection->toArray()) as $record) {
+            $this->createCategory($record, $cmsPageId);
+        }
 
         return $this->getInjection(Shopware6Uuid::class)->filter($categoryId);
     }
 
-    protected function getCategoryRoot(Entity $category): Entity
+    protected function getCategoryRoot(Entity $category, EntityCollection $collection): Entity
     {
+        $collection->append($category);
         if (empty($parent = $category->get('categoryParent'))) {
             return $category;
         }
 
-        return $this->getCategoryRoot($parent);
+        return $this->getCategoryRoot($parent, $collection);
     }
 
-    protected function createCategoryTree(Entity $category, string $cmsPageId): void
+    protected function createCategory(array $category, string $cmsPageId): void
     {
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
@@ -89,18 +94,14 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
             $ch, CURLOPT_POSTFIELDS, json_encode([
                 'active'    => true,
                 'cmsPageId' => $cmsPageId,
-                'id'        => $this->getInjection(Shopware6Uuid::class)->filter($category->get('id')),
-                'name'      => $category->get('name'),
+                'id'        => $this->getInjection(Shopware6Uuid::class)->filter($category['id']),
+                'name'      => $category['name'],
                 'visible'   => true,
-                'parentId'  => empty($category->get('categoryParentId')) ? null : $this->getInjection(Shopware6Uuid::class)->filter($category->get('categoryParentId'))
+                'parentId'  => empty($category['categoryParentId']) ? null : $this->getInjection(Shopware6Uuid::class)->filter($category['categoryParentId'])
             ])
         );
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_exec($ch);
         curl_close($ch);
-
-        foreach ($category->getChildren() as $child) {
-            $this->createCategoryTree($child, $cmsPageId);
-        }
     }
 }
