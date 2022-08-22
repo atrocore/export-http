@@ -74,11 +74,15 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         /**
          * Create shopware media ID
          */
+        $body = ['id' => $uuid];
+        if (!empty($args[1])) {
+            $body['mediaFolderId'] = $args[1];
+        }
         $ch = curl_init("$siteUrl/api/media");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"id":"' . $uuid . '"}');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_exec($ch);
         curl_close($ch);
@@ -87,6 +91,9 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         $extension = array_pop($nameParts);
 
         $fileName = urlencode(implode('.', $nameParts));
+
+        // remove special symbol from file name
+        $fileName = str_replace('%C2%BA', '', $fileName);
 
         /**
          * Upload asset to shopware media
