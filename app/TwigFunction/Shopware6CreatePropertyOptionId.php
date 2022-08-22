@@ -39,13 +39,21 @@ class Shopware6CreatePropertyOptionId extends AbstractTwigFunction
             return null;
         }
 
-        $pavId = array_shift($args);
-        $channelId = array_pop($args);
+        $pavId = $args[0];
+        $channelId = $args[1];
+        $language = $args[2];
 
         $pav = $this->getInjection('serviceFactory')->create('ProductAttributeValue')->getEntity($pavId);
         if (empty($pav)) {
             return null;
         }
+
+        $attribute = $pav->get('attribute');
+        if (empty($attribute)) {
+            return null;
+        }
+
+        $isMultilang = !empty($attribute->get('isMultilang'));
 
         if (!empty($channelId)) {
             if ($pav->get('scope') === 'Channel' && $pav->get('channelId') !== $channelId) {
@@ -58,6 +66,7 @@ class Shopware6CreatePropertyOptionId extends AbstractTwigFunction
                     ->where([
                         'attributeId' => $pav->get('attributeId'),
                         'productId'   => $pav->get('productId'),
+                        'language'    => $pav->get('language'),
                         'scope'       => 'Channel',
                         'channelId'   => $channelId
                     ])
