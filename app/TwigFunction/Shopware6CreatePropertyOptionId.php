@@ -108,7 +108,7 @@ class Shopware6CreatePropertyOptionId extends AbstractTwigFunction
          */
         $value = $pav->get('value');
         if (is_bool($value)) {
-            $value = $value ? 'Yes' : 'No';
+            $value = $value ? '+' : '-';
         } elseif (is_array($value)) {
             $value = implode(', ', $value);
         } else {

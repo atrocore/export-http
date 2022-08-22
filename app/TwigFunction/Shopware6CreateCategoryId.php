@@ -42,7 +42,7 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
         }
 
         $categoryId = $args[0];
-        $rootsIds = $args[1];
+        $channelId = $args[1];
         $cmsPageId = $args[2];
 
         $category = $this->getInjection('serviceFactory')->create('Category')->getEntity($categoryId);
@@ -52,6 +52,13 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
 
         $categoryRouteCollection = new EntityCollection();
         $categoryRoot = $this->getCategoryRoot($category, $categoryRouteCollection);
+
+        $channel = $this->getInjection('serviceFactory')->create('Channel')->getEntity($channelId);
+        if (empty($channel)) {
+            return null;
+        }
+
+        $rootsIds = array_column($channel->get('categories')->toArray(), 'id');
 
         if (!in_array($categoryRoot->get('id'), $rootsIds)) {
             return null;

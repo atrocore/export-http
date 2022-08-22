@@ -22,25 +22,14 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFilter;
 
-class AssetViaAttachmentId extends AbstractTwigFilter
+class EscapeDoubleQuote extends AbstractTwigFilter
 {
-    public function __construct()
-    {
-        $this->addDependency('entityManager');
-    }
-
     public function filter($value)
     {
         if (empty($value)) {
             return null;
         }
 
-        $asset = $this->getInjection('entityManager')->getRepository('Asset')->where(['fileId' => $value])->findOne();
-
-        if (empty($asset)) {
-            return null;
-        }
-
-        return $asset;
+        return str_replace('"', '\"', (string)$value);
     }
 }
