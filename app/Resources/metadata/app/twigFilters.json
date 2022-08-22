@@ -3,5 +3,6 @@
   "isImage": "\\ExportHttp\\TwigFilter\\IsImage",
   "shopware6Uuid": "\\ExportHttp\\TwigFilter\\Shopware6Uuid",
   "shopware6UploadMedia": "\\ExportHttp\\TwigFilter\\Shopware6UploadMedia",
-  "escape_double_quote": "\\ExportHttp\\TwigFilter\\EscapeDoubleQuote"
+  "escapeDoubleQuote": "\\ExportHttp\\TwigFilter\\EscapeDoubleQuote",
+  "backslashNToBr": "\\ExportHttp\\TwigFilter\\BackslashNToBr"
 }

@@ -29,7 +29,7 @@
         "id": "{{ entity.id | shopware6Uuid }}",
         "name": "{{ entity.name }}",
         "productNumber": "{{ entity.ean }}",
-        "description": "{{ entity.longDescription | raw | escape_double_quote }}",
+        "description": "{{ entity.longDescription | escapeDoubleQuote | backslashNToBr | raw }}",
         "stock": {{ entity.amount }},
         "active": {{ entity.isActive ? 'true' : 'false' }},
         "taxId": "{{ taxId }}",
