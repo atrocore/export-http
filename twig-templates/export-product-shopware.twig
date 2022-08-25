@@ -1,108 +1,103 @@
-{% set channelId = '629a118c0a09c85b4' %}                      {#62fdec81582e228f4#}
-{% set priceProfileId = '62df20b1dcf8a6c23' %}                 {#62fdec779e68d2bea#}
-{% set salesChannelId = 'ca7d7087b43d49acb55c3f431139a738' %}  {#454ca6eda8fc465bb9366dd5f47a36cb#}
-{% set cmsPageId = 'b0106decd51e4161b29150e5f2314836' %}       {#cee189cc7e7044c9ba2642b5e4700461#}
-{% set taxId = '151199ff551742dab6e9022f5f922481' %}           {#a2ba309d85eb4c70ac64f06e8d6b7f5c#}
+{% set channelId = '62fdec81582e228f4' %}
+{% set priceProfileId = '62fdec779e68d2bea' %}
+{% set salesChannelId = '454ca6eda8fc465bb9366dd5f47a36cb' %}
+{% set cmsPageId = 'cee189cc7e7044c9ba2642b5e4700461' %}
+{% set taxId = 'a2ba309d85eb4c70ac64f06e8d6b7f5c' %}
 {% set language = 'main' %}
-
 {% set currencies = [
     {
         'currency': 'EUR',
         'currencyId': 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
     },
     {
-        'currency': 'CHF',
-        'currencyId': 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+        'currency': 'USD',
+        'currencyId': 'f40bd92fdb694f06979d0c46c48cd2c3',
     }
 ] %}
-
-{#EUR b7d2554b0ce847cd82f3ac9bd1c0dfca#}
-{#USD f40bd92fdb694f06979d0c46c48cd2c3#}
-
 [
-  {
-    "key": "write",
-    "action": "upsert",
-    "entity": "product",
-    "payload": [
-      {% for entity in entities %}
-      {
-        "id": "{{ entity.id | shopware6Uuid }}",
-        "name": "{{ entity.name }}",
-        "productNumber": "{{ entity.ean }}",
-        "description": "{{ entity.longDescription | escapeDoubleQuote | backslashNToBr | raw }}",
-        "stock": {{ entity.amount }},
-        "active": {{ entity.isActive ? 'true' : 'false' }},
-        "taxId": "{{ taxId }}",
-        "manufacturerId": "{{ shopware6CreateManufacturerId(entity.brandId) }}",
-        "visibilities": [
-          {
-            "id": "{{ (entity.id ~ '_' ~ salesChannelId) | shopware6Uuid }}",
-            "productId": "{{ entity.id | shopware6Uuid }}",
-            "salesChannelId": "{{ salesChannelId }}",
-            "visibility": 30
-         }
-        ],
-        "categories": [
-        {% for category in entity.categories %}
-          {% set categoryId = shopware6CreateCategoryId(category.id, channelId, cmsPageId) %}
-          {% if categoryId != null %}{"id": "{{ categoryId }}"},{% endif %}
-        {% endfor %}
-        ],
-        "properties": [
-          {% for pav in entity.productAttributeValues %}
-            {% if pav.language == 'main' %}
-              {% set optionId = shopware6CreatePropertyOptionId(pav.id, channelId, language) %}
-              {% if optionId != null %}{"id": "{{ optionId }}"},{% endif %}
-            {% endif %}
-          {% endfor %}
-        ],
-        {% set mainImageId = null %}
-        "media": [
-          {% set position = 1 %}
-          {% for asset in entity.assets %}
-            {% if asset | isImage %}
-              {% if asset.channel == '' or asset.channel == channelId %}
+{
+"key": "write",
+"action": "upsert",
+"entity": "product",
+"payload": [
+{% for entity in entities %}
+    {
+    "id": "{{ entity.id | shopware6Uuid }}",
+    "name": "{{ entity.name }}",
+    "productNumber": "{{ entity.ean }}",
+    "description": "{{ entity.longDescription | escapeDoubleQuote | backslashNToBr | raw }}",
+    "stock": {{ entity.amount }},
+    "active": {{ entity.isActive ? 'true' : 'false' }},
+    "taxId": "{{ taxId }}",
+    "manufacturerId": "{{ shopware6CreateManufacturerId(entity.brandId) }}",
+    "visibilities": [
+    {
+    "id": "{{ (entity.id ~ '_' ~ salesChannelId) | shopware6Uuid }}",
+    "productId": "{{ entity.id | shopware6Uuid }}",
+    "salesChannelId": "{{ salesChannelId }}",
+    "visibility": 30
+    }
+    ],
+    "categories": [
+    {% for category in entity.categories %}
+        {% set categoryId = shopware6CreateCategoryId(category.id, channelId, cmsPageId) %}
+        {% if categoryId != null %}{"id": "{{ categoryId }}"},{% endif %}
+    {% endfor %}
+    ],
+    "properties": [
+    {% for pav in entity.productAttributeValues %}
+        {% if pav.language == 'main' %}
+            {% set optionId = shopware6CreatePropertyOptionId(pav.id, channelId, language) %}
+            {% if optionId != null %}{"id": "{{ optionId }}"},{% endif %}
+        {% endif %}
+    {% endfor %}
+    ],
+    {% set mainImageId = null %}
+    "media": [
+    {% set position = 1 %}
+    {% for asset in entity.assets %}
+        {% if asset | isImage %}
+            {% if asset.channel == '' or asset.channel == channelId %}
                 {% set mediaId = shopware6UploadMedia(asset.id) %}
                 {% if mediaId != null %}
-                {
-                  "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
-                  "mediaId": "{{ mediaId }}",
-                  "position": {{ position }}
-                },
-                {% set position = position + 1 %}
-                {% if asset.isMainImage == true and asset.channel == '' and mainImageId == null %}
-                  {% set mainImageId = asset.id %}
-                {% endif %}
+                    {
+                    "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
+                    "mediaId": "{{ mediaId }}",
+                    "position": {{ position }}
+                    },
+                    {% set position = position + 1 %}
+                    {% if asset.isMainImage == true and asset.channel == '' and mainImageId == null %}
+                        {% set mainImageId = asset.id %}
+                    {% endif %}
                 {% endif %}
                 {% if asset.isMainImage == true and asset.channel == channelId %}
-                  {% set mainImageId = asset.id %}
+                    {% set mainImageId = asset.id %}
                 {% endif %}
-              {% endif %}
             {% endif %}
-          {% endfor %}
-        ],
-        {% if mainImageId == null %}
-          "coverId": null,
-        {% else %}
-          "coverId": "{{ (entity.id ~ '_' ~ mainImageId) | shopware6Uuid }}",
         {% endif %}
-        "price": [
-          {% for productPrice in entity.productPrices %}
-              {% for curr in currencies %}
-                  {% if productPrice.priceProfileId == priceProfileId and productPrice.priceCurrency == curr.currency %}
-                      {
-                        "currencyId": "{{ curr.currencyId }}",
-                        "net": {{ (productPrice.price / 1.077) | round(5) }},
-                        "linked": true,
-                        "gross": {{ productPrice.price }}
-                      },
-                  {% endif %}
-              {% endfor %}
-          {% endfor %}
-        ]
-      },
-      {% endfor %}
+    {% endfor %}
+    ],
+    {% if mainImageId == null %}
+        "coverId": null,
+    {% else %}
+        "coverId": "{{ (entity.id ~ '_' ~ mainImageId) | shopware6Uuid }}",
+    {% endif %}
+    "price": [
+    {% for productPrice in entity.productPrices %}
+        {% for curr in currencies %}
+            {% if productPrice.priceProfileId == priceProfileId and productPrice.priceCurrency == curr.currency %}
+                {
+                "currencyId": "{{ curr.currencyId }}",
+                "net": {{ (productPrice.price / 1.077) | round(5) }},
+                "linked": true,
+                "gross": {{ productPrice.price }}
+                },
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
     ]
-  }
+    },
+{% endfor %}
+]
+}
 ]

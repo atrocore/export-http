@@ -64,7 +64,7 @@ class ExportTypeHttpPro extends AbstractExportType
 
         $exportJob->set('count', count($entities));
 
-        $template = $this->data['feed']['data']['feedFields']['exportHttpMustacheBody'];
+        $template = $this->data['feed']['data']['feedFields']['exportHttpTwigBody'];
 
         $twig = new \Twig\Environment(new \Twig\Loader\ArrayLoader(['httpBody' => $template]));
         foreach ($this->getMetadata()->get(['app', 'twigFilters'], []) as $alias => $className) {
@@ -78,7 +78,7 @@ class ExportTypeHttpPro extends AbstractExportType
 
         foreach ($this->getMetadata()->get(['app', 'twigFunctions'], []) as $alias => $className) {
             $twigFunction = $this->getContainer()->get($className);
-            if ($twigFunction instanceof AbstractTwigFunction) {
+            if ($twigFunction instanceof AbstractTwigFunction && method_exists($twigFunction, 'run')) {
                 $twigFunction->setFeedData($this->data['feed']);
                 $twigFunction->setConnectionData($connectionData);
                 $twig->addFunction(new TwigFunction($alias, [$twigFunction, 'run']));

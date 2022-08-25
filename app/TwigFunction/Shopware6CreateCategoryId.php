@@ -35,15 +35,11 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run(...$args)
+    public function run(string $categoryId, string $channelId, string $cmsPageId): ?string
     {
-        if (empty($args)) {
+        if (empty($categoryId)) {
             return null;
         }
-
-        $categoryId = $args[0];
-        $channelId = $args[1];
-        $cmsPageId = $args[2];
 
         $category = $this->getInjection('serviceFactory')->create('Category')->getEntity($categoryId);
         if (empty($category)) {

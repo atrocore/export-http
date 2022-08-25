@@ -6,7 +6,7 @@
     "httpMethod": "Method",
     "httpConnectionId": "Connection",
     "exportHttpBody": "Body",
-    "exportHttpMustacheBody": "Body"
+    "exportHttpTwigBody": "Body"
   },
   "links": {
     "exportHttpHeaders": "Headers"
@@ -16,6 +16,6 @@
     "httpPro": "HTTP Request Pro"
   },
   "tooltips": {
-    "exportHttpMustacheBody": "You should use the syntax for <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
+    "exportHttpTwigBody": "You should use the syntax for <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
   }
 }

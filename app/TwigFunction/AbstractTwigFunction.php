@@ -29,8 +29,6 @@ abstract class AbstractTwigFunction extends Injectable
     protected array $feedData;
     protected array $connectionData;
 
-    abstract public function run(...$args);
-
     public function setFeedData(array $feedData): void
     {
         $this->feedData = $feedData;

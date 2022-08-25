@@ -6,7 +6,7 @@
     "httpMethod": "Метод",
     "httpConnectionId": "Соединение",
     "exportHttpBody": "Тело Запроса",
-    "exportHttpMustacheBody": "Тело Запроса"
+    "exportHttpTwigBody": "Тело Запроса"
   },
   "links": {
     "exportHttpHeaders": "Заголовки"
@@ -16,6 +16,6 @@
     "httpPro": "HTTP Запрос Pro"
   },
   "tooltips": {
-    "exportHttpMustacheBody": "Вы должны использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+    "exportHttpTwigBody": "Вы должны использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
   }
 }

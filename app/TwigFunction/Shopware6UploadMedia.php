@@ -33,13 +33,11 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run(...$args)
+    public function run(string $assetId, string $mediaFolderId = null): ?string
     {
-        if (empty($args[0])) {
+        if (empty($assetId)) {
             return null;
         }
-
-        $assetId = $args[0];
 
         $asset = $this->getInjection('entityManager')->getRepository('Asset')->get($assetId);
         if (empty($asset)) {
@@ -75,8 +73,8 @@ class Shopware6UploadMedia extends AbstractTwigFunction
          * Create shopware media ID
          */
         $body = ['id' => $uuid];
-        if (!empty($args[1])) {
-            $body['mediaFolderId'] = $args[1];
+        if (!empty($mediaFolderId)) {
+            $body['mediaFolderId'] = $mediaFolderId;
         }
         $ch = curl_init("$siteUrl/api/media");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

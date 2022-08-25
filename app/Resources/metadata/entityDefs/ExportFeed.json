@@ -61,7 +61,7 @@
       "required": false,
       "default": "{{configurator}}"
     },
-    "exportHttpMustacheBody": {
+    "exportHttpTwigBody": {
       "type": "text",
       "notStorable": true,
       "dataField": true,

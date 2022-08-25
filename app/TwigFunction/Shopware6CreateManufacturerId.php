@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFunction;
 
+use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
@@ -34,48 +35,68 @@ class Shopware6CreateManufacturerId extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run(...$args)
+    public function run(string $brandId, string $language = 'main', bool $isUpdate = false): ?string
     {
-        if (empty($args[0])) {
+        if (empty($brandId)) {
             return null;
         }
-
-        $brandId = $args[0];
 
         $brand = $this->getInjection('serviceFactory')->create('Brand')->getEntity($brandId);
         if (empty($brand)) {
             return null;
         }
 
-        $this->createManufacturer($brand);
+        $this->createManufacturer($brand, $language, $isUpdate);
 
         return $this->getInjection(Shopware6Uuid::class)->filter($brandId);
     }
 
-    protected function createManufacturer(Entity $brand): void
+    protected function createManufacturer(Entity $brand, string $language, bool $isUpdate): void
     {
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
 
         $connectionData = $this->getConnectionData();
+        $feedData = $this->getFeedData();
 
         $headers = [
             'Content-Type: application/json',
             "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"
         ];
 
-        $ch = curl_init("$apiHost/api/product-manufacturer");
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($brand->get('id'));
+
+        $url = "$apiHost/api/product-manufacturer";
+        $method = 'POST';
+
+        if ($isUpdate) {
+            $method = 'PATCH';
+            $url = "$apiHost/api/product-manufacturer/$uuid";
+        }
+
+        $nameField = 'name';
+        if ($language !== 'main') {
+            $nameField .= ucfirst(Util::toCamelCase(strtolower($language)));
+            foreach ($feedData['httpHeaders'] as $row) {
+                if ($row['key'] === 'sw-language-id') {
+                    $headers[] = "sw-language-id: {$row['value']}";
+                }
+            }
+        }
+
+        $body = [
+            'id'   => $uuid,
+            'name' => $brand->get($nameField)
+        ];
+
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt(
-            $ch, CURLOPT_POSTFIELDS, json_encode([
-                'id'   => $this->getInjection(Shopware6Uuid::class)->filter($brand->get('id')),
-                'name' => $brand->get('name')
-            ])
-        );
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_exec($ch);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
         curl_close($ch);
     }
 }

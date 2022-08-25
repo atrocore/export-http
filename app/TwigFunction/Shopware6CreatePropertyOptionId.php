@@ -33,15 +33,11 @@ class Shopware6CreatePropertyOptionId extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run(...$args)
+    public function run(string $pavId, string $channelId, string $language): ?string
     {
-        if (empty($args)) {
+        if (empty($pavId)) {
             return null;
         }
-
-        $pavId = $args[0];
-        $channelId = $args[1];
-        $language = $args[2];
 
         $pav = $this->getInjection('serviceFactory')->create('ProductAttributeValue')->getEntity($pavId);
         if (empty($pav)) {
