@@ -46,12 +46,12 @@ class Shopware6UpsertManufacturer extends AbstractTwigFunction
             return null;
         }
 
-        $this->createManufacturer($brand, $language);
+        $this->upsertManufacturer($brand, $language);
 
         return $this->getInjection(Shopware6Uuid::class)->filter($brandId);
     }
 
-    protected function createManufacturer(Entity $brand, string $language): void
+    protected function upsertManufacturer(Entity $brand, string $language): void
     {
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
@@ -91,7 +91,7 @@ class Shopware6UpsertManufacturer extends AbstractTwigFunction
         $responseInfo = curl_getinfo($ch);
         curl_close($ch);
 
-        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] >= 300) {
+        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] !== 200) {
             $ch = curl_init("$apiHost/api/product-manufacturer");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);

@@ -22,11 +22,12 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFunction;
 
+use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Espo\ORM\EntityCollection;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6CreateCategoryId extends AbstractTwigFunction
+class Shopware6UpsertCategory extends AbstractTwigFunction
 {
     public function __construct()
     {
@@ -35,7 +36,7 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run(string $categoryId, string $channelId, string $cmsPageId): ?string
+    public function run(string $categoryId, string $channelId, string $cmsPageId, string $language = 'main'): ?string
     {
         if (empty($categoryId)) {
             return null;
@@ -61,7 +62,7 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
         }
 
         foreach (array_reverse($categoryRouteCollection->toArray()) as $record) {
-            $this->createCategory($record, $cmsPageId);
+            $this->upsertCategory($record, $cmsPageId, $language);
         }
 
         return $this->getInjection(Shopware6Uuid::class)->filter($categoryId);
@@ -77,34 +78,60 @@ class Shopware6CreateCategoryId extends AbstractTwigFunction
         return $this->getCategoryRoot($parent, $collection);
     }
 
-    protected function createCategory(array $category, string $cmsPageId): void
+    protected function upsertCategory(array $category, string $cmsPageId, string $language): void
     {
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
 
         $connectionData = $this->getConnectionData();
+        $feedData = $this->getFeedData();
 
         $headers = [
             'Content-Type: application/json',
             "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"
         ];
 
-        $ch = curl_init("$apiHost/api/category");
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($category['id']);
+
+        $nameField = 'name';
+        if ($language !== 'main') {
+            $nameField .= ucfirst(Util::toCamelCase(strtolower($language)));
+            foreach ($feedData['httpHeaders'] as $row) {
+                if ($row['key'] === 'sw-language-id') {
+                    $headers[] = "sw-language-id: {$row['value']}";
+                }
+            }
+        }
+
+        $body = [
+            'id'        => $uuid,
+            'active'    => true,
+            'cmsPageId' => $cmsPageId,
+            'name'      => $category[$nameField],
+            'visible'   => true,
+            'parentId'  => empty($category['categoryParentId']) ? null : $this->getInjection(Shopware6Uuid::class)->filter($category['categoryParentId'])
+        ];
+
+        $ch = curl_init("$apiHost/api/category/$uuid");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt(
-            $ch, CURLOPT_POSTFIELDS, json_encode([
-                'active'    => true,
-                'cmsPageId' => $cmsPageId,
-                'id'        => $this->getInjection(Shopware6Uuid::class)->filter($category['id']),
-                'name'      => $category['name'],
-                'visible'   => true,
-                'parentId'  => empty($category['categoryParentId']) ? null : $this->getInjection(Shopware6Uuid::class)->filter($category['categoryParentId'])
-            ])
-        );
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_exec($ch);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
         curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] !== 200) {
+            $ch = curl_init("$apiHost/api/category");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($ch);
+            $responseInfo = curl_getinfo($ch);
+            curl_close($ch);
+        }
     }
 }

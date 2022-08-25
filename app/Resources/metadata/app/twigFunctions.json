@@ -1,6 +1,6 @@
 {
   "shopware6UploadMedia": "\\ExportHttp\\TwigFunction\\Shopware6UploadMedia",
   "shopware6CreatePropertyOptionId": "\\ExportHttp\\TwigFunction\\Shopware6CreatePropertyOptionId",
-  "shopware6CreateCategoryId": "\\ExportHttp\\TwigFunction\\Shopware6CreateCategoryId",
+  "shopware6UpsertCategory": "\\ExportHttp\\TwigFunction\\Shopware6UpsertCategory",
   "shopware6UpsertManufacturer": "\\ExportHttp\\TwigFunction\\Shopware6UpsertManufacturer"
 }
