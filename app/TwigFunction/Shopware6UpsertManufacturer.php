@@ -26,7 +26,7 @@ use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6CreateManufacturerId extends AbstractTwigFunction
+class Shopware6UpsertManufacturer extends AbstractTwigFunction
 {
     public function __construct()
     {
@@ -35,7 +35,7 @@ class Shopware6CreateManufacturerId extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run(string $brandId, string $language = 'main', bool $isUpdate = false): ?string
+    public function run(string $brandId, string $language = 'main'): ?string
     {
         if (empty($brandId)) {
             return null;
@@ -46,12 +46,12 @@ class Shopware6CreateManufacturerId extends AbstractTwigFunction
             return null;
         }
 
-        $this->createManufacturer($brand, $language, $isUpdate);
+        $this->createManufacturer($brand, $language);
 
         return $this->getInjection(Shopware6Uuid::class)->filter($brandId);
     }
 
-    protected function createManufacturer(Entity $brand, string $language, bool $isUpdate): void
+    protected function createManufacturer(Entity $brand, string $language): void
     {
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
@@ -65,14 +65,6 @@ class Shopware6CreateManufacturerId extends AbstractTwigFunction
         ];
 
         $uuid = $this->getInjection(Shopware6Uuid::class)->filter($brand->get('id'));
-
-        $url = "$apiHost/api/product-manufacturer";
-        $method = 'POST';
-
-        if ($isUpdate) {
-            $method = 'PATCH';
-            $url = "$apiHost/api/product-manufacturer/$uuid";
-        }
 
         $nameField = 'name';
         if ($language !== 'main') {
@@ -89,14 +81,26 @@ class Shopware6CreateManufacturerId extends AbstractTwigFunction
             'name' => $brand->get($nameField)
         ];
 
-        $ch = curl_init($url);
+        $ch = curl_init("$apiHost/api/product-manufacturer/$uuid");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
         $responseInfo = curl_getinfo($ch);
         curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] >= 300) {
+            $ch = curl_init("$apiHost/api/product-manufacturer");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $response = curl_exec($ch);
+            $responseInfo = curl_getinfo($ch);
+            curl_close($ch);
+        }
     }
 }

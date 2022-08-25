@@ -29,7 +29,7 @@
     "stock": {{ entity.amount }},
     "active": {{ entity.isActive ? 'true' : 'false' }},
     "taxId": "{{ taxId }}",
-    "manufacturerId": "{{ shopware6CreateManufacturerId(entity.brandId) }}",
+    "manufacturerId": "{{ shopware6UpsertManufacturer(entity.brandId) }}",
     "visibilities": [
     {
     "id": "{{ (entity.id ~ '_' ~ salesChannelId) | shopware6Uuid }}",
