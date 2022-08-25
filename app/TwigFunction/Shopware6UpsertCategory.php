@@ -103,20 +103,16 @@ class Shopware6UpsertCategory extends AbstractTwigFunction
             }
         }
 
-        $body = [
-            'id'        => $uuid,
-            'active'    => true,
-            'cmsPageId' => $cmsPageId,
-            'name'      => $category[$nameField],
-            'visible'   => true,
-            'parentId'  => empty($category['categoryParentId']) ? null : $this->getInjection(Shopware6Uuid::class)->filter($category['categoryParentId'])
-        ];
-
         $ch = curl_init("$apiHost/api/category/$uuid");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        curl_setopt(
+            $ch, CURLOPT_POSTFIELDS, json_encode([
+                'id'   => $uuid,
+                'name' => $category[$nameField]
+            ])
+        );
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
         $responseInfo = curl_getinfo($ch);
@@ -127,7 +123,16 @@ class Shopware6UpsertCategory extends AbstractTwigFunction
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+            curl_setopt(
+                $ch, CURLOPT_POSTFIELDS, json_encode([
+                    'id'        => $uuid,
+                    'active'    => true,
+                    'cmsPageId' => $cmsPageId,
+                    'name'      => $category[$nameField],
+                    'visible'   => true,
+                    'parentId'  => empty($category['categoryParentId']) ? null : $this->getInjection(Shopware6Uuid::class)->filter($category['categoryParentId'])
+                ])
+            );
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             $response = curl_exec($ch);
             $responseInfo = curl_getinfo($ch);

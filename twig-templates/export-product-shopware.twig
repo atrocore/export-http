@@ -47,7 +47,7 @@
     "properties": [
     {% for pav in entity.productAttributeValues %}
         {% if pav.language == 'main' %}
-            {% set optionId = shopware6CreatePropertyOptionId(pav.id, channelId, language) %}
+            {% set optionId = shopware6UpsertPropertyOption(pav.id, channelId, language) %}
             {% if optionId != null %}{"id": "{{ optionId }}"},{% endif %}
         {% endif %}
     {% endfor %}
