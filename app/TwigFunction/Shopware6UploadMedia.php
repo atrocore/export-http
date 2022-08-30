@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFunction;
 
+use Dam\Core\Download\Custom;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
 class Shopware6UploadMedia extends AbstractTwigFunction
@@ -31,6 +32,7 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         $this->addDependency('entityManager');
         $this->addDependency('config');
         $this->addDependency(Shopware6Uuid::class);
+        $this->addDependency(Custom::class);
     }
 
     public function run(string $assetId, string $mediaFolderId = null): ?string
@@ -44,15 +46,22 @@ class Shopware6UploadMedia extends AbstractTwigFunction
             return null;
         }
 
-        $attachment = $asset->get('file');
-        $attachment->set('private', false);
-
-        $pathData = $this->getInjection('entityManager')->getRepository('Attachment')->getAttachmentPathsData($attachment);
-        if (empty($pathData['download'])) {
+        $attachmentId = $asset->get('fileId');
+        $attachment = $this->getInjection('entityManager')->getRepository('Attachment')->get($attachmentId);
+        if (empty($attachment)) {
             return null;
         }
 
-        $dirs = explode('/', $pathData['download']);
+        $converter = $this->getInjection(Custom::class)->setAttachment($attachment);
+        $parameters = ['quality' => 100, 'format' => 'jpeg'];
+        if ($converter->getImageWidth() > 1600) {
+            $parameters['width'] = 1600;
+            $parameters['scale'] = 'byWidth';
+        }
+
+        $filePath = $converter->setParams($parameters)->convert()->getFilePath();
+
+        $dirs = explode('/', $filePath);
         $fileNameWithExtension = array_pop($dirs);
 
         $url = rtrim($this->getInjection('config')->get('siteUrl', ''), '/') . '/' . implode('/', $dirs) . '/' . rawurlencode($fileNameWithExtension);
