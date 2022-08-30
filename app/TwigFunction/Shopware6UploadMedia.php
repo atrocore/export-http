@@ -52,14 +52,18 @@ class Shopware6UploadMedia extends AbstractTwigFunction
             return null;
         }
 
-        $converter = $this->getInjection(Custom::class)->setAttachment($attachment);
-        $parameters = ['quality' => 100, 'format' => 'jpeg'];
-        if ($converter->getImageWidth() > 1600) {
-            $parameters['width'] = 1600;
-            $parameters['scale'] = 'byWidth';
-        }
+        try {
+            $converter = $this->getInjection(Custom::class)->setAttachment($attachment);
+            $parameters = ['quality' => 100, 'format' => 'jpeg'];
+            if ($converter->getImageWidth() > 1600) {
+                $parameters['width'] = 1600;
+                $parameters['scale'] = 'byWidth';
+            }
 
-        $filePath = $converter->setParams($parameters)->convert()->getFilePath();
+            $filePath = $converter->setParams($parameters)->convert()->getFilePath();
+        } catch (\Throwable $e) {
+            return null;
+        }
 
         $dirs = explode('/', $filePath);
         $fileNameWithExtension = array_pop($dirs);
