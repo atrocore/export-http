@@ -54,7 +54,7 @@ class Shopware6UploadMedia extends AbstractTwigFunction
 
         try {
             $converter = $this->getInjection(Custom::class)->setAttachment($attachment);
-            $parameters = ['quality' => 100, 'format' => 'jpeg'];
+            $parameters = ['quality' => 90, 'format' => 'jpeg'];
             if ($converter->getImageWidth() > 1600) {
                 $parameters['width'] = 1600;
                 $parameters['scale'] = 'byWidth';
