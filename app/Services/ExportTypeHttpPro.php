@@ -64,9 +64,12 @@ class ExportTypeHttpPro extends AbstractExportType
 
         $exportJob->set('count', count($entities));
 
-        $template = $this->data['feed']['data']['feedFields']['exportHttpTwigBody'];
+        $templates = [
+            'httpUrl'  => $this->data['feed']['httpUrl'],
+            'httpBody' => $this->data['feed']['data']['feedFields']['exportHttpTwigBody']
+        ];
 
-        $twig = new \Twig\Environment(new \Twig\Loader\ArrayLoader(['httpBody' => $template]));
+        $twig = new \Twig\Environment(new \Twig\Loader\ArrayLoader($templates));
         foreach ($this->getMetadata()->get(['app', 'twigFilters'], []) as $alias => $className) {
             $filter = $this->getContainer()->get($className);
             if ($filter instanceof AbstractTwigFilter) {
@@ -85,16 +88,24 @@ class ExportTypeHttpPro extends AbstractExportType
             }
         }
 
-        $body = $twig->render('httpBody', [
-            'entities' => $entities,
-            'config'   => $this->getConfig()->getData(),
-            'feedData' => $this->data['feed'],
-        ]);
-        $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $body);
-        $bodyArray = @json_decode($body, true);
+        $renders = [];
+        foreach ($templates as $templateName => $template) {
+            $renders[$templateName] = $twig->render($templateName, [
+                'entities' => $entities,
+                'config'   => $this->getConfig()->getData(),
+                'feedData' => $this->data['feed'],
+            ]);
+        }
 
-        if (!empty($bodyArray)) {
-            $body = json_encode($bodyArray);
+        $this->data['feed']['httpUrl'] = $renders['httpUrl'];
+
+        $body = [];
+        if (!empty($renders['httpBody'])) {
+            $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $renders['httpBody']);
+            $bodyArray = @json_decode($body, true);
+            if (!empty($bodyArray)) {
+                $body = json_encode($bodyArray);
+            }
         }
 
         /**
@@ -137,7 +148,9 @@ class ExportTypeHttpPro extends AbstractExportType
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->data['feed']['httpMethod']);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        if (!empty($body)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $output = curl_exec($ch);
         if ($output === false) {
@@ -149,7 +162,6 @@ class ExportTypeHttpPro extends AbstractExportType
         if (!in_array($httpCode, [200, 201, 204])) {
             throw new BadRequest("Response Code: $httpCode Body: $output");
         }
-
 
         $exportJob->set('stateMessage', $output);
 
