@@ -134,17 +134,6 @@
               ]
             }
           ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
         }
       }
     }
