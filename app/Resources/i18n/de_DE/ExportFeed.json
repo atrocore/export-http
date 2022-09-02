@@ -5,17 +5,16 @@
     "httpContentType": "Inhaltstyp",
     "httpMethod": "Methode",
     "httpConnectionId": "Verbindung",
-    "exportHttpBody": "Body",
     "exportHttpTwigBody": "Body"
   },
   "links": {
     "exportHttpHeaders": "Headers"
   },
   "labels": {
-    "http": "HTTP Anfrage",
-    "httpPro": "HTTP Anfrage Pro"
+    "httpPro": "HTTP Anfrage"
   },
   "tooltips": {
-    "exportHttpTwigBody": "Sie sollten die Syntax für die <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig-Template-Engine</a> verwenden."
+    "httpUrl": "Sie können die Syntax von <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig-Template-Engine</a> verwenden.",
+    "exportHttpTwigBody": "Sie können die Syntax von <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig-Template-Engine</a> verwenden."
   }
 }

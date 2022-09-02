@@ -1,8 +1,4 @@
 {
-  "typesWithConfigurator": [
-    "__APPEND__",
-    "http"
-  ],
   "connectionTypes": {
     "httpPro": [
       "oauth2"

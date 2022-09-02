@@ -28,7 +28,6 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "http",
                 "httpPro"
               ]
             }
@@ -40,7 +39,6 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "http",
                 "httpPro"
               ]
             }
@@ -54,7 +52,6 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "http",
                 "httpPro"
               ]
             }
@@ -66,7 +63,6 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "http",
                 "httpPro"
               ]
             }
@@ -80,7 +76,6 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "http",
                 "httpPro"
               ]
             }
@@ -92,32 +87,7 @@
               "type": "in",
               "attribute": "type",
               "value": [
-                "http",
                 "httpPro"
-              ]
-            }
-          ]
-        }
-      },
-      "exportHttpBody": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "http"
-              ]
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "http"
               ]
             }
           ]

@@ -1,4 +1,3 @@
 {
-  "ExportTypeHttp": "\\ExportHttp\\Services\\ExportTypeHttp",
   "ExportTypeHttpPro": "\\ExportHttp\\Services\\ExportTypeHttpPro"
 }

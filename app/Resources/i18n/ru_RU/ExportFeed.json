@@ -5,17 +5,16 @@
     "httpContentType": "Тип содержимого",
     "httpMethod": "Метод",
     "httpConnectionId": "Соединение",
-    "exportHttpBody": "Тело Запроса",
     "exportHttpTwigBody": "Тело Запроса"
   },
   "links": {
     "exportHttpHeaders": "Заголовки"
   },
   "labels": {
-    "http": "HTTP Запрос",
-    "httpPro": "HTTP Запрос Pro"
+    "httpPro": "HTTP Запрос"
   },
   "tooltips": {
-    "exportHttpTwigBody": "Вы должны использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+    "httpUrl": "Вы можете использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
+    "exportHttpTwigBody": "Вы можете использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
   }
 }

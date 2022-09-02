@@ -3,7 +3,6 @@
     "type": {
       "options": [
         "__APPEND__",
-        "http",
         "httpPro"
       ]
     },
@@ -43,9 +42,10 @@
       "dataField": true
     },
     "httpUrl": {
-      "type": "varchar",
+      "type": "text",
       "notStorable": true,
-      "dataField": true
+      "dataField": true,
+      "tooltip": true
     },
     "exportHttpHeaders": {
       "type": "linkMultiple",
@@ -53,13 +53,6 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
-    },
-    "exportHttpBody": {
-      "type": "text",
-      "notStorable": true,
-      "dataField": true,
-      "required": false,
-      "default": "{{configurator}}"
     },
     "exportHttpTwigBody": {
       "type": "text",
