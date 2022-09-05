@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace ExportHttp\TwigFunction;
 
 use Dam\Core\Download\Custom;
+use Espo\Core\Utils\Util;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
 class Shopware6UploadMedia extends AbstractTwigFunction
@@ -106,8 +107,11 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         $nameParts = explode('.', $fileNameWithExtension);
         $extension = array_pop($nameParts);
 
+        // prepare filename
         $fileName = implode('.', $nameParts);
-        $fileName = preg_replace("/[^a-zA-Z0-9\.\_]+/", "", $fileName) . '_' . $asset->get('id');
+        $fileName = Util::replaceDiacriticalCharacters($fileName);
+        $fileName = preg_replace("/[^a-zA-Z0-9\.\_]+/", "", $fileName);
+        $fileName = $fileName . '_' . $asset->get('id');
 
         /**
          * Upload asset to shopware media
