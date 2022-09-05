@@ -101,10 +101,7 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         $nameParts = explode('.', $fileNameWithExtension);
         $extension = array_pop($nameParts);
 
-        $fileName = urlencode(implode('.', $nameParts));
-
-        // remove special symbol from file name
-        $fileName = str_replace('%C2%BA', '', $fileName);
+        $fileName = preg_replace("/[^a-zA-Z0-9\.\_]+/", "", implode('.', $nameParts));
 
         /**
          * Upload asset to shopware media
@@ -118,6 +115,10 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         $response = curl_exec($ch);
         $responseInfo = curl_getinfo($ch);
         curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && !in_array($responseInfo['http_code'], [200, 204])) {
+            $GLOBALS['log']->error("Shopware6 UploadMedia failed. URL: '$url'. FileName: '$fileName'. Code: '{$responseInfo['http_code']}'.");
+        }
 
         return $uuid;
     }
