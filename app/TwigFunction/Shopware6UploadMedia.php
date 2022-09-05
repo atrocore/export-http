@@ -95,13 +95,19 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_exec($ch);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
         curl_close($ch);
+
+        if (empty($responseInfo['http_code']) || !in_array($responseInfo['http_code'], [200, 204])) {
+            return $uuid;
+        }
 
         $nameParts = explode('.', $fileNameWithExtension);
         $extension = array_pop($nameParts);
 
-        $fileName = preg_replace("/[^a-zA-Z0-9\.\_]+/", "", implode('.', $nameParts));
+        $fileName = implode('.', $nameParts);
+        $fileName = preg_replace("/[^a-zA-Z0-9\.\_]+/", "", $fileName) . '_' . $asset->get('id');
 
         /**
          * Upload asset to shopware media
@@ -117,7 +123,7 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         curl_close($ch);
 
         if (!empty($responseInfo['http_code']) && !in_array($responseInfo['http_code'], [200, 204])) {
-            $GLOBALS['log']->error("Shopware6 UploadMedia failed. URL: '$url'. FileName: '$fileName'. Code: '{$responseInfo['http_code']}'.");
+            $GLOBALS['log']->error("Shopware6 UploadMedia failed. UUID: '$uuid'. URL: '$url'. FileName: '$fileName'. Code: '{$responseInfo['http_code']}'.");
         }
 
         return $uuid;
