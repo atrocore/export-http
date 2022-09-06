@@ -14,6 +14,7 @@
         'currencyId': 'f40bd92fdb694f06979d0c46c48cd2c3',
     }
 ] %}
+{% set optionsIds = [] %}
 [
 {
 "key": "write",
@@ -48,7 +49,7 @@
     {% for pav in entity.productAttributeValues %}
         {% if pav.language == 'main' %}
             {% set optionId = shopware6UpsertPropertyOption(pav.id, channelId, language) %}
-            {% if optionId != null %}{"id": "{{ optionId }}"},{% endif %}
+            {% if optionId != null %}{"id": "{{ optionId }}"},{% set optionsIds = optionsIds | merge([optionId]) %}{% endif %}
         {% endif %}
     {% endfor %}
     ],
@@ -97,6 +98,17 @@
     {% endfor %}
     ]
     },
+{% endfor %}
+]
+},
+{
+"action":"delete",
+"entity":"product_property",
+"payload":[
+{% for entity in entities %}
+    {% for optionId in shopware6GetToDeleteOptions(entity, optionsIds) %}
+        {"productId":"{{ entity.id | shopware6Uuid }}","optionId":"{{ optionId }}"},
+    {% endfor %}
 {% endfor %}
 ]
 }

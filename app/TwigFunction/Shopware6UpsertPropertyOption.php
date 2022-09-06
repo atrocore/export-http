@@ -98,11 +98,11 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
 
         $propertyId = $this->upsertProperty($attribute, $apiHost, $headers, $language);
 
-        if (empty($pav->get('value')) && $pav->get('value') !== '0' && $pav->get('value') !== 0) {
+        if ($pav->get('value') === null || $pav->get('value') === '') {
             return null;
         }
 
-        $optionId = $this->upsertPropertyValue($pav, $apiHost, $headers, $propertyId);
+        $optionId = $this->upsertPropertyValue($pav, $apiHost, $headers, $propertyId, $attribute);
 
         return $optionId;
     }
@@ -156,20 +156,21 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         return $uuid;
     }
 
-    protected function upsertPropertyValue(Entity $pav, string $apiHost, array $headers, string $propertyId): string
+    protected function upsertPropertyValue(Entity $pav, string $apiHost, array $headers, string $propertyId, Entity $attribute): string
     {
         /**
          * Prepare value
          */
         $value = $pav->get('value');
-        if (is_bool($value)) {
-            $value = $value ? '+' : '-';
-        } elseif (is_array($value)) {
+        if (is_array($value)) {
             $value = implode(', ', $value);
         } else {
             $value = (string)$value;
         }
-        switch ($pav->get('attributeType')) {
+        switch ($attribute->get('type')) {
+            case 'bool':
+                $value = !empty($value) ? '+' : '-';
+                break;
             case 'unit':
                 $value .= ' ' . $pav->get('valueUnit');
                 break;
