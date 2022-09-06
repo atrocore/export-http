@@ -102,7 +102,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
             return null;
         }
 
-        $optionId = $this->upsertPropertyValue($pav, $apiHost, $headers, $propertyId, $attribute);
+        $optionId = $this->upsertPropertyValue($pav, $apiHost, $headers, $propertyId);
 
         return $optionId;
     }
@@ -156,7 +156,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         return $uuid;
     }
 
-    protected function upsertPropertyValue(Entity $pav, string $apiHost, array $headers, string $propertyId, Entity $attribute): string
+    protected function upsertPropertyValue(Entity $pav, string $apiHost, array $headers, string $propertyId): string
     {
         /**
          * Prepare value
@@ -167,7 +167,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         } else {
             $value = (string)$value;
         }
-        switch ($attribute->get('type')) {
+        switch ($pav->get('attributeType')) {
             case 'bool':
                 $value = !empty($value) ? '+' : '-';
                 break;
