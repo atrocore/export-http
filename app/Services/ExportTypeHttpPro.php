@@ -195,7 +195,7 @@ class ExportTypeHttpPro extends AbstractExportType
         $params = $this->getSelectParams();
         $params['offset'] = $this->data['offset'];
         $params['maxSize'] = $this->data['limit'];
-        $params['withDeleted'] = !empty($this->data['withDeleted']);
+        $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
 
         $this->data['offset'] = $this->data['offset'] + $this->data['limit'];
         $this->iteration++;
