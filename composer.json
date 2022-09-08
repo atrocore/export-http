@@ -18,7 +18,7 @@
       "default": "Export Feeds: HTTP Request"
     },
     "description": {
-      "default": "The module enables to export data via HTTP request."
+      "default": "The module enables to use a template engine to configure and export any structured data of any complexity manually or fully automatically via HTTP request. Any REST/SOAP API calls can be executed."
     }
   }
 }
