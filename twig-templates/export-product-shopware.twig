@@ -22,13 +22,22 @@
 "entity": "product",
 "payload": [
 {% for entity in entities %}
+    {% set productActive = 'false' %}
+    {% if entity.isActive %}
+        {% set productActive = 'true' %}
+        {% for productChannel in entity.productChannels %}
+            {% if productChannel.channelId == channelId %}
+                {% set productActive = productChannel.isActive ? 'true' : 'false' %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     {
     "id": "{{ entity.id | shopware6Uuid }}",
     "name": "{{ entity.name }}",
     "productNumber": "{{ entity.ean }}",
     "description": "{{ entity.longDescription | escapeDoubleQuote | backslashNToBr | raw }}",
     "stock": {{ entity.amount }},
-    "active": {{ entity.isActive ? 'true' : 'false' }},
+    "active": {{ productActive }},
     "taxId": "{{ taxId }}",
     "manufacturerId": "{{ shopware6UpsertManufacturer(entity.brandId) }}",
     "visibilities": [
