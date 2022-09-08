@@ -68,7 +68,16 @@
     {% set position = 1 %}
     {% for asset in entity.assets %}
         {% if asset | isImage %}
-            {% if 'HR_' in asset.name and (asset.channel == '' or asset.channel == channelId) %}
+            {% set availableAsset = true %}
+            {% if entity.bergnerId is not empty %}
+                {% set availableAsset = false %}
+                {% for pattern in ['HR_EMT', 'HR_PIC', 'LR_EMT', 'LR_PIC'] %}
+                    {% if pattern in asset.name %}
+                        {% set availableAsset = true %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if availableAsset and (asset.channel == '' or asset.channel == channelId) %}
                 {% set mediaId = shopware6UploadMedia(asset.id) %}
                 {% if mediaId != null %}
                     {% set productMediaId = (entity.id ~ '_' ~ asset.id) | shopware6Uuid %}
