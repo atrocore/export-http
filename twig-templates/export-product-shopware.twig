@@ -15,6 +15,7 @@
     }
 ] %}
 {% set optionsIds = [] %}
+{% set productMediaIds = [] %}
 [
 {
 "key": "write",
@@ -67,11 +68,13 @@
     {% set position = 1 %}
     {% for asset in entity.assets %}
         {% if asset | isImage %}
-            {% if asset.channel == '' or asset.channel == channelId %}
+            {% if 'HR_' in asset.name and (asset.channel == '' or asset.channel == channelId) %}
                 {% set mediaId = shopware6UploadMedia(asset.id) %}
                 {% if mediaId != null %}
+                    {% set productMediaId = (entity.id ~ '_' ~ asset.id) | shopware6Uuid %}
+                    {% set productMediaIds = productMediaIds | merge([productMediaId]) %}
                     {
-                    "id": "{{ (entity.id ~ '_' ~ asset.id) | shopware6Uuid }}",
+                    "id": "{{ productMediaId }}",
                     "mediaId": "{{ mediaId }}",
                     "position": {{ position }}
                     },
@@ -117,6 +120,17 @@
 {% for entity in entities %}
     {% for optionId in shopware6GetToDeleteOptions(entity, optionsIds) %}
         {"productId":"{{ entity.id | shopware6Uuid }}","optionId":"{{ optionId }}"},
+    {% endfor %}
+{% endfor %}
+]
+},
+{
+"action":"delete",
+"entity":"product_media",
+"payload":[
+{% for entity in entities %}
+    {% for productMediaId in shopware6GetToDeleteMedias(entity, productMediaIds) %}
+        {"id":"{{ productMediaId }}"},
     {% endfor %}
 {% endfor %}
 ]

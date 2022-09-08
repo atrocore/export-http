@@ -25,14 +25,14 @@ namespace ExportHttp\TwigFunction;
 use Espo\ORM\Entity;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6GetToDeleteOptions extends AbstractTwigFunction
+class Shopware6GetToDeleteMedias extends AbstractTwigFunction
 {
     public function __construct()
     {
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run($product, $optionsIds): array
+    public function run($product, $productMediaIds): array
     {
         $result = [];
 
@@ -40,8 +40,8 @@ class Shopware6GetToDeleteOptions extends AbstractTwigFunction
             return $result;
         }
 
-        if (empty($optionsIds) || !is_array($optionsIds)) {
-            $optionsIds = [];
+        if (empty($productMediaIds) || !is_array($productMediaIds)) {
+            $productMediaIds = [];
         }
 
         $uuid = $this->getInjection(Shopware6Uuid::class)->filter($product->get('id'));
@@ -56,22 +56,22 @@ class Shopware6GetToDeleteOptions extends AbstractTwigFunction
             "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"
         ];
 
-        $ch = curl_init("$apiHost/api/search/product");
+        $ch = curl_init("$apiHost/api/product/$uuid/media");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['ids' => $uuid]));
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = curl_exec($ch);
         $responseInfo = curl_getinfo($ch);
         curl_close($ch);
 
+
         if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] === 200) {
             $data = @json_decode($response, true);
-            if (!empty($data['data'][0]['attributes']['propertyIds'])) {
-                foreach ($data['data'][0]['attributes']['propertyIds'] as $id) {
-                    if (!in_array($id, $optionsIds)) {
-                        $result[] = $id;
+            if (!empty($data['data'])) {
+                foreach ($data['data'] as $row) {
+                    if (!in_array($row['id'], $productMediaIds)) {
+                        $result[] = $row['id'];
                     }
                 }
             }
