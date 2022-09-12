@@ -35,11 +35,14 @@ class Shopware6UpsertManufacturer extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run(string $brandId, string $language = 'main'): ?string
+    public function run($brandId, $language = 'main'): ?string
     {
         if (empty($brandId)) {
             return null;
         }
+
+        $brandId = (string)$brandId;
+        $language = (string)$language;
 
         $brand = $this->getInjection('serviceFactory')->create('Brand')->getEntity($brandId);
         if (empty($brand)) {
