@@ -187,6 +187,10 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
                 break;
         }
 
+        if ($value === '') {
+            $value = 'None';
+        }
+
         if ($pav->get('language') !== 'main') {
             $uuid = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('mainLanguageId'));
         } else {
