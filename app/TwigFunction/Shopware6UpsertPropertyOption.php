@@ -173,7 +173,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         if (is_array($value)) {
             $value = implode(', ', $value);
         } else {
-            $value = (string)$value;
+            $value = mb_substr((string)$value, 0, 250);
         }
         switch ($pav->get('attributeType')) {
             case 'bool':
