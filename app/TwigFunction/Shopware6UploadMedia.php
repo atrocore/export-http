@@ -101,7 +101,7 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         curl_close($ch);
 
         if (empty($responseInfo['http_code']) || !in_array($responseInfo['http_code'], [200, 204])) {
-            return $uuid;
+//            return $uuid;
         }
 
         $nameParts = explode('.', $fileNameWithExtension);
