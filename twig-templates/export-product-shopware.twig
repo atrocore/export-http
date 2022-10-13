@@ -51,8 +51,7 @@
     ],
     "categories": [
     {% for category in entity.categories %}
-        {% set categoryId = shopware6UpsertCategory(category.id, channelId, cmsPageId, language) %}
-        {% if categoryId != null %}{"id": "{{ categoryId }}"},{% endif %}
+        {% if isCategoryFromChannel(category, channelId) %}{"id":"{{ category.id | shopware6Uuid }}"},{% endif %}
     {% endfor %}
     ],
     "properties": [

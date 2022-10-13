@@ -1,9 +1,9 @@
 {
   "getPreviousCategoryId": "\\ExportHttp\\TwigFunction\\PreviousCategoryId",
+  "isCategoryFromChannel": "\\ExportHttp\\TwigFunction\\CategoryFromChannel",
   "shopware6UploadMedia": "\\ExportHttp\\TwigFunction\\Shopware6UploadMedia",
   "shopware6UpsertPropertyOption": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertyOption",
   "shopware6GetToDeleteOptions": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteOptions",
   "shopware6GetToDeleteMedias": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteMedias",
-  "shopware6UpsertCategory": "\\ExportHttp\\TwigFunction\\Shopware6UpsertCategory",
   "shopware6UpsertManufacturer": "\\ExportHttp\\TwigFunction\\Shopware6UpsertManufacturer"
 }
