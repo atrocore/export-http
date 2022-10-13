@@ -1,4 +1,5 @@
 {
+  "getPreviousCategoryId": "\\ExportHttp\\TwigFunction\\PreviousCategoryId",
   "shopware6UploadMedia": "\\ExportHttp\\TwigFunction\\Shopware6UploadMedia",
   "shopware6UpsertPropertyOption": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertyOption",
   "shopware6GetToDeleteOptions": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteOptions",
