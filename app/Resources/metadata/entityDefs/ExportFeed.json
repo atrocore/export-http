@@ -58,6 +58,8 @@
       "type": "text",
       "notStorable": true,
       "dataField": true,
+      "useDisabledTextareaInViewMode": true,
+      "rows": 20,
       "required": false,
       "default": "{\n  \"siteUrl\": \"{{config.siteUrl}}\",\n  \"entities\": [{{#entities}}{{#.}}\n     {\n       \"name\": \"{{name}}\"\n    },\n    {{/.}}{{/entities}}]\n}",
       "tooltip": true
