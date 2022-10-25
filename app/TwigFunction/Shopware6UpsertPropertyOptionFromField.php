@@ -34,7 +34,7 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
         $this->addDependency('container');
     }
 
-    public function run(string $field, Entity $entity, string $language = 'main'): ?string
+    public function run(string $field, Entity $entity, string $language = 'main', string $label = ''): ?string
     {
         if (empty($field) || empty($entity)) {
             return null;
@@ -58,14 +58,14 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
             }
         }
 
-        $propertyId = $this->upsertProperty($field, $entity->getEntityType(), $apiHost, $headers, $language);
+        $propertyId = $this->upsertProperty($field, $entity->getEntityType(), $apiHost, $headers, $language, $label);
 
         $optionId = $this->upsertPropertyValue($field, $entity, $apiHost, $headers, $propertyId);
 
         return $optionId;
     }
 
-    protected function upsertProperty(string $field, string $scope, string $apiHost, array $headers, string $language): string
+    protected function upsertProperty(string $field, string $scope, string $apiHost, array $headers, string $language, string $label): string
     {
         $uuid = $this->getInjection(Shopware6Uuid::class)->filter("{$field}_{$scope}");
 
@@ -73,11 +73,13 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
             $language = $this->getInjection('container')->get('config')->get('mainLanguage', 'en_US');
         }
 
-        $languageObj = new Language($this->getInjection('container'), $language);
+        if (empty($label)) {
+            $label = (new Language($this->getInjection('container'), $language))->translate($field, 'fields', $scope);
+        }
 
         $body = [
             'id'   => $uuid,
-            'name' => $languageObj->translate($field, 'fields', $scope)
+            'name' => $label
         ];
 
         $ch = curl_init("$apiHost/api/property-group/$uuid");
