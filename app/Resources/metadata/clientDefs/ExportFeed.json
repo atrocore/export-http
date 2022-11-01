@@ -45,30 +45,6 @@
           ]
         }
       },
-      "httpContentType": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      },
       "httpUrl": {
         "visible": {
           "conditionGroup": [
@@ -82,19 +58,6 @@
           ]
         },
         "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      },
-      "exportHttpTwigBody": {
-        "visible": {
           "conditionGroup": [
             {
               "type": "in",

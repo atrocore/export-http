@@ -26,7 +26,7 @@ use Espo\Core\Utils\Language;
 use Espo\ORM\Entity;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
+class Shopware6UpsertPropertyOptionFromField extends \Export\TwigFunction\AbstractTwigFunction
 {
     public function __construct()
     {

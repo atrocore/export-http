@@ -28,16 +28,13 @@ use Espo\Core\Utils\Util;
 use Espo\Entities\Attachment;
 use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
-use Export\Services\AbstractExportType;
 use ExportHttp\TwigFilter\AbstractTwigFilter;
 use ExportHttp\TwigFunction\AbstractTwigFunction;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
-class ExportTypeHttpPro extends AbstractExportType
+class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 {
-    private int $iteration = 0;
-
     public function export(array $data, ExportJob $exportJob): Attachment
     {
         $this->setData($data);
@@ -180,31 +177,5 @@ class ExportTypeHttpPro extends AbstractExportType
         $parts = explode('/', $fileName);
         array_pop($parts);
         Util::createDir(implode('/', $parts));
-    }
-
-    protected function getCollection(): ?EntityCollection
-    {
-        if (!empty($this->data['feed']['separateJob']) && !empty($this->iteration)) {
-            return null;
-        }
-
-        if (!$this->getContainer()->get('acl')->check($this->data['feed']['entity'], 'read')) {
-            return null;
-        }
-
-        $params = $this->getSelectParams();
-        $params['offset'] = $this->data['offset'];
-        $params['maxSize'] = $this->data['limit'];
-        $params['withDeleted'] = !empty($this->data['feed']['data']['withDeleted']);
-
-        $this->data['offset'] = $this->data['offset'] + $this->data['limit'];
-        $this->iteration++;
-
-        $result = $this->getEntityService()->findEntities($params);
-        if (isset($result['collection']) && count($result['collection']) > 0) {
-            return $result['collection'];
-        }
-
-        return null;
     }
 }

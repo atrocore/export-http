@@ -25,7 +25,7 @@ namespace ExportHttp\TwigFunction;
 use Espo\ORM\Entity;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6GetToDeleteOptions extends AbstractTwigFunction
+class Shopware6GetToDeleteOptions extends \Export\TwigFunction\AbstractTwigFunction
 {
     public function __construct()
     {

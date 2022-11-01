@@ -25,7 +25,7 @@ namespace ExportHttp\TwigFunction;
 use Espo\ORM\Entity;
 use Pim\Entities\Category;
 
-class CategoryFromChannel extends AbstractTwigFunction
+class CategoryFromChannel extends \Export\TwigFunction\AbstractTwigFunction
 {
     public function __construct()
     {

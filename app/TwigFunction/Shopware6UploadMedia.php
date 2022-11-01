@@ -26,7 +26,7 @@ use Dam\Core\Download\Custom;
 use Espo\Core\Utils\Util;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6UploadMedia extends AbstractTwigFunction
+class Shopware6UploadMedia extends \Export\TwigFunction\AbstractTwigFunction
 {
     public function __construct()
     {
