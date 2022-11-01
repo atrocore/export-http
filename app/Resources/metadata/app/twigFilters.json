@@ -1,7 +1,3 @@
 {
-  "prepareEntity": "\\ExportHttp\\TwigFilter\\PrepareEntity",
-  "isImage": "\\ExportHttp\\TwigFilter\\IsImage",
-  "shopware6Uuid": "\\ExportHttp\\TwigFilter\\Shopware6Uuid",
-  "escapeDoubleQuote": "\\ExportHttp\\TwigFilter\\EscapeDoubleQuote",
-  "backslashNToBr": "\\ExportHttp\\TwigFilter\\BackslashNToBr"
+  "shopware6Uuid": "\\ExportHttp\\TwigFilter\\Shopware6Uuid"
 }

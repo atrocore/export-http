@@ -29,6 +29,8 @@ class Shopware6GetToDeleteOptions extends AbstractTwigFunction
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->addDependency(Shopware6Uuid::class);
     }
 

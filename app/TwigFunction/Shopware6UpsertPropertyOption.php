@@ -30,8 +30,9 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->addDependency('serviceFactory');
-        $this->addDependency('entityManager');
         $this->addDependency(Shopware6Uuid::class);
     }
 

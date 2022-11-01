@@ -29,6 +29,8 @@ class CategoryFromChannel extends AbstractTwigFunction
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->addDependency('serviceFactory');
     }
 

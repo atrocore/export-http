@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFilter;
 
-class Shopware6Uuid extends AbstractTwigFilter
+class Shopware6Uuid extends \Export\TwigFilter\AbstractTwigFilter
 {
     public const VALID_PATTERN = '^[0-9a-f]{32}$';
 

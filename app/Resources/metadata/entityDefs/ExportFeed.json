@@ -20,16 +20,6 @@
       "dataField": true,
       "prohibitedEmptyValue": true
     },
-    "httpContentType": {
-      "type": "enum",
-      "options": [
-        "JSON"
-      ],
-      "default": "JSON",
-      "notStorable": true,
-      "dataField": true,
-      "prohibitedEmptyValue": true
-    },
     "httpConnectionId": {
       "type": "varchar",
       "view": "export-http:views/export-feed/fields/http-connection",
@@ -53,16 +43,6 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
-    },
-    "exportHttpTwigBody": {
-      "type": "text",
-      "notStorable": true,
-      "dataField": true,
-      "useDisabledTextareaInViewMode": true,
-      "rows": 20,
-      "required": false,
-      "default": "{\n  \"siteUrl\": \"{{config.siteUrl}}\",\n  \"entities\": [{{#entities}}{{#.}}\n     {\n       \"name\": \"{{name}}\"\n    },\n    {{/.}}{{/entities}}]\n}",
-      "tooltip": true
     }
   },
   "links": {

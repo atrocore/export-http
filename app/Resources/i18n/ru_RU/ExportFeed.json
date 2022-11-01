@@ -2,10 +2,8 @@
   "fields": {
     "exportHttpHeaders": "Заголовки",
     "httpUrl": "URL",
-    "httpContentType": "Тип содержимого",
     "httpMethod": "Метод",
-    "httpConnectionId": "Соединение",
-    "exportHttpTwigBody": "Тело Запроса"
+    "httpConnectionId": "Соединение"
   },
   "links": {
     "exportHttpHeaders": "Заголовки"

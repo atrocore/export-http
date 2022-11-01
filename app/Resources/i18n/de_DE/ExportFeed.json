@@ -2,10 +2,8 @@
   "fields": {
     "exportHttpHeaders": "Headers",
     "httpUrl": "URL",
-    "httpContentType": "Inhaltstyp",
     "httpMethod": "Methode",
-    "httpConnectionId": "Verbindung",
-    "exportHttpTwigBody": "Body"
+    "httpConnectionId": "Verbindung"
   },
   "links": {
     "exportHttpHeaders": "Headers"

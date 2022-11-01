@@ -30,6 +30,8 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->addDependency(Shopware6Uuid::class);
         $this->addDependency('container');
     }

@@ -1,5 +1,4 @@
 {
-  "getPreviousCategoryId": "\\ExportHttp\\TwigFunction\\PreviousCategoryId",
   "isCategoryFromChannel": "\\ExportHttp\\TwigFunction\\CategoryFromChannel",
   "shopware6UploadMedia": "\\ExportHttp\\TwigFunction\\Shopware6UploadMedia",
   "shopware6UpsertPropertyOption": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertyOption",

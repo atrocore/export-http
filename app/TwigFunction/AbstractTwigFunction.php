@@ -22,30 +22,26 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFunction;
 
-use Espo\Core\Injectable;
+use Espo\ConnectionType\ConnectionOauth2;
 
-abstract class AbstractTwigFunction extends Injectable
+abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFunction
 {
-    protected array $feedData;
-    protected array $connectionData;
-
-    public function setFeedData(array $feedData): void
+    public function __construct()
     {
-        $this->feedData = $feedData;
-    }
-
-    public function getFeedData(): array
-    {
-        return $this->feedData;
-    }
-
-    public function setConnectionData(array $connectionData): void
-    {
-        $this->connectionData = $connectionData;
+        $this->addDependency('entityManager');
+        $this->addDependency(ConnectionOauth2::class);
     }
 
     public function getConnectionData(): array
     {
-        return $this->connectionData;
+        $connectionData = [];
+        if (!empty($this->getFeedData()['data']['feedFields']['httpConnectionId'])) {
+            $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $this->getFeedData()['data']['feedFields']['httpConnectionId']);
+            if (!empty($connectionEntity)) {
+                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+            }
+        }
+
+        return $connectionData;
     }
 }
