@@ -26,11 +26,12 @@ use Dam\Core\Download\Custom;
 use Espo\Core\Utils\Util;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6UploadMedia extends \Export\TwigFunction\AbstractTwigFunction
+class Shopware6UploadMedia extends AbstractTwigFunction
 {
     public function __construct()
     {
-        $this->addDependency('entityManager');
+        parent::__construct();
+
         $this->addDependency('config');
         $this->addDependency(Shopware6Uuid::class);
         $this->addDependency(Custom::class);

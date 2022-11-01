@@ -22,40 +22,25 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFunction;
 
-use Espo\ORM\Entity;
-use Pim\Entities\Category;
+use Espo\ConnectionType\ConnectionOauth2;
 
-class CategoryFromChannel extends AbstractTwigFunction
+abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFunction
 {
     public function __construct()
     {
-        parent::__construct();
-
-        $this->addDependency('serviceFactory');
+        $this->addDependency('entityManager');
     }
 
-    public function run($category, $channelId): bool
+    public function getConnectionData(): array
     {
-        if (empty($category) || !($category instanceof Category) || empty($channelId)) {
-            return false;
+        $connectionData = [];
+        if (!empty($this->getFeedData()['data']['feedFields']['httpConnectionId'])) {
+            $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $this->getFeedData()['data']['feedFields']['httpConnectionId']);
+            if (!empty($connectionEntity)) {
+                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+            }
         }
 
-        $channel = $this->getInjection('serviceFactory')->create('Channel')->getEntity($channelId);
-        if (empty($channel)) {
-            return false;
-        }
-
-        $rootsIds = array_column($channel->get('categories')->toArray(), 'id');
-
-        return in_array($this->getCategoryRoot($category)->get('id'), $rootsIds);
-    }
-
-    protected function getCategoryRoot(Entity $category): Entity
-    {
-        if (empty($parent = $category->get('categoryParent'))) {
-            return $category;
-        }
-
-        return $this->getCategoryRoot($parent);
+        return $connectionData;
     }
 }

@@ -24,118 +24,33 @@ namespace ExportHttp\Services;
 
 use Espo\ConnectionType\ConnectionOauth2;
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Core\Utils\Util;
 use Espo\Entities\Attachment;
-use Espo\ORM\EntityCollection;
 use Export\Entities\ExportJob;
-use ExportHttp\TwigFilter\AbstractTwigFilter;
-use ExportHttp\TwigFunction\AbstractTwigFunction;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
 
 class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 {
     public function export(array $data, ExportJob $exportJob): Attachment
     {
-        $this->setData($data);
+        $attachment = parent::export($data, $exportJob);
 
-        return $this->runExport($exportJob);
-    }
-
-    public function runExport(ExportJob $exportJob): Attachment
-    {
-        $entities = new EntityCollection();
-        while (!empty($collection = $this->getCollection())) {
-            foreach ($collection as $entity) {
-                $entities->append($entity);
-            }
-        }
-
-        $connectionData = [];
-        if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
-            $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
-            if (!empty($connectionEntity)) {
-                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
-            }
-        }
-
-        $exportJob->set('count', count($entities));
-
-        $templates = [
-            'httpUrl'  => $this->data['feed']['httpUrl'],
-            'httpBody' => $this->data['feed']['data']['feedFields']['exportHttpTwigBody']
-        ];
-
-        $twig = new \Twig\Environment(new \Twig\Loader\ArrayLoader($templates));
-        foreach ($this->getMetadata()->get(['app', 'twigFilters'], []) as $alias => $className) {
-            $filter = $this->getContainer()->get($className);
-            if ($filter instanceof AbstractTwigFilter) {
-                $filter->setFeedData($this->data['feed']);
-                $filter->setConnectionData($connectionData);
-                $twig->addFilter(new TwigFilter($alias, [$filter, 'filter']));
-            }
-        }
-
-        foreach ($this->getMetadata()->get(['app', 'twigFunctions'], []) as $alias => $className) {
-            $twigFunction = $this->getContainer()->get($className);
-            if ($twigFunction instanceof AbstractTwigFunction && method_exists($twigFunction, 'run')) {
-                $twigFunction->setFeedData($this->data['feed']);
-                $twigFunction->setConnectionData($connectionData);
-                $twig->addFunction(new TwigFunction($alias, [$twigFunction, 'run']));
-            }
-        }
-
-        $renders = [];
-        foreach ($templates as $templateName => $template) {
-            $renders[$templateName] = $twig->render($templateName, [
-                'entities' => $entities,
-                'config'   => $this->getConfig()->getData(),
-                'feedData' => $this->data['feed'],
-            ]);
-        }
-
-        $this->data['feed']['httpUrl'] = $renders['httpUrl'];
-
-        $body = [];
-        if (!empty($renders['httpBody'])) {
-            $body = preg_replace("/}[\n\s]*,[\n\s]*]/", "}]", $renders['httpBody']);
-            $bodyArray = @json_decode($body, true);
-            if (!empty($bodyArray)) {
-                $body = json_encode($bodyArray);
-            }
-        }
-
-        /**
-         * Create attachment
-         */
-        $repository = $this->getEntityManager()->getRepository('Attachment');
-        $attachment = $repository->get();
-        $attachment->set('name', $this->getExportFileName('json'));
-        $attachment->set('role', 'Export');
-        $attachment->set('relatedType', 'ExportJob');
-        $attachment->set('relatedId', $this->data['id']);
-        $attachment->set('storage', 'UploadDir');
-        $attachment->set('storageFilePath', $this->createPath());
-        $fileName = $repository->getFilePath($attachment);
-        $this->createDir($fileName);
-        file_put_contents($fileName, $body);
-        $attachment->set('type', 'application/json');
-        $attachment->set('size', \filesize($repository->getFilePath($attachment)));
-        $this->getEntityManager()->saveEntity($attachment);
-        $exportJob->set('fileId', $attachment->get('id'));
+        // prepare URL
+        $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $this->getFullCollection()]);
 
         /**
          * Prepare headers
          */
-        $headers = ['Content-Type: application/json'];
+        $headers = ['Content-Type: ' . $attachment->get('type')];
         if (!empty($this->data['feed']['httpHeaders'])) {
             foreach ($this->data['feed']['httpHeaders'] as $v) {
                 $headers[] = "{$v['key']}: {$v['value']}";
             }
         }
-
-        if (!empty($connectionData)) {
-            $headers[] = "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}";
+        if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
+            $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
+            if (!empty($connectionEntity)) {
+                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+                $headers[] = "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}";
+            }
         }
 
         /**
@@ -170,12 +85,5 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         parent::init();
 
         $this->addDependency(ConnectionOauth2::class);
-    }
-
-    protected function createDir(string $fileName): void
-    {
-        $parts = explode('/', $fileName);
-        array_pop($parts);
-        Util::createDir(implode('/', $parts));
     }
 }

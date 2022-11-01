@@ -25,10 +25,12 @@ namespace ExportHttp\TwigFunction;
 use Espo\ORM\Entity;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
-class Shopware6GetToDeleteMedias extends \Export\TwigFunction\AbstractTwigFunction
+class Shopware6GetToDeleteMedias extends AbstractTwigFunction
 {
     public function __construct()
     {
+        parent::__construct();
+
         $this->addDependency(Shopware6Uuid::class);
     }
 
