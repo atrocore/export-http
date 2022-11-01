@@ -36,6 +36,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         // prepare URL
         $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $this->getFullCollection()]);
 
+        // get file contents
+        $contents = file_get_contents($this->getEntityManager()->getRepository('Attachment')->getFilePath($attachment));
+
         /**
          * Prepare headers
          */
@@ -48,7 +51,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
             $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
             if (!empty($connectionEntity)) {
-                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+                $connectionData = $this->getContainer()->get(ConnectionOauth2::class)->connect($connectionEntity);
                 $headers[] = "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}";
             }
         }
@@ -56,12 +59,12 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         /**
          * Send request
          */
-        $ch = curl_init($this->data['feed']['httpUrl']);
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->data['feed']['httpMethod']);
-        if (!empty($body)) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        if (!empty($contents)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $contents);
         }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $output = curl_exec($ch);
@@ -78,12 +81,5 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $exportJob->set('stateMessage', $output);
 
         return $attachment;
-    }
-
-    protected function init()
-    {
-        parent::init();
-
-        $this->addDependency(ConnectionOauth2::class);
     }
 }

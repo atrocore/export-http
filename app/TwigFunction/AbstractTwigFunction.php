@@ -29,6 +29,7 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
     public function __construct()
     {
         $this->addDependency('entityManager');
+        $this->addDependency(ConnectionOauth2::class);
     }
 
     public function getConnectionData(): array
