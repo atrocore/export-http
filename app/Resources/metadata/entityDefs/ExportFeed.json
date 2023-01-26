@@ -39,8 +39,7 @@
     },
     "httpConnectionName": {
       "type": "varchar",
-      "notStorable": true,
-      "dataField": true
+      "notStorable": true
     },
     "httpUrl": {
       "type": "text",
