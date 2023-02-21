@@ -33,6 +33,10 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     {
         $attachment = parent::export($data, $exportJob);
 
+        // save file to export job
+        $exportJob->set('fileId', $attachment->get('id'));
+        $this->getEntityManager()->saveEntity($exportJob);
+
         // prepare URL
         $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $this->getFullCollection()]);
 
