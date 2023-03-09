@@ -119,7 +119,8 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
 
         $body = [
             'id'   => $uuid,
-            'name' => $attribute->get($nameField)
+            'name' => $attribute->get($nameField),
+            'filterable' => $attribute->has('filterable') && $attribute->get('filterable') == true,
         ];
 
         $ch = curl_init("$apiHost/api/property-group/$uuid");
@@ -138,7 +139,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
                 'name'                       => $attribute->get($nameField),
                 'displayType'                => 'text',
                 'sortingType'                => 'alphanumeric',
-                'filterable'                 => false,
+                'filterable'                 => $attribute->has('filterable') && $attribute->get('filterable') == true,
                 'visibleOnProductDetailPage' => true,
                 'position'                   => 1
             ];
