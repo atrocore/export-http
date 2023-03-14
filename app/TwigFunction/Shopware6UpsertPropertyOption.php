@@ -119,7 +119,8 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
 
         $body = [
             'id'   => $uuid,
-            'name' => $attribute->get($nameField)
+            'name' => $attribute->get($nameField),
+            'filterable' => $attribute->has('filterable') && $attribute->get('filterable') == true,
         ];
 
         $ch = curl_init("$apiHost/api/property-group/$uuid");
@@ -138,7 +139,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
                 'name'                       => $attribute->get($nameField),
                 'displayType'                => 'text',
                 'sortingType'                => 'alphanumeric',
-                'filterable'                 => false,
+                'filterable'                 => $attribute->has('filterable') && $attribute->get('filterable') == true,
                 'visibleOnProductDetailPage' => true,
                 'position'                   => 1
             ];
@@ -164,9 +165,110 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
 
     protected function upsertPropertyValue(Entity $pav, string $apiHost, array $headers, string $propertyId): string
     {
+        $value = $this->preparePropertyOptionValue($pav);
+
         /**
-         * Prepare value
+         * Search for exist property option
          */
+        $ch = curl_init("$apiHost/api/search/property-group/$propertyId/options");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt(
+            $ch, CURLOPT_POSTFIELDS, json_encode([
+                'total-count-mode' => 1
+            ])
+        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
+        curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && !empty($response)) {
+            $response = json_decode($response, true);
+
+            if (is_array($response) && !empty($response['data'])) {
+                foreach ($response['data'] as $option) {
+                    if (array_key_exists('attributes', $option) && array_key_exists('name', $option['attributes']) && $option['attributes']['name'] == $value) {
+                        return $option['id'];
+                    }
+                }
+            }
+        }
+
+        if ($pav->get('language') !== 'main') {
+            $mainPav = $this
+                ->getInjection('entityManager')
+                ->getRepository('ProductAttributeValue')
+                ->where([
+                    'language' => 'main',
+                    'attributeId' => $pav->get('attributeId'),
+                    'productId' => $pav->get('productId'),
+                    'scope' => 'Channel',
+                    'channelId' => $pav->get('channelId')
+                ])
+                ->findOne();
+
+            $uuidString = $propertyId . '_' . $this->preparePropertyOptionValue($mainPav);
+        } else {
+            $uuidString = $propertyId . '_' . $value;
+        }
+
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($uuidString);
+
+        $ch = curl_init("$apiHost/api/property-group/$propertyId/options");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt(
+            $ch, CURLOPT_POSTFIELDS, json_encode([
+                'id'   => $uuid,
+                'name' => $value
+            ])
+        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
+        curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] === 204) {
+            return $uuid;
+        }
+
+        /**
+         * Create as main language
+         */
+        $connectionData = $this->getConnectionData();
+        $ch = curl_init("$apiHost/api/property-group/$propertyId/options");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt(
+            $ch, CURLOPT_POSTFIELDS, json_encode([
+                'id'   => $uuid,
+                'name' => $value
+            ])
+        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"]);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
+        curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] !== 204) {
+            $GLOBALS['log']->error(
+                "Shopware6 upsertPropertyValue. URL: '$apiHost/api/property-group/$propertyId/options" . "'.Headers: '" . json_encode($headers) . "'. Body: '"
+                . json_encode(['id' => $uuid, 'name' => $value]) . "'"
+            );
+        }
+
+        return $uuid;
+    }
+
+    /**
+     * Prepare value
+     */
+    protected function preparePropertyOptionValue(Entity $pav)
+    {
         $value = $pav->get('value');
         if (is_array($value)) {
             $value = implode(', ', $value);
@@ -189,74 +291,6 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
             $value = 'None';
         }
 
-        if ($pav->get('language') !== 'main') {
-            $uuid = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('mainLanguageId'));
-        } else {
-            $uuid = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('id'));
-        }
-
-        $ch = curl_init("$apiHost/api/property-group/$propertyId/options/$uuid");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-        curl_setopt(
-            $ch, CURLOPT_POSTFIELDS, json_encode([
-                'id'   => $uuid,
-                'name' => $value
-            ])
-        );
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        $response = curl_exec($ch);
-        $responseInfo = curl_getinfo($ch);
-        curl_close($ch);
-
-        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] !== 204) {
-            $ch = curl_init("$apiHost/api/property-group/$propertyId/options");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt(
-                $ch, CURLOPT_POSTFIELDS, json_encode([
-                    'id'   => $uuid,
-                    'name' => $value
-                ])
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            $response = curl_exec($ch);
-            $responseInfo = curl_getinfo($ch);
-            curl_close($ch);
-
-            if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] === 204) {
-                return $uuid;
-            }
-
-            /**
-             * Create as main language
-             */
-            $connectionData = $this->getConnectionData();
-            $ch = curl_init("$apiHost/api/property-group/$propertyId/options");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt(
-                $ch, CURLOPT_POSTFIELDS, json_encode([
-                    'id'   => $uuid,
-                    'name' => $value
-                ])
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"]);
-            $response = curl_exec($ch);
-            $responseInfo = curl_getinfo($ch);
-            curl_close($ch);
-
-            if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] !== 204) {
-                $GLOBALS['log']->error(
-                    "Shopware6 upsertPropertyValue. URL: '$apiHost/api/property-group/$propertyId/options" . "'.Headers: '" . json_encode($headers) . "'. Body: '"
-                    . json_encode(['id' => $uuid, 'name' => $value]) . "'"
-                );
-            }
-        }
-
-        return $uuid;
+        return $value;
     }
 }
