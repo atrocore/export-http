@@ -267,7 +267,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
     /**
      * Prepare value
      */
-    protected function preparePropertyOptionValue(Entity $pav)
+    public function preparePropertyOptionValue(Entity $pav)
     {
         $value = $pav->get('value');
         if (is_array($value)) {
