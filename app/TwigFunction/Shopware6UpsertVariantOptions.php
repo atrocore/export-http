@@ -37,8 +37,10 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
         $this->addDependency(Shopware6UpsertPropertyOption::class);
     }
 
-    public function run(Entity $pav, string $channelId = ''): ?string
+    public function run(string $pavId, string $channelId = ''): ?string
     {
+        $pav = $this->getInjection('serviceFactory')->create('ProductAttributeValue')->getEntity($pavId);
+
         if (!empty($channelId)) {
             if ($pav->get('scope') === 'Channel' && $pav->get('channelId') !== $channelId && !$pav->get('isVariantSpecificAttribute')) {
                 return null;
@@ -60,7 +62,9 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
                     return null;
                 }
             }
-        } elseif (!$pav->get('isVariantSpecificAttribute')) {
+        }
+
+        if (!$pav->get('isVariantSpecificAttribute')) {
             return null;
         }
 
@@ -88,6 +92,48 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
 
         $uuidString = $propertyId . '_' . $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($pav);
 
-        return $this->getInjection(Shopware6Uuid::class)->filter($uuidString);
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($uuidString);
+
+        $productProperties = $this->getProductProperties($pav->get('productId'));
+
+        if (in_array($uuid, $productProperties)) {
+            return $uuid;
+        }
+
+        return null;
+    }
+
+    protected function getProductProperties(string $productId): array
+    {
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($productId);
+
+        $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
+        $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
+
+        $connectionData = $this->getConnectionData();
+
+        $headers = [
+            'Content-Type: application/json',
+            "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"
+        ];
+
+        $ch = curl_init("$apiHost/api/search/product");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['ids' => $uuid]));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
+        curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] === 200) {
+            $data = @json_decode($response, true);
+            if (!empty($data['data'][0]['attributes']['propertyIds'])) {
+                return $data['data'][0]['attributes']['propertyIds'];
+            }
+        }
+
+        return [];
     }
 }

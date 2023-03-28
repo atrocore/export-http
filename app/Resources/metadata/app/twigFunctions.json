@@ -6,6 +6,6 @@
   "shopware6GetToDeleteOptions": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteOptions",
   "shopware6GetToDeleteMedias": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteMedias",
   "shopware6UpsertManufacturer": "\\ExportHttp\\TwigFunction\\Shopware6UpsertManufacturer",
-  "Shopware6UpsertVariantOptions": "\\ExportHttp\\TwigFunction\\Shopware6UpsertVariantOptions",
-  "Shopware6GetToDeleteVariantProperty": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteVariantProperty"
+  "shopware6UpsertVariantOptions": "\\ExportHttp\\TwigFunction\\Shopware6UpsertVariantOptions",
+  "shopware6GetToDeleteVariantProperty": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteVariantProperty"
 }

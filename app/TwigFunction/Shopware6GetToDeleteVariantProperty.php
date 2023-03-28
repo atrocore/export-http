@@ -71,7 +71,7 @@ class Shopware6GetToDeleteVariantProperty extends AbstractTwigFunction
         if (!empty($responseInfo['http_code']) && $responseInfo['http_code'] === 200) {
             $data = @json_decode($response, true);
             if (!empty($data['data'][0]['attributes']['optionIds'])) {
-                foreach ($data['data'][0]['attributes']['propertyIds'] as $id) {
+                foreach ($data['data'][0]['attributes']['optionIds'] as $id) {
                     if (!in_array($id, $optionsIds)) {
                         $result[] = $id;
                     }
