@@ -37,8 +37,14 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $exportJob->set('fileId', $attachment->get('id'));
         $this->getEntityManager()->saveEntity($exportJob);
 
+        if (!empty($this->data['feed']['separateJob'])) {
+            $entities = $this->getCollection();
+        } else {
+            $entities = $this->getFullCollection();
+        }
+
         // prepare URL
-        $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $this->getFullCollection()]);
+        $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
 
         // get file contents
         $contents = file_get_contents($this->getEntityManager()->getRepository('Attachment')->getFilePath($attachment));
