@@ -34,6 +34,8 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
         parent::__construct();
 
         $this->addDependency('serviceFactory');
+        $this->addDependency('entityManager');
+        $this->addDependency(Shopware6Uuid::class);
     }
 
     public function run(string $productId, string $channelId = '', string $language = 'main'): array
@@ -44,7 +46,7 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
 
         $properties = $optionIds = [];
 
-        $linked = $this->getInjection('serviceFactory')->create('Product')->findLinkedEntitiesProductAttributeValues($productId, []);
+        $linked = $this->getInjection('serviceFactory')->create('Product')->findLinkedEntities($productId, 'productAttributeValues', []);
 
         if (isset($linked['collection']) && $linked['collection'] instanceof EntityCollection) {
             $collection = $linked['collection'];
@@ -72,14 +74,16 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
 
                     $mainPav = $item;
                     if ($item->get('language') != 'main') {
-                        foreach ($collection as $item1) {
-                            if ($item1->get('attributeId') == $item->get('attributeId')
-                                && $item1->get('channelId') == $item->get('channelId')
-                                && $item1->get('language') == 'main') {
-                                $mainPav = $item1;
-                                break;
-                            }
-                        }
+                        $mainPav = $this
+                            ->getInjection('entityManager')
+                            ->getRepository('ProductAttributeValue')
+                            ->where([
+                                'language' => 'main',
+                                'attributeId' => $item->get('attributeId'),
+                                'productId' => $item->get('productId'),
+                                'channelId' => $item->get('channelId')
+                            ])
+                            ->findOne();
                     }
 
                     $optionId = $this->getInjection(Shopware6Uuid::class)->filter($propertyId . '_' . $this->preparePropertyOptionValue($mainPav));
@@ -157,18 +161,19 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
             }
 
             if ($pav->get('scope') == 'Global') {
-                $hasChannelPav = false;
+                $mainPav = $this
+                    ->getInjection('entityManager')
+                    ->getRepository('ProductAttributeValue')
+                    ->select(['id'])
+                    ->where([
+                        'language' => $pav->get('language'),
+                        'attributeId' => $pav->get('attributeId'),
+                        'productId' => $pav->get('productId'),
+                        'channelId' => $channelId
+                    ])
+                    ->findOne();
 
-                foreach ($pavs as $pav1) {
-                    if ($pav->get('attributeId') == $pav1->get('attributeId')
-                        && $pav->id != $pav1->id
-                        && $pav1->get('channelId') == $channelId) {
-                        $hasChannelPav = true;
-                        break;
-                    }
-                }
-
-                if ($hasChannelPav) {
+                if (!empty($mainPav)) {
                     return false;
                 }
             }
