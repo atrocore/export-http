@@ -147,7 +147,7 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
             return false;
         }
 
-        if (!empty($pav->get('isMultilang')) && $language !== $pav->get('language')) {
+        if (!empty($pav->get('attributeIsMultilang')) && $language !== $pav->get('language')) {
             return false;
         }
 
