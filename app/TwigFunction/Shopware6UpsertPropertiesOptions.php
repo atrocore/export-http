@@ -143,8 +143,10 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
 
     protected function validateProductAttributeValue(Entity $pav, EntityCollection $pavs, string $channelId, string $language): bool
     {
-        if ($pav->get('value') === null || $pav->get('value') === '') {
-            return false;
+        if (empty($pav->get('isVariantSpecificAttribute'))) {
+            if ($pav->get('value') === null || $pav->get('value') === '') {
+                return false;
+            }
         }
 
         if (!empty($pav->get('attributeIsMultilang')) && $language !== $pav->get('language')) {
