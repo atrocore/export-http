@@ -198,7 +198,9 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
 
         $headers = [
             'Content-Type: application/json',
-            "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"
+            "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}",
+            "single-operation: 1",
+            "indexing-behavior: use-queue-indexing"
         ];
 
         if ($language !== 'main') {
