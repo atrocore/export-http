@@ -34,11 +34,11 @@ class Shopware6GetToDeleteMedias extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run($product, $productMediaIds): array
+    public function run($product, $productMediaIds, string $shopwareId = ''): array
     {
         $result = [];
 
-        if (!$product instanceof Entity) {
+        if (!$product instanceof Entity && empty($shopwareId)) {
             return $result;
         }
 
@@ -46,7 +46,7 @@ class Shopware6GetToDeleteMedias extends AbstractTwigFunction
             $productMediaIds = [];
         }
 
-        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($product->get('id'));
+        $uuid = !empty($shopwareId) ? $shopwareId : $this->getInjection(Shopware6Uuid::class)->filter($product->get('id'));
 
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
