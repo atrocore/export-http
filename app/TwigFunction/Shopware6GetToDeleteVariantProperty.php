@@ -34,17 +34,19 @@ class Shopware6GetToDeleteVariantProperty extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run($uuid, $optionsIds): array
+    public function run($product, $optionsIds, string $shopwareId = ''): array
     {
         $result = [];
 
-        if (empty($uuid) || !is_string($uuid)) {
+        if (!$product instanceof Entity && empty($shopwareId)) {
             return $result;
         }
 
         if (empty($optionsIds) || !is_array($optionsIds)) {
             $optionsIds = [];
         }
+
+        $uuid = !empty($shopwareId) ? $shopwareId : $this->getInjection(Shopware6Uuid::class)->filter($product->get('id'));
 
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
