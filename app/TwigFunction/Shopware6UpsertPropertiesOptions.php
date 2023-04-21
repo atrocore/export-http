@@ -29,6 +29,8 @@ use ExportHttp\TwigFilter\Shopware6Uuid;
 
 class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
 {
+    protected array $excludedTypes = ['asset'];
+
     public function __construct()
     {
         parent::__construct();
@@ -147,6 +149,10 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
             if ($pav->get('value') === null || $pav->get('value') === '') {
                 return false;
             }
+        }
+
+        if (in_array($pav->get('attributeType'), $this->excludedTypes)) {
+            return false;
         }
 
         if (!empty($pav->get('attributeIsMultilang')) && $language !== $pav->get('language')) {
