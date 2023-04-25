@@ -42,7 +42,7 @@ class Shopware6GetVariantsOptions extends AbstractTwigFunction
             return $result;
         }
 
-        $uuid = !empty($shopwareId) ? $shopwareId : $this->getInjection(Shopware6Uuid::class)->filter($product->get('id'));
+        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($product->get('id'));
 
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
