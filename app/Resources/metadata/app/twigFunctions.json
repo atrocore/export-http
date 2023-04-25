@@ -8,5 +8,7 @@
   "shopware6UpsertManufacturer": "\\ExportHttp\\TwigFunction\\Shopware6UpsertManufacturer",
   "shopware6UpsertVariantOptions": "\\ExportHttp\\TwigFunction\\Shopware6UpsertVariantOptions",
   "shopware6GetToDeleteVariantProperty": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteVariantProperty",
-  "shopware6UpsertPropertiesOptions": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertiesOptions"
+  "shopware6UpsertPropertiesOptions": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertiesOptions",
+  "shopware6GetConfiguratorSettings": "\\ExportHttp\\TwigFunction\\Shopware6GetConfiguratorSettings",
+  "shopware6GetVariantsOptions": "\\ExportHttp\\TwigFunction\\Shopware6GetVariantsOptions"
 }
