@@ -24,6 +24,7 @@ namespace ExportHttp\TwigFunction;
 
 use Espo\Core\Utils\Language;
 use Espo\ORM\Entity;
+use Export\TwigFunction\ExtensibleEnumOption;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
 class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
@@ -34,6 +35,7 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
 
         $this->addDependency(Shopware6Uuid::class);
         $this->addDependency('container');
+        $this->addDependency(ExtensibleEnumOption::class);
     }
 
     public function run(string $field, Entity $entity, string $language = 'main', string $label = ''): ?string
@@ -124,16 +126,18 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
 
     protected function upsertPropertyValue(string $field, Entity $entity, string $apiHost, array $headers, string $propertyId): string
     {
+        $type = $this->getInjection('container')->get('metadata')->get(['entityDefs', $entity->getEntityType(), 'fields', $field, 'type'], 'varchar');
+
         /**
          * Prepare value
          */
-        $value = $entity->get($field);
+        $value = $this->getValue($entity, $field, $type);
         if (is_array($value)) {
             $value = implode(', ', $value);
         } else {
             $value = mb_substr((string)$value, 0, 250);
         }
-        switch ($this->getInjection('container')->get('metadata')->get(['entityDefs', $entity->getEntityType(), 'fields', $field, 'type'], 'varchar')) {
+        switch ($type) {
             case 'bool':
                 $value = !empty($value) ? '+' : '-';
                 break;
@@ -214,5 +218,37 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
         }
 
         return $uuid;
+    }
+
+    protected function getValue(Entity $entity, string $field, string $fieldType)
+    {
+        $result = null;
+
+        $value = $entity->get($field);
+        if ($fieldType == 'extensibleEnum') {
+            $option = $this->getInjection(ExtensibleEnumOption::class)->run($value);
+
+            if (!empty($option)) {
+                $result = $option->get('name');
+            }
+        } elseif ($fieldType == 'extensibleMultiEnum') {
+            $result = [];
+
+            $options = $this
+                ->getInjection('entityManager')
+                ->getRepository('ExtensibleEnumOption')
+                ->where(['id' => $value])
+                ->find();
+
+            foreach ($value as $id) {
+                foreach ($options as $option) {
+                    if ($option->id == $id) {
+                        $result[] = $option->get('name');
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }

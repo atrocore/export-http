@@ -38,6 +38,7 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
         $this->addDependency('serviceFactory');
         $this->addDependency('entityManager');
         $this->addDependency(Shopware6Uuid::class);
+        $this->addDependency(Shopware6UpsertPropertyOption::class);
     }
 
     public function run(string $productId, string $channelId = '', string $language = 'main'): array
@@ -88,13 +89,13 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
                             ->findOne();
                     }
 
-                    $optionId = $this->getInjection(Shopware6Uuid::class)->filter($propertyId . '_' . $this->preparePropertyOptionValue($mainPav));
+                    $optionId = $this->getInjection(Shopware6Uuid::class)->filter($propertyId . '_' . $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($mainPav));
                     $optionIds[] = $optionId;
 
                     $data['options'] = [
                         [
                             'id' => $optionId,
-                            'name' => $this->preparePropertyOptionValue($item),
+                            'name' => $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($item),
                             'position' => 1
                         ]
                     ];
@@ -218,32 +219,5 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
         }
 
         return $headers;
-    }
-
-    protected function preparePropertyOptionValue(Entity $pav)
-    {
-        $value = $pav->get('value');
-        if (is_array($value)) {
-            $value = implode(', ', $value);
-        } else {
-            $value = mb_substr((string)$value, 0, 250);
-        }
-        switch ($pav->get('attributeType')) {
-            case 'bool':
-                $value = !empty($value) ? '+' : '-';
-                break;
-            case 'unit':
-                $value .= ' ' . $pav->get('valueUnit');
-                break;
-            case 'currency':
-                $value .= ' ' . $pav->get('valueCurrency');
-                break;
-        }
-
-        if ($value === '') {
-            $value = 'None';
-        }
-
-        return $value;
     }
 }

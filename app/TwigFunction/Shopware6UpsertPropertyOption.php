@@ -24,6 +24,7 @@ namespace ExportHttp\TwigFunction;
 
 use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
+use Export\TwigFunction\ExtensibleEnumOption;
 use ExportHttp\TwigFilter\Shopware6Uuid;
 
 class Shopware6UpsertPropertyOption extends AbstractTwigFunction
@@ -34,6 +35,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
 
         $this->addDependency('serviceFactory');
         $this->addDependency(Shopware6Uuid::class);
+        $this->addDependency(ExtensibleEnumOption::class);
     }
 
     public function run(string $pavId, string $channelId, string $language = 'main'): ?string
@@ -269,7 +271,8 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
      */
     public function preparePropertyOptionValue(Entity $pav)
     {
-        $value = $pav->get('value');
+        $value = $this->getValue($pav);
+
         if (is_array($value)) {
             $value = implode(', ', $value);
         } else {
@@ -292,5 +295,37 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         }
 
         return $value;
+    }
+
+    protected function getValue(Entity $entity)
+    {
+        $result = null;
+
+        $value = $entity->get('value');
+        if ($entity->get('attributeType') == 'extensibleEnum') {
+            $option = $this->getInjection(ExtensibleEnumOption::class)->run($value);
+
+            if (!empty($option)) {
+                $result = $option->get('name');
+            }
+        } elseif ($entity->get('attributeType') == 'extensibleMultiEnum') {
+            $result = [];
+
+            $options = $this
+                ->getInjection('entityManager')
+                ->getRepository('ExtensibleEnumOption')
+                ->where(['id' => $value])
+                ->find();
+
+            foreach ($value as $id) {
+                foreach ($options as $option) {
+                    if ($option->id == $id) {
+                        $result[] = $option->get('name');
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }
