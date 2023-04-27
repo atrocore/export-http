@@ -35,6 +35,7 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
 
         $this->addDependency(Shopware6Uuid::class);
         $this->addDependency('container');
+        $this->addDependency(ExtensibleEnumOption::class);
     }
 
     public function run(string $field, Entity $entity, string $language = 'main', string $label = ''): ?string
