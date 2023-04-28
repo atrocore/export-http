@@ -247,6 +247,8 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
                     }
                 }
             }
+        } else {
+            $result = $value;
         }
 
         return $result;
