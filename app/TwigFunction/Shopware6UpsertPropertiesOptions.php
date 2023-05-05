@@ -41,7 +41,7 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
         $this->addDependency(Shopware6UpsertPropertyOption::class);
     }
 
-    public function run(string $productId, string $channelId = '', string $language = 'main'): array
+    public function run(string $productId, string $channelId = '', string $language = 'main', string $sortingType = 'alphanumeric'): array
     {
         if (empty($productId)) {
             return [];
@@ -74,6 +74,11 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
                         'visibleOnProductDetailPage' => true,
                         'position' => 1
                     ];
+
+                    if ($sortingType == 'position') {
+                        $data['sortingType'] = 'position';
+                        $data['position'] = $attribute->get('sortOrderInAttributeGroup');
+                    }
 
                     $mainPav = $item;
                     if ($item->get('language') != 'main') {
