@@ -105,7 +105,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
             return null;
         }
 
-        $optionId = $this->upsertPropertyValue($pav, $apiHost, $headers, $propertyId);
+        $optionId = $this->upsertPropertyValue($pav, $apiHost, $headers, $propertyId, $language);
 
         return $optionId;
     }
@@ -165,9 +165,9 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         return $uuid;
     }
 
-    protected function upsertPropertyValue(Entity $pav, string $apiHost, array $headers, string $propertyId): string
+    protected function upsertPropertyValue(Entity $pav, string $apiHost, array $headers, string $propertyId, string $language): string
     {
-        $value = $this->preparePropertyOptionValue($pav);
+        $value = $this->preparePropertyOptionValue($pav, $language);
 
         /**
          * Search for exist property option
@@ -269,9 +269,9 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
     /**
      * Prepare value
      */
-    public function preparePropertyOptionValue(Entity $pav)
+    public function preparePropertyOptionValue(Entity $pav, string $language = 'main')
     {
-        $value = $this->getValue($pav);
+        $value = $this->getValue($pav, $language);
 
         if (is_array($value)) {
             $value = implode(', ', $value);
@@ -297,7 +297,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         return $value;
     }
 
-    protected function getValue(Entity $entity)
+    protected function getValue(Entity $entity, string $language = 'main')
     {
         $result = null;
 
@@ -306,7 +306,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
             $option = $this->getInjection(ExtensibleEnumOption::class)->run($value);
 
             if (!empty($option)) {
-                $result = $option->get('name');
+                $result = $option->get($this->getMultilangFieldName('name', $language));
             }
         } elseif ($entity->get('attributeType') == 'extensibleMultiEnum') {
             $result = [];
@@ -317,10 +317,12 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
                 ->where(['id' => $value])
                 ->find();
 
+            $nameField = $this->getMultilangFieldName('name', $language);
+
             foreach ($value as $id) {
                 foreach ($options as $option) {
                     if ($option->id == $id) {
-                        $result[] = $option->get('name');
+                        $result[] = $option->get($nameField);
                     }
                 }
             }
@@ -329,5 +331,20 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $field
+     * @param string $language
+     *
+     * @return string
+     */
+    protected function getMultilangFieldName(string $field, string $language = 'main'): string
+    {
+        if ($language !== 'main') {
+            $field .= ucfirst(Util::toCamelCase(strtolower($language)));
+        }
+
+        return $field;
     }
 }

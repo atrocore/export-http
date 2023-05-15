@@ -100,7 +100,7 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
                     $data['options'] = [
                         [
                             'id' => $optionId,
-                            'name' => $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($item),
+                            'name' => $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($item, $language),
                             'position' => 1
                         ]
                     ];

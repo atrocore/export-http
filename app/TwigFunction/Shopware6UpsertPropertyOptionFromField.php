@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace ExportHttp\TwigFunction;
 
 use Espo\Core\Utils\Language;
+use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Export\TwigFunction\ExtensibleEnumOption;
 use ExportHttp\TwigFilter\Shopware6Uuid;
@@ -64,7 +65,7 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
 
         $propertyId = $this->upsertProperty($field, $entity->getEntityType(), $apiHost, $headers, $language, $label);
 
-        $optionId = $this->upsertPropertyValue($field, $entity, $apiHost, $headers, $propertyId);
+        $optionId = $this->upsertPropertyValue($field, $entity, $apiHost, $headers, $propertyId, $language);
 
         return $optionId;
     }
@@ -124,14 +125,14 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
         return $uuid;
     }
 
-    protected function upsertPropertyValue(string $field, Entity $entity, string $apiHost, array $headers, string $propertyId): string
+    protected function upsertPropertyValue(string $field, Entity $entity, string $apiHost, array $headers, string $propertyId, string $language = 'main'): string
     {
         $type = $this->getInjection('container')->get('metadata')->get(['entityDefs', $entity->getEntityType(), 'fields', $field, 'type'], 'varchar');
 
         /**
          * Prepare value
          */
-        $value = $this->getValue($entity, $field, $type);
+        $value = $this->getValue($entity, $field, $type, $language);
         if (is_array($value)) {
             $value = implode(', ', $value);
         } else {
@@ -220,7 +221,7 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
         return $uuid;
     }
 
-    protected function getValue(Entity $entity, string $field, string $fieldType)
+    protected function getValue(Entity $entity, string $field, string $fieldType, string $language = 'main')
     {
         $result = null;
 
@@ -229,7 +230,7 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
             $option = $this->getInjection(ExtensibleEnumOption::class)->run($value);
 
             if (!empty($option)) {
-                $result = $option->get('name');
+                $result = $option->get($this->getMultilangFieldName('name', $language));
             }
         } elseif ($fieldType == 'extensibleMultiEnum') {
             $result = [];
@@ -240,10 +241,12 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
                 ->where(['id' => $value])
                 ->find();
 
+            $nameField = $this->getMultilangFieldName('name', $language);
+
             foreach ($value as $id) {
                 foreach ($options as $option) {
                     if ($option->id == $id) {
-                        $result[] = $option->get('name');
+                        $result[] = $option->get($nameField);
                     }
                 }
             }
@@ -252,5 +255,20 @@ class Shopware6UpsertPropertyOptionFromField extends AbstractTwigFunction
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $field
+     * @param string $language
+     *
+     * @return string
+     */
+    protected function getMultilangFieldName(string $field, string $language = 'main'): string
+    {
+        if ($language !== 'main') {
+            $field .= ucfirst(Util::toCamelCase(strtolower($language)));
+        }
+
+        return $field;
     }
 }
