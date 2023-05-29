@@ -162,7 +162,21 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
         }
 
         if (!empty($pav->get('attributeIsMultilang')) && $language !== $pav->get('language')) {
-            return false;
+            $langPav = $this
+                ->getInjection('entityManager')
+                ->getRepository('ProductAttributeValue')
+                ->select(['id'])
+                ->where([
+                    'language' => $language,
+                    'attributeId' => $pav->get('attributeId'),
+                    'productId' => $pav->get('productId'),
+                    'channelId' => $channelId
+                ])
+                ->findOne();
+
+            if (!empty($langPav) || $pav->get('language') !== 'main') {
+                return false;
+            }
         }
 
         if (empty($channelId) && !empty($pav->get('channelId'))) {
