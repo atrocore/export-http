@@ -170,6 +170,7 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
                     'language' => $language,
                     'attributeId' => $pav->get('attributeId'),
                     'productId' => $pav->get('productId'),
+                    'scope' => $pav->get('scope'),
                     'channelId' => $channelId
                 ])
                 ->findOne();
