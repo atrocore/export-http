@@ -38,7 +38,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         $this->addDependency(ExtensibleEnumOption::class);
     }
 
-    public function run(string $pavId, string $channelId, string $language = 'main'): ?string
+    public function run(string $pavId, string $channelId, string $language = 'main', string $shopwareIdField = ''): ?string
     {
         if (empty($pavId)) {
             return null;
@@ -99,7 +99,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
             }
         }
 
-        $propertyId = $this->upsertProperty($attribute, $apiHost, $headers, $language);
+        $propertyId = $this->upsertProperty($attribute, $apiHost, $headers, $language, $shopwareIdField);
 
         if ($pav->get('value') === null || $pav->get('value') === '') {
             return null;
@@ -110,9 +110,13 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         return $optionId;
     }
 
-    protected function upsertProperty(Entity $attribute, string $apiHost, array $headers, string $language): string
+    protected function upsertProperty(Entity $attribute, string $apiHost, array $headers, string $language, string $shopwareIdField): string
     {
-        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($attribute->get('id'));
+        if (!empty($shopwareIdField) && $attribute->has($shopwareIdField) && !empty($attribute->get($shopwareIdField))) {
+            $uuid = $attribute->get($shopwareIdField);
+        } else {
+            $uuid = $this->getInjection(Shopware6Uuid::class)->filter($attribute->get('id'));
+        }
 
         $nameField = 'name';
         if ($language !== 'main') {

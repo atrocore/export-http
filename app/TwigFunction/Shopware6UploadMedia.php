@@ -37,7 +37,7 @@ class Shopware6UploadMedia extends AbstractTwigFunction
         $this->addDependency(Custom::class);
     }
 
-    public function run(string $assetId, string $mediaFolderId = null): ?string
+    public function run(string $assetId, string $mediaFolderId = null, bool $convertImage = true): ?string
     {
         if (empty($assetId)) {
             return null;
@@ -54,17 +54,21 @@ class Shopware6UploadMedia extends AbstractTwigFunction
             return null;
         }
 
-        try {
-            $converter = $this->getInjection(Custom::class)->setAttachment($attachment);
-            $parameters = ['quality' => 90, 'format' => 'jpeg'];
-            if ($converter->getImageWidth() > 1600) {
-                $parameters['width'] = 1600;
-                $parameters['scale'] = 'byWidth';
-            }
+        if ($convertImage) {
+            try {
+                $converter = $this->getInjection(Custom::class)->setAttachment($attachment);
+                $parameters = ['quality' => 90, 'format' => 'jpeg'];
+                if ($converter->getImageWidth() > 1600) {
+                    $parameters['width'] = 1600;
+                    $parameters['scale'] = 'byWidth';
+                }
 
-            $filePath = $converter->setParams($parameters)->convert()->getFilePath();
-        } catch (\Throwable $e) {
-            return null;
+                $filePath = $converter->setParams($parameters)->convert()->getFilePath();
+            } catch (\Throwable $e) {
+                return null;
+            }
+        } else {
+            $filePath = $attachment->getFilePath();
         }
 
         $dirs = explode('/', $filePath);
