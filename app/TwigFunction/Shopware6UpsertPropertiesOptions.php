@@ -41,7 +41,7 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
         $this->addDependency(Shopware6UpsertPropertyOption::class);
     }
 
-    public function run(string $productId, string $channelId = '', string $language = 'main', string $sortingType = 'alphanumeric'): array
+    public function run(string $productId, string $channelId = '', string $language = 'main', string $sortingType = 'alphanumeric', string $shopwareIdField = ''): array
     {
         if (empty($productId)) {
             return [];
@@ -58,7 +58,11 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
                 if ($this->validateProductAttributeValue($item, $collection, $channelId, $language)) {
                     $attribute = $item->get('attribute');
 
-                    $propertyId = $this->getInjection(Shopware6Uuid::class)->filter($attribute->id);
+                    if (!empty($shopwareIdField) && $attribute->has($shopwareIdField) && !empty($attribute->get($shopwareIdField))) {
+                        $propertyId = $attribute->get($shopwareIdField);
+                    } else {
+                        $propertyId = $this->getInjection(Shopware6Uuid::class)->filter($attribute->id);
+                    }
 
                     $nameField = 'name';
                     if ($language !== 'main') {
