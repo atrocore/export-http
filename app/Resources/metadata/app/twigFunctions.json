@@ -1,14 +1,3 @@
 {
-  "isCategoryFromChannel": "\\ExportHttp\\TwigFunction\\CategoryFromChannel",
-  "shopware6UploadMedia": "\\ExportHttp\\TwigFunction\\Shopware6UploadMedia",
-  "shopware6UpsertPropertyOption": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertyOption",
-  "shopware6UpsertPropertyOptionFromField": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertyOptionFromField",
-  "shopware6GetToDeleteOptions": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteOptions",
-  "shopware6GetToDeleteMedias": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteMedias",
-  "shopware6UpsertManufacturer": "\\ExportHttp\\TwigFunction\\Shopware6UpsertManufacturer",
-  "shopware6UpsertVariantOptions": "\\ExportHttp\\TwigFunction\\Shopware6UpsertVariantOptions",
-  "shopware6GetToDeleteVariantProperty": "\\ExportHttp\\TwigFunction\\Shopware6GetToDeleteVariantProperty",
-  "shopware6UpsertPropertiesOptions": "\\ExportHttp\\TwigFunction\\Shopware6UpsertPropertiesOptions",
-  "shopware6GetConfiguratorSettings": "\\ExportHttp\\TwigFunction\\Shopware6GetConfiguratorSettings",
-  "shopware6GetVariantsOptions": "\\ExportHttp\\TwigFunction\\Shopware6GetVariantsOptions"
+  "isCategoryFromChannel": "\\ExportHttp\\TwigFunction\\CategoryFromChannel"
 }
