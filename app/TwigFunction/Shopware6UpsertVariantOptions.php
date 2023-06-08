@@ -37,7 +37,7 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
         $this->addDependency(Shopware6UpsertPropertyOption::class);
     }
 
-    public function run(string $pavId, string $channelId = ''): ?string
+    public function run(string $pavId, string $channelId = '', string $shopwareIdField = ''): ?string
     {
         $pav = $this->getInjection('serviceFactory')->create('ProductAttributeValue')->getEntity($pavId);
 
@@ -88,7 +88,12 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
             $pav = $mainPav;
         }
 
-        $propertyId = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('attributeId'));
+        $attribute = $pav->get('attribute');
+        if (!empty($shopwareIdField) && $attribute->has($shopwareIdField) && !empty($attribute->get($shopwareIdField))) {
+            $propertyId = $attribute->get($shopwareIdField);
+        } else {
+            $propertyId = $this->getInjection(Shopware6Uuid::class)->filter($attribute->id);
+        }
 
         $uuidString = $propertyId . '_' . $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($pav);
 

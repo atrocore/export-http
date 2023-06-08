@@ -34,7 +34,7 @@ class Shopware6GetVariantsOptions extends AbstractTwigFunction
         $this->addDependency(Shopware6Uuid::class);
     }
 
-    public function run($product): array
+    public function run($product, string $shopwareIdField = ''): array
     {
         $result = [];
 
@@ -42,7 +42,11 @@ class Shopware6GetVariantsOptions extends AbstractTwigFunction
             return $result;
         }
 
-        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($product->get('id'));
+        if (!empty($shopwareIdField) && $product->has($shopwareIdField) && !empty($product->get($shopwareIdField))) {
+            $uuid = $product->get($shopwareIdField);
+        } else {
+            $uuid = $this->getInjection(Shopware6Uuid::class)->filter($product->id);
+        }
 
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
