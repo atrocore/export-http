@@ -37,7 +37,7 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
         $this->addDependency(Shopware6UpsertPropertyOption::class);
     }
 
-    public function run(string $pavId, string $channelId = '', string $shopwareIdField = ''): ?string
+    public function run(string $pavId, string $channelId = '', string $shopwareIdField = '', string $shopwareProductIdField = ''): ?string
     {
         $pav = $this->getInjection('serviceFactory')->create('ProductAttributeValue')->getEntity($pavId);
 
@@ -95,11 +95,21 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
             $propertyId = $this->getInjection(Shopware6Uuid::class)->filter($attribute->id);
         }
 
-        $uuidString = $propertyId . '_' . $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($pav);
+        $value = $this->getInjection(Shopware6UpsertPropertyOption::class)->preparePropertyOptionValue($pav);
 
-        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($uuidString);
+        if (empty($uuid = $this->searchPropertyId($propertyId, $value))) {
+            $uuidString = $propertyId . '_' . $value;
 
-        $productProperties = $this->getProductProperties($pav->get('productId'));
+            $uuid = $this->getInjection(Shopware6Uuid::class)->filter($uuidString);
+        }
+
+        if (!empty($shopwareProductIdField) && $attribute->has($shopwareProductIdField) && !empty($pav->get('product')->get($shopwareProductIdField))) {
+            $productId = $pav->get('product')->get($shopwareProductIdField);
+        } else {
+            $productId = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('productId'));
+        }
+
+        $productProperties = $this->getProductProperties($productId);
 
         if (in_array($uuid, $productProperties)) {
             return $uuid;
@@ -108,10 +118,8 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
         return null;
     }
 
-    protected function getProductProperties(string $productId): array
+    protected function getProductProperties(string $uuid): array
     {
-        $uuid = $this->getInjection(Shopware6Uuid::class)->filter($productId);
-
         $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
         $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
 
@@ -140,5 +148,46 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
         }
 
         return [];
+    }
+
+    protected function searchPropertyId(string $propertyId, $value): ?string
+    {
+        $apiUrlData = parse_url($this->getFeedData()['httpUrl']);
+        $apiHost = $apiUrlData['scheme'] . '://' . $apiUrlData['host'];
+
+        $connectionData = $this->getConnectionData();
+
+        $headers = [
+            'Content-Type: application/json',
+            "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}"
+        ];
+
+        $ch = curl_init("$apiHost/api/search/property-group/$propertyId/options");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt(
+            $ch, CURLOPT_POSTFIELDS, json_encode([
+                'total-count-mode' => 1
+            ])
+        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
+        curl_close($ch);
+
+        if (!empty($responseInfo['http_code']) && !empty($response)) {
+            $response = json_decode($response, true);
+
+            if (is_array($response) && !empty($response['data'])) {
+                foreach ($response['data'] as $option) {
+                    if (array_key_exists('attributes', $option) && array_key_exists('name', $option['attributes']) && $option['attributes']['name'] == $value) {
+                        return $option['id'];
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }
