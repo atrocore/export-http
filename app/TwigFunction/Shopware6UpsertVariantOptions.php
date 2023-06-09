@@ -103,7 +103,7 @@ class Shopware6UpsertVariantOptions extends AbstractTwigFunction
             $uuid = $this->getInjection(Shopware6Uuid::class)->filter($uuidString);
         }
 
-        if (!empty($shopwareProductIdField) && $attribute->has($shopwareProductIdField) && !empty($pav->get('product')->get($shopwareProductIdField))) {
+        if (!empty($shopwareProductIdField) && $pav->get('product')->has($shopwareProductIdField) && !empty($pav->get('product')->get($shopwareProductIdField))) {
             $productId = $pav->get('product')->get($shopwareProductIdField);
         } else {
             $productId = $this->getInjection(Shopware6Uuid::class)->filter($pav->get('productId'));
