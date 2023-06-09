@@ -68,10 +68,11 @@ class Shopware6UpsertPropertiesOptions extends AbstractTwigFunction
                     if ($language !== 'main') {
                         $nameField .= ucfirst(Util::toCamelCase(strtolower($language)));
                     }
+                    $name = $attribute->has($nameField) && !empty($attribute->get($nameField)) ? $attribute->get($nameField) : $attribute->get('name');
 
                     $data = [
                         'id' => $propertyId,
-                        'name' => $attribute->get($nameField),
+                        'name' => $name,
                         'displayType' => 'text',
                         'sortingType' => 'alphanumeric',
                         'filterable' => $attribute->has('filterable') && $attribute->get('filterable') == true,

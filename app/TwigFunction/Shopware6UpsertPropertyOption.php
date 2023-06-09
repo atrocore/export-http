@@ -122,10 +122,11 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
         if ($language !== 'main') {
             $nameField .= ucfirst(Util::toCamelCase(strtolower($language)));
         }
+        $name = $attribute->has($nameField) && !empty($attribute->get($nameField)) ? $attribute->get($nameField) : $attribute->get('name');
 
         $body = [
             'id'   => $uuid,
-            'name' => $attribute->get($nameField),
+            'name' => $name,
             'filterable' => $attribute->has('filterable') && $attribute->get('filterable') == true,
         ];
 
@@ -310,7 +311,9 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
             $option = $this->getInjection(ExtensibleEnumOption::class)->run($value);
 
             if (!empty($option)) {
-                $result = $option->get($this->getMultilangFieldName('name', $language));
+                $nameField = $this->getMultilangFieldName('name', $language);
+
+                $result = $option->has($nameField) && !empty($option->get($nameField)) ? $option->get($nameField) : $option->get('name');
             }
         } elseif ($entity->get('attributeType') == 'extensibleMultiEnum') {
             $result = [];
@@ -326,7 +329,7 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
             foreach ($value as $id) {
                 foreach ($options as $option) {
                     if ($option->id == $id) {
-                        $result[] = $option->get($nameField);
+                        $result[] = $option->has($nameField) && !empty($option->get($nameField)) ? $option->get($nameField) : $option->get('name');
                     }
                 }
             }
