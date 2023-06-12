@@ -26,6 +26,7 @@ use Espo\Core\Utils\Util;
 use Espo\ORM\Entity;
 use Export\TwigFunction\ExtensibleEnumOption;
 use ExportHttp\TwigFilter\Shopware6Uuid;
+use Pim\Entities\Attribute;
 
 class Shopware6UpsertPropertyOption extends AbstractTwigFunction
 {
@@ -288,7 +289,25 @@ class Shopware6UpsertPropertyOption extends AbstractTwigFunction
                 $value = !empty($value) ? '+' : '-';
                 break;
             case 'unit':
-                $value .= ' ' . $pav->get('valueUnit');
+                /** @var Attribute $attribute */
+                $attribute = $pav->get('attribute');
+                if (!empty($attribute) && !empty($measure = $attribute->_getMeasure())) {
+                    $unit = $this
+                        ->getInjection('entityManager')
+                        ->getRepository('Unit')
+                        ->join('measure')
+                        ->where(['measure.name' => $measure, 'name' => $pav->get('valueUnit')])
+                        ->findOne();
+
+                    if (!empty($unit)) {
+                        $nameField = $this->getMultilangFieldName('name', $language);
+
+                        $valueUnit = !empty($unit->get($nameField)) ? $unit->get($nameField) : $unit->get('name');
+                        $value .= ' ' . $valueUnit;
+                    } else {
+                        $value .= ' ' . $pav->get('valueUnit');
+                    }
+                }
                 break;
             case 'currency':
                 $value .= ' ' . $pav->get('valueCurrency');
