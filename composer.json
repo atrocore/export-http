@@ -2,9 +2,9 @@
   "name": "atrocore/export-feeds-http",
   "default": "",
   "require": {
-    "atrocore/core": ">1.4.146 <1.6.0",
+    "atrocore/core": ">1.4.146 <1.7.0",
     "atrocore/dam": ">=1.3.69 <1.6.0",
-    "atrocore/export-feeds": "~1.6.43"
+    "atrocore/export-feeds": ">=1.6.43 <1.8.0
   },
   "conflict": {
     "atrocore/pim": "<1.8.3"
