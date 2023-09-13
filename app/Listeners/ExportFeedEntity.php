@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace ExportHttp\Listeners;
 
-use Espo\Core\EventManager\Event;
+use Atro\Core\EventManager\Event;
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Listeners\AbstractListener;
+use Atro\Listeners\AbstractListener;
 
 class ExportFeedEntity extends AbstractListener
 {

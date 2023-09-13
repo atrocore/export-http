@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace ExportHttp\Listeners;
 
-use Espo\Core\EventManager\Event;
+use Atro\Core\EventManager\Event;
 
-class ExportFeedService extends \Espo\Listeners\AbstractListener
+class ExportFeedService extends \Atro\Listeners\AbstractListener
 {
     public function prepareFeedData(Event $event): void
     {

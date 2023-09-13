@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFunction;
 
-use Espo\ConnectionType\ConnectionOauth2;
+use Atro\ConnectionType\ConnectionOauth2;
 
 abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFunction
 {

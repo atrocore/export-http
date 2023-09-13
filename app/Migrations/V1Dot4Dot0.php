@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace ExportHttp\Migrations;
 
 use Espo\Core\Exceptions\Error;
-use Treo\Core\Migration\Base;
+use Atro\Core\Migration\Base;
 
 class V1Dot4Dot0 extends Base
 {
