@@ -1,7 +1,8 @@
 {
   "connectionTypes": {
     "httpPro": [
-      "oauth2"
+      "oauth2",
+      "cookie"
     ]
   }
 }

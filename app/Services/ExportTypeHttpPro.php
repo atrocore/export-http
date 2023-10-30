@@ -61,8 +61,16 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
             $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
             if (!empty($connectionEntity)) {
-                $connectionData = $this->getContainer()->get(ConnectionOauth2::class)->connect($connectionEntity);
-                $headers[] = "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}";
+                $type = $connectionEntity->get('type');
+                $connectionData = $this->getContainer()->get('\\Atro\\ConnectionType\\Connection' . ucfirst($connectionEntity->get('type')))->connect($connectionEntity);
+                switch ($type) {
+                    case 'cookie':
+                        $headers[] = "Cookie: {$connectionData['cookie']}";
+                        break;
+                    case 'oauth2':
+                        $headers[] = "Authorization: {$connectionData['token_type']} {$connectionData['access_token']}";
+                        break;
+                }
             }
         }
 
@@ -73,6 +81,8 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->data['feed']['httpMethod']);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         if (!empty($contents)) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $contents);
         }
