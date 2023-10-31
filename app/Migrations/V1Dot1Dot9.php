@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace ExportHttp\Migrations;
 
 use Espo\Core\Exceptions\Error;
-use Espo\Core\Utils\Metadata;
 use Atro\Core\Migration\Base;
 
 class V1Dot1Dot9 extends Base

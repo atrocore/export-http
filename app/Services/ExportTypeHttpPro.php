@@ -60,6 +60,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         }
         if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
             $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
+
             if (!empty($connectionEntity)) {
                 $type = $connectionEntity->get('type');
                 $connectionClass = $this->getMetadata()->get(['app', 'connectionTypes', $type]);

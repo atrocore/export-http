@@ -1,9 +1,10 @@
 {
   "connectionTypes": {
     "httpPro": [
+      "oauth1",
       "oauth2",
-      "otto",
-      "oauth1"
+      "cookie",
+      "otto"
     ]
   }
 }
