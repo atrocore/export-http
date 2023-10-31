@@ -22,8 +22,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\Services;
 
-use Atro\ConnectionType\ConnectionInterface;
-use Atro\ConnectionType\ConnectionOauth2;
+use Atro\ConnectionType\AbstractConnection;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Entities\Attachment;
 use Export\Entities\ExportJob;
@@ -61,17 +60,22 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         }
         if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
             $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
+
             if (!empty($connectionEntity)) {
                 $type = $connectionEntity->get('type');
-
                 $connectionClass = $this->getMetadata()->get(['app', 'connectionTypes', $type]);
 
                 if (empty($connectionClass)) {
                     $connectionClass = '\\Atro\\ConnectionType\\Connection' . ucfirst($type);
                 }
 
-                /* @var ConnectionInterface $connection */
+                /* @var AbstractConnection $connection */
                 $connection = $this->getContainer()->get($connectionClass);
+
+                $connection->setData([
+                    "httpUrl" => $url,
+                    "httpBody" => $contents
+                ]);
 
                 $connectionData = $connection->connect($connectionEntity);
                 $headers = array_merge($headers, $connection->getHeaders($connectionData));
