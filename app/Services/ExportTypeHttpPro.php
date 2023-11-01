@@ -35,9 +35,6 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     {
         $attachment = parent::export($data, $exportJob);
 
-        /** @var ExportFeed $exportFeed */
-        $exportFeed = $exportJob->get('exportFeed');
-
         // save file to export job
         $exportJob->set('fileId', $attachment->get('id'));
         $this->getEntityManager()->saveEntity($exportJob);
@@ -108,6 +105,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         if (!in_array($httpCode, [200, 201, 204])) {
             throw new BadRequest("Response Code: $httpCode Body: $output");
         } else {
+            /** @var ExportFeed $exportFeed */
+            $exportFeed = $exportJob->get('exportFeed');
+
             if (!empty($output) && !empty($importFeed = $exportFeed->get('processResponse'))) {
                 $attachmentData = new \stdClass();
 
@@ -151,7 +151,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
                         $importFeedService->pushJobs($importFeed, $attachmentImport->id);
                     }
                 } catch (\Throwable $e) {
-                    $GLOBALS['log']->error($e->getMessage());
+                    $GLOBALS['log']->error('Response processing failed: ' . $e->getMessage());
                 }
             }
         }
