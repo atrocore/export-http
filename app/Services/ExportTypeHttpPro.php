@@ -25,13 +25,18 @@ namespace ExportHttp\Services;
 use Atro\ConnectionType\AbstractConnection;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Entities\Attachment;
+use Export\Entities\ExportFeed;
 use Export\Entities\ExportJob;
+use Import\Services\ImportFeed;
 
 class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 {
     public function export(array $data, ExportJob $exportJob): Attachment
     {
         $attachment = parent::export($data, $exportJob);
+
+        /** @var ExportFeed $exportFeed */
+        $exportFeed = $exportJob->get('exportFeed');
 
         // save file to export job
         $exportJob->set('fileId', $attachment->get('id'));
@@ -102,6 +107,53 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
         if (!in_array($httpCode, [200, 201, 204])) {
             throw new BadRequest("Response Code: $httpCode Body: $output");
+        } else {
+            if (!empty($output) && !empty($importFeed = $exportFeed->get('processResponse'))) {
+                $attachmentData = new \stdClass();
+
+                $nameParts = $attachment->get('name');
+                $nameParts = explode('.', $nameParts);
+                array_pop($nameParts);
+
+                $attachmentData->name = implode('.', $nameParts);
+                $attachmentData->contents = $output;
+                $attachmentData->relatedType = 'ImportJob';
+                $attachmentData->field = 'uploadedFile';
+                $attachmentData->role = 'Attachment';
+
+                switch ($importFeed->getFeedField('format')) {
+                    case 'CSV':
+                        $attachmentData->name .= '.csv';
+                        $attachmentData->type = 'text/csv';
+                        break;
+                    case 'Excel':
+                        $attachmentData->name .= '.xlsx';
+                        $attachmentData->type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                        break;
+                    case 'JSON':
+                        $attachmentData->name .= '.json';
+                        $attachmentData->type = 'application/json';
+                        break;
+                    case 'XML':
+                        $attachmentData->name .= '.xml';
+                        $attachmentData->type = 'application/xml';
+                        break;
+                }
+
+                try {
+                    /** @var \Espo\Services\Attachment $attachmentService */
+                    $attachmentService = $this->getService('Attachment');
+
+                    if (!empty($attachmentImport = $attachmentService->createEntity($attachmentData))) {
+                        /** @var ImportFeed $importFeedService */
+                        $importFeedService = $this->getService('ImportFeed');
+
+                        $importFeedService->pushJobs($importFeed, $attachmentImport->id);
+                    }
+                } catch (\Throwable $e) {
+                    $GLOBALS['log']->error($e->getMessage());
+                }
+            }
         }
 
         $exportJob->set('stateMessage', $output);
