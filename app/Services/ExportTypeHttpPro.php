@@ -76,7 +76,8 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
                 $connection->setData([
                     "httpUrl" => $url,
-                    "httpBody" => $contents
+                    "httpBody" => $contents,
+                    "method" => $this->data['feed']['httpMethod']
                 ]);
 
                 $connectionData = $connection->connect($connectionEntity);
