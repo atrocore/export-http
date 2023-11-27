@@ -6,6 +6,6 @@
     "exportFeeds": "Export Feeds"
   },
   "tooltips": {
-    "template": "You can use the syntax for <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
+    "validator": "Sie können die Syntax von <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig-Template-Engine</a> verwenden."
   }
 }
