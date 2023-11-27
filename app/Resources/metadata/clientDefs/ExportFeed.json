@@ -68,6 +68,19 @@
             }
           ]
         }
+      },
+      "exportHttpValidator": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "httpPro"
+              ]
+            }
+          ]
+        }
       }
     }
   }

@@ -75,9 +75,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
                 $connection = $this->getContainer()->get($connectionClass);
 
                 $connection->setData([
-                    "httpUrl" => $url,
+                    "httpUrl"  => $url,
                     "httpBody" => $contents,
-                    "method" => $this->data['feed']['httpMethod']
+                    "method"   => $this->data['feed']['httpMethod']
                 ]);
 
                 $connectionData = $connection->connect($connectionEntity);
@@ -108,6 +108,16 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         } else {
             /** @var ExportFeed $exportFeed */
             $exportFeed = $exportJob->get('exportFeed');
+
+            $exportHttpValidator = $exportFeed->get('exportHttpValidator');
+            if (!empty($exportHttpValidator)) {
+                $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output]);
+                $success = strtolower($res) === 'true' || $res === '1';
+                if (empty($success)) {
+                    throw new BadRequest("Validation failed for validator {$exportHttpValidator->get('name')}. \n Result: $res \n Response Code: $httpCode \n Body: $output");
+                }
+            }
+
 
             if (!empty($output) && !empty($importFeed = $exportFeed->get('processResponse'))) {
                 $attachmentData = new \stdClass();

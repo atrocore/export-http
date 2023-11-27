@@ -1,0 +1,11 @@
+{
+  "fields": {
+    "validator": "Validator"
+  },
+  "links": {
+    "exportFeeds": "Export Feeds"
+  },
+  "tooltips": {
+    "validator": "Sie können die Syntax von <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig-Template-Engine</a> verwenden."
+  }
+}
