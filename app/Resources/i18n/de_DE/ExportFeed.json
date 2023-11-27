@@ -4,7 +4,8 @@
     "httpUrl": "URL",
     "httpMethod": "Methode",
     "httpConnectionId": "Verbindung",
-    "processResponse": "Import Feed for response processing"
+    "processResponse": "Import Feed for response processing",
+    "exportHttpValidator": "Antwortvalidator"
   },
   "links": {
     "exportHttpHeaders": "Headers"

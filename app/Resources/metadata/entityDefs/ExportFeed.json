@@ -53,6 +53,9 @@
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
+    },
+    "exportHttpValidator": {
+      "type": "link"
     }
   },
   "links": {
@@ -60,6 +63,11 @@
       "type": "hasMany",
       "foreign": "exportFeed",
       "entity": "ExportHttpHeader"
+    },
+    "exportHttpValidator": {
+      "type": "belongsTo",
+      "foreign": "exportFeeds",
+      "entity": "ExportHttpValidator"
     }
   }
 }

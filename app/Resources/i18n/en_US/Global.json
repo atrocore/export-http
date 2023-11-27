@@ -1,8 +1,10 @@
 {
   "scopeNames": {
-    "ExportHttpHeader": "Header"
+    "ExportHttpHeader": "Header",
+    "ExportHttpValidator": "Export Http Validator"
   },
   "scopeNamesPlural": {
-    "ExportHttpHeader": "Headers"
+    "ExportHttpHeader": "Headers",
+    "ExportHttpValidator": "Export Http Validators"
   }
 }
