@@ -7,7 +7,7 @@
     "validator": {
       "type": "text",
       "view": "views/fields/script",
-      "default": "{% set success = true %}\n{{ success }}",
+      "default": "{#ResponseText: \"{{responseText}}\" httpCode: \"{{httpCode}}\"#}\n{% set success = true %}\n{{ success }}",
       "tooltip": true,
       "required": true
     },
