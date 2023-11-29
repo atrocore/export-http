@@ -36,14 +36,25 @@ class Metadata extends AbstractListener
                 'type' => 'link'
             ];
             $data['entityDefs']['ExportFeed']['links']['processResponse'] = [
-                'type' => 'belongsTo',
+                'type'   => 'belongsTo',
                 'entity' => 'ImportFeed'
             ];
             $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['processResponse']['visible']['conditionGroup'] = [
                 [
-                    'type' => 'in',
+                    'type'      => 'in',
                     'attribute' => 'type',
-                    'value' => 'httpPro'
+                    'value'     => 'httpPro'
+                ]
+            ];
+
+            $data['entityDefs']['ExportFeed']['fields']['processResponseFormatter'] = [
+                'type' => 'text',
+                "view" => "views/fields/script",
+            ];
+            $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['processResponseFormatter']['visible']['conditionGroup'] = [
+                [
+                    'type'      => 'isNotEmpty',
+                    'attribute' => 'processResponse'
                 ]
             ];
         }
