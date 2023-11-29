@@ -30,6 +30,12 @@ class V1Dot5Dot8 extends Base
     public function up(): void
     {
         $fromSchema = $this->getCurrentSchema();
+        try {
+            $fromSchema->getTable('import_feed');
+        } catch (\Exception $e) {
+            return;
+        }
+
         $toSchema = clone $fromSchema;
 
         $this->addColumn($toSchema, 'export_feed', 'process_response_formatter', ['type' => 'text', 'default' => null]);
@@ -42,6 +48,12 @@ class V1Dot5Dot8 extends Base
     public function down(): void
     {
         $fromSchema = $this->getCurrentSchema();
+        try {
+            $fromSchema->getTable('import_feed');
+        } catch (\Exception $e) {
+            return;
+        }
+
         $toSchema = clone $fromSchema;
 
         $this->dropColumn($toSchema, 'export_feed', 'process_response_formatter');
