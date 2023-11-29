@@ -51,10 +51,11 @@ class Metadata extends AbstractListener
                 'type' => 'text',
                 "view" => "views/fields/script",
             ];
+
             $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['processResponseFormatter']['visible']['conditionGroup'] = [
                 [
                     'type'      => 'isNotEmpty',
-                    'attribute' => 'processResponse'
+                    'attribute' => 'processResponseId'
                 ]
             ];
         }
