@@ -111,7 +111,8 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
             $exportHttpValidator = $exportFeed->get('exportHttpValidator');
             if (!empty($exportHttpValidator)) {
-                $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output]);
+                $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities]);
+                $res = trim($res);
                 $success = strtolower($res) === 'true' || $res === '1';
                 if (empty($success)) {
                     throw new BadRequest("Validation failed for validator {$exportHttpValidator->get('name')}. \n Result: $res \n Response Code: $httpCode \n Body: $output");
@@ -126,8 +127,15 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
                 $nameParts = explode('.', $nameParts);
                 array_pop($nameParts);
 
+                $attachmentContents = $output;
+
+                $formatter = $exportFeed->get('processResponseFormatter');
+                if(!empty($formatter)){
+                    $attachmentContents = $this->renderTemplateContents($formatter, ['responseText' => $output, 'entities' => $entities]);
+                }
+
                 $attachmentData->name = implode('.', $nameParts);
-                $attachmentData->contents = $output;
+                $attachmentData->contents = $attachmentContents;
                 $attachmentData->relatedType = 'ImportJob';
                 $attachmentData->field = 'uploadedFile';
                 $attachmentData->role = 'Attachment';

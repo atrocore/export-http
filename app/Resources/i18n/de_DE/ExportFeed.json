@@ -5,6 +5,7 @@
     "httpMethod": "Methode",
     "httpConnectionId": "Verbindung",
     "processResponse": "Import Feed for response processing",
+    "processResponseFormatter": "Import Feed attachment formatter",
     "exportHttpValidator": "Antwortvalidator"
   },
   "links": {

@@ -48,11 +48,12 @@ class LayoutController extends AbstractListener
         $result[1]['rows'][] = [['name' => 'httpMethod'], ['name' => 'httpConnectionId']];
         $result[1]['rows'][] = [['name' => 'httpUrl', 'fullWidth' => true]];
 
-        $row = [['name' => 'exportHttpValidator'], false];
         if ($this->getMetadata()->get(['entityDefs', 'ExportFeed', 'fields', 'processResponse'])) {
-            $row[1] = ['name' => 'processResponse'];
+            $result[0]['rows'][] = [['name' => 'processResponse'], ['name' => 'processResponseFormatter']];
         }
-        $result[0]['rows'][] = $row;
+
+        $result[0]['rows'][] = [['name' => 'exportHttpValidator'], false];
+
 
         $event->setArgument('result', Json::encode($result));
     }
