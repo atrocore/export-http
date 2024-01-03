@@ -103,7 +103,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if (!in_array($httpCode, [200, 201, 204])) {
+        if (!in_array($httpCode, [200, 201, 204, 202, 205])) {
             throw new BadRequest("Response Code: $httpCode Body: $output");
         } else {
             /** @var ExportFeed $exportFeed */
