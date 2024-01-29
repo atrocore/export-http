@@ -23,6 +23,9 @@ declare(strict_types=1);
 namespace ExportHttp\Services;
 
 use Atro\ConnectionType\AbstractConnection;
+use Atro\ConnectionType\ConnectionAtroCore;
+use Atro\ConnectionType\HttpConnectionInterface;
+use Atro\DTO\HttpResponseDTO;
 use Espo\Core\Exceptions\BadRequest;
 use Espo\Entities\Attachment;
 use Export\Entities\ExportFeed;
@@ -60,123 +63,92 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
                 $headers[] = "{$v['key']}: {$v['value']}";
             }
         }
-        if (!empty($this->data['feed']['data']['feedFields']['httpConnectionId'])) {
-            $connectionEntity = $this->getEntityManager()->getEntity('Connection', $this->data['feed']['data']['feedFields']['httpConnectionId']);
 
-            if (!empty($connectionEntity)) {
-                $type = $connectionEntity->get('type');
-                $connectionClass = $this->getMetadata()->get(['app', 'connectionTypes', $type]);
+        $response = $this
+            ->createConnection($this->data['feed']['data']['feedFields']['httpConnectionId'] ?? null)
+            ->request($url, $this->data['feed']['httpMethod'], $headers, $contents);
 
-                if (empty($connectionClass)) {
-                    $connectionClass = '\\Atro\\ConnectionType\\Connection' . ucfirst($type);
-                }
+        $httpCode = $response->getCode();
+        $output = $response->getOutput();
 
-                /* @var AbstractConnection $connection */
-                $connection = $this->getContainer()->get($connectionClass);
+        /** @var ExportFeed $exportFeed */
+        $exportFeed = $exportJob->get('exportFeed');
 
-                $connection->setData([
-                    "httpUrl"  => $url,
-                    "httpBody" => $contents,
-                    "method"   => $this->data['feed']['httpMethod']
-                ]);
-
-                $connectionData = $connection->connect($connectionEntity);
-                $headers = array_merge($headers, $connection->getHeaders($connectionData));
+        $exportHttpValidator = $exportFeed->get('exportHttpValidator');
+        if (!empty($exportHttpValidator)) {
+            $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities]);
+            $res = trim($res);
+            $success = strtolower($res) === 'true' || $res === '1';
+            if (empty($success)) {
+                throw new BadRequest("Validation failed for validator {$exportHttpValidator->get('name')}. \n Result: $res \n Response Code: $httpCode \n Body: $output");
             }
         }
 
-        /**
-         * Send request
-         */
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->data['feed']['httpMethod']);
-        if (!empty($contents)) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $contents);
-        }
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        $output = curl_exec($ch);
-        if ($output === false) {
-            throw new BadRequest('Curl error: ' . curl_error($ch));
-        }
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        if (!empty($output) && !empty($importFeed = $exportFeed->get('processResponse'))) {
+            $attachmentData = new \stdClass();
 
-        if (!in_array($httpCode, [200, 201, 204, 202, 205])) {
-            throw new BadRequest("Response Code: $httpCode Body: $output");
-        } else {
-            /** @var ExportFeed $exportFeed */
-            $exportFeed = $exportJob->get('exportFeed');
+            $nameParts = $attachment->get('name');
+            $nameParts = explode('.', $nameParts);
+            array_pop($nameParts);
 
-            $exportHttpValidator = $exportFeed->get('exportHttpValidator');
-            if (!empty($exportHttpValidator)) {
-                $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities]);
-                $res = trim($res);
-                $success = strtolower($res) === 'true' || $res === '1';
-                if (empty($success)) {
-                    throw new BadRequest("Validation failed for validator {$exportHttpValidator->get('name')}. \n Result: $res \n Response Code: $httpCode \n Body: $output");
-                }
+            $attachmentContents = $output;
+
+            $formatter = $exportFeed->get('processResponseFormatter');
+            if (!empty($formatter)) {
+                $attachmentContents = $this->renderTemplateContents($formatter, ['responseText' => $output, 'entities' => $entities]);
             }
 
+            $attachmentData->name = implode('.', $nameParts);
+            $attachmentData->contents = $attachmentContents;
+            $attachmentData->relatedType = 'ImportJob';
+            $attachmentData->field = 'uploadedFile';
+            $attachmentData->role = 'Attachment';
 
-            if (!empty($output) && !empty($importFeed = $exportFeed->get('processResponse'))) {
-                $attachmentData = new \stdClass();
+            switch ($importFeed->getFeedField('format')) {
+                case 'CSV':
+                    $attachmentData->name .= '.csv';
+                    $attachmentData->type = 'text/csv';
+                    break;
+                case 'Excel':
+                    $attachmentData->name .= '.xlsx';
+                    $attachmentData->type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    break;
+                case 'JSON':
+                    $attachmentData->name .= '.json';
+                    $attachmentData->type = 'application/json';
+                    break;
+                case 'XML':
+                    $attachmentData->name .= '.xml';
+                    $attachmentData->type = 'application/xml';
+                    break;
+            }
 
-                $nameParts = $attachment->get('name');
-                $nameParts = explode('.', $nameParts);
-                array_pop($nameParts);
+            try {
+                /** @var \Espo\Services\Attachment $attachmentService */
+                $attachmentService = $this->getService('Attachment');
 
-                $attachmentContents = $output;
+                if (!empty($attachmentImport = $attachmentService->createEntity($attachmentData))) {
+                    /** @var ImportFeed $importFeedService */
+                    $importFeedService = $this->getService('ImportFeed');
 
-                $formatter = $exportFeed->get('processResponseFormatter');
-                if(!empty($formatter)){
-                    $attachmentContents = $this->renderTemplateContents($formatter, ['responseText' => $output, 'entities' => $entities]);
+                    $importFeedService->pushJobs($importFeed, $attachmentImport->id);
                 }
-
-                $attachmentData->name = implode('.', $nameParts);
-                $attachmentData->contents = $attachmentContents;
-                $attachmentData->relatedType = 'ImportJob';
-                $attachmentData->field = 'uploadedFile';
-                $attachmentData->role = 'Attachment';
-
-                switch ($importFeed->getFeedField('format')) {
-                    case 'CSV':
-                        $attachmentData->name .= '.csv';
-                        $attachmentData->type = 'text/csv';
-                        break;
-                    case 'Excel':
-                        $attachmentData->name .= '.xlsx';
-                        $attachmentData->type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                        break;
-                    case 'JSON':
-                        $attachmentData->name .= '.json';
-                        $attachmentData->type = 'application/json';
-                        break;
-                    case 'XML':
-                        $attachmentData->name .= '.xml';
-                        $attachmentData->type = 'application/xml';
-                        break;
-                }
-
-                try {
-                    /** @var \Espo\Services\Attachment $attachmentService */
-                    $attachmentService = $this->getService('Attachment');
-
-                    if (!empty($attachmentImport = $attachmentService->createEntity($attachmentData))) {
-                        /** @var ImportFeed $importFeedService */
-                        $importFeedService = $this->getService('ImportFeed');
-
-                        $importFeedService->pushJobs($importFeed, $attachmentImport->id);
-                    }
-                } catch (\Throwable $e) {
-                    $GLOBALS['log']->error('Response processing failed: ' . $e->getMessage());
-                }
+            } catch (\Throwable $e) {
+                $GLOBALS['log']->error('Response processing failed: ' . $e->getMessage());
             }
         }
 
         $exportJob->set('stateMessage', $output);
 
         return $attachment;
+    }
+
+    protected function createConnection(?string $httpConnectionId = null): HttpConnectionInterface
+    {
+        if (empty($httpConnectionId)) {
+            return $this->getContainer()->get(ConnectionAtroCore::class);
+        }
+
+        return $this->getContainer()->get('connectionFactory')->createById($httpConnectionId);
     }
 }
