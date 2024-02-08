@@ -24,6 +24,7 @@ namespace ExportHttp\Services;
 
 use Atro\ConnectionType\AbstractConnection;
 use Atro\ConnectionType\ConnectionAtroCore;
+use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\HttpConnectionInterface;
 use Atro\DTO\HttpResponseDTO;
 use Espo\Core\Exceptions\BadRequest;
@@ -146,7 +147,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     protected function createConnection(?string $httpConnectionId = null): HttpConnectionInterface
     {
         if (empty($httpConnectionId)) {
-            return $this->getContainer()->get(ConnectionAtroCore::class);
+            return $this->getContainer()->get(ConnectionHttp::class);
         }
 
         return $this->getContainer()->get('connectionFactory')->createById($httpConnectionId);
