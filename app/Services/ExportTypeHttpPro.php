@@ -22,20 +22,18 @@ declare(strict_types=1);
 
 namespace ExportHttp\Services;
 
-use Atro\ConnectionType\AbstractConnection;
-use Atro\ConnectionType\ConnectionAtroCore;
+
 use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\HttpConnectionInterface;
-use Atro\DTO\HttpResponseDTO;
+use Atro\Entities\File;
 use Espo\Core\Exceptions\BadRequest;
-use Espo\Entities\Attachment;
 use Export\Entities\ExportFeed;
 use Export\Entities\ExportJob;
 use Import\Services\ImportFeed;
 
 class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 {
-    public function export(array $data, ExportJob $exportJob): Attachment
+    public function export(array $data, ExportJob $exportJob): File
     {
         $attachment = parent::export($data, $exportJob);
 
@@ -53,12 +51,11 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
 
         // get file contents
-        $contents = file_get_contents($this->getEntityManager()->getRepository('Attachment')->getFilePath($attachment));
-
+        $contents = $this->getEntityManager()->getRepository('File')->getContents($attachment);
         /**
          * Prepare headers
          */
-        $headers = ['Content-Type: ' . $attachment->get('type')];
+        $headers = ['Content-Type: ' . $attachment->get('mimeType')];
         if (!empty($this->data['feed']['httpHeaders'])) {
             foreach ($this->data['feed']['httpHeaders'] as $v) {
                 $headers[] = "{$v['key']}: {$v['value']}";
@@ -100,39 +97,36 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             }
 
             $attachmentData->name = implode('.', $nameParts);
-            $attachmentData->contents = $attachmentContents;
-            $attachmentData->relatedType = 'ImportJob';
-            $attachmentData->field = 'uploadedFile';
-            $attachmentData->role = 'Attachment';
+            $attachmentData->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
+            $attachmentData->hidden = true;
 
             switch ($importFeed->getFeedField('format')) {
                 case 'CSV':
                     $attachmentData->name .= '.csv';
-                    $attachmentData->type = 'text/csv';
+                    $attachmentData->mimeType = 'text/csv';
                     break;
                 case 'Excel':
                     $attachmentData->name .= '.xlsx';
-                    $attachmentData->type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    $attachmentData->mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                     break;
                 case 'JSON':
                     $attachmentData->name .= '.json';
-                    $attachmentData->type = 'application/json';
+                    $attachmentData->mimeType = 'application/json';
                     break;
                 case 'XML':
                     $attachmentData->name .= '.xml';
-                    $attachmentData->type = 'application/xml';
+                    $attachmentData->mimeType = 'application/xml';
                     break;
             }
 
             try {
                 /** @var \Espo\Services\Attachment $attachmentService */
-                $attachmentService = $this->getService('Attachment');
-
-                if (!empty($attachmentImport = $attachmentService->createEntity($attachmentData))) {
+                $fileData = $this->getService('File')->createFileViaContents($attachmentData, $attachmentContents);
+                if (!empty($fileData['id'])) {
                     /** @var ImportFeed $importFeedService */
                     $importFeedService = $this->getService('ImportFeed');
 
-                    $importFeedService->pushJobs($importFeed, $attachmentImport->id);
+                    $importFeedService->pushJobs($importFeed, $fileData['id']);
                 }
             } catch (\Throwable $e) {
                 $GLOBALS['log']->error('Response processing failed: ' . $e->getMessage());
