@@ -1,5 +1,5 @@
 {
-  "name": "atrocore/export-feeds-http",
+  "name": "atrocore/export-http",
   "default": "",
   "require": {
     "atrocore/core": ">=1.10.0 <1.11.0",
@@ -16,7 +16,7 @@
   "extra": {
     "treoId": "ExportHttp",
     "name": {
-      "default": "Export Feeds: HTTP Request"
+      "default": "Export: HTTP Request"
     },
     "description": {
       "default": "This module allows you to use a template engine to configure and export any structured data of any complexity manually or fully automatically via HTTP request. Any REST/SOAP API calls can be executed. You can use an export feed like a webhook too."
