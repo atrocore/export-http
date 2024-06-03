@@ -64,7 +64,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
         $response = $this
             ->createConnection($this->data['feed']['data']['feedFields']['httpConnectionId'] ?? null)
-            ->request($url, $this->data['feed']['httpMethod'], $headers, $contents);
+            ->request($url, $this->data['feed']['httpMethod'], $headers, $contents, false);
 
         $httpCode = $response->getCode();
         $output = $response->getOutput();
