@@ -26,7 +26,7 @@ namespace ExportHttp\Services;
 use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\HttpConnectionInterface;
 use Atro\Entities\File;
-use Espo\Core\Exceptions\BadRequest;
+use Atro\Core\Exceptions\BadRequest;
 use Export\Entities\ExportFeed;
 use Export\Entities\ExportJob;
 use Import\Services\ImportFeed;
@@ -79,6 +79,11 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $success = strtolower($res) === 'true' || $res === '1';
             if (empty($success)) {
                 throw new BadRequest("Validation failed for validator {$exportHttpValidator->get('name')}. \n Result: $res \n Response Code: $httpCode \n Body: $output");
+            }
+        } else {
+            // Standard validation
+            if ($httpCode < 200 || $httpCode >= 300) {
+                throw new BadRequest("Response Code: $httpCode Body: $output");
             }
         }
 
