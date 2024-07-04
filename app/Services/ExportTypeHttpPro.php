@@ -125,7 +125,6 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             }
 
             try {
-                /** @var \Espo\Services\Attachment $attachmentService */
                 $fileData = $this->getService('File')->createFileViaContents($attachmentData, $attachmentContents);
                 if (!empty($fileData['id'])) {
                     /** @var ImportFeed $importFeedService */
