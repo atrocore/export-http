@@ -28,6 +28,7 @@
       ],
       "default": "POST",
       "notStorable": true,
+      "filterDisabled": true,
       "dataField": true,
       "prohibitedEmptyValue": true
     },
@@ -35,15 +36,18 @@
       "type": "varchar",
       "view": "export-http:views/export-feed/fields/http-connection",
       "notStorable": true,
+      "filterDisabled": true,
       "dataField": true
     },
     "httpConnectionName": {
       "type": "varchar",
-      "notStorable": true
+      "notStorable": true,
+      "filterDisabled": true
     },
     "httpUrl": {
       "type": "text",
       "notStorable": true,
+      "filterDisabled": true,
       "dataField": true,
       "tooltip": true
     },
