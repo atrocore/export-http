@@ -39,10 +39,8 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
         $connectionData = [];
         $feedData = $this->getFeedData();
 
-        if (array_key_exists('data' , $feedData) && is_array($feedData['data'])
-            && array_key_exists('feedFields', $feedData['data']) && is_array($feedData['data']['feedFields'])
-            && array_key_exists('httpConnectionId', $feedData['data']['feedFields'])) {
-            $connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'];
+        if (array_key_exists('data' , $feedData) && is_array($feedData['data']) && array_key_exists('feedFields', $feedData['data']) && is_array($feedData['data']['feedFields'])) {
+            $connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'] ?? null;
 
             if (!empty($connectionId)) {
                 if ($this->getMemoryStorage()->has('access_token_' . $connectionId)) {
