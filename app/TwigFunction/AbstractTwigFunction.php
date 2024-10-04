@@ -37,17 +37,23 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
     public function getConnectionData(): array
     {
         $connectionData = [];
-        $connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'];
+        $feedData = $this->getFeedData();
 
-        if (!empty($connectionId)) {
-            if ($this->getMemoryStorage()->has('access_token_' . $connectionId)) {
-                return $this->getMemoryStorage()->get('access_token_' . $connectionId);
-            }
+        if (array_key_exists('data' , $feedData) && is_array($feedData['data'])
+            && array_key_exists('feedFields', $feedData['data']) && is_array($feedData['data']['feedFields'])
+            && array_key_exists('httpConnectionId', $feedData['data']['feedFields'])) {
+            $connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'];
 
-            $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $connectionId);
-            if (!empty($connectionEntity)) {
-                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
-                $this->getMemoryStorage()->set('access_token_' . $connectionId, $connectionData, (int)$connectionData['expires_in'] ?? 600);
+            if (!empty($connectionId)) {
+                if ($this->getMemoryStorage()->has('access_token_' . $connectionId)) {
+                    return $this->getMemoryStorage()->get('access_token_' . $connectionId);
+                }
+
+                $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $connectionId);
+                if (!empty($connectionEntity)) {
+                    $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+                    $this->getMemoryStorage()->set('access_token_' . $connectionId, $connectionData, (int)$connectionData['expires_in'] ?? 600);
+                }
             }
         }
 
