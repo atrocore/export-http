@@ -37,7 +37,9 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
     public function getConnectionData(): array
     {
         $connectionData = [];
-        if (!empty($connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'])) {
+        $connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'];
+
+        if (!empty($connectionId)) {
             if ($this->getMemoryStorage()->has('access_token_' . $connectionId)) {
                 return $this->getMemoryStorage()->get('access_token_' . $connectionId);
             }
