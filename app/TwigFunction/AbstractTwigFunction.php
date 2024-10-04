@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace ExportHttp\TwigFunction;
 
 use Atro\ConnectionType\ConnectionOauth2;
+use Atro\Core\KeyValueStorages\StorageInterface;
 
 abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFunction
 {
@@ -30,18 +31,34 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
     {
         $this->addDependency('entityManager');
         $this->addDependency(ConnectionOauth2::class);
+        $this->addDependency('memcachedStorage');
     }
 
     public function getConnectionData(): array
     {
         $connectionData = [];
-        if (!empty($this->getFeedData()['data']['feedFields']['httpConnectionId'])) {
-            $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $this->getFeedData()['data']['feedFields']['httpConnectionId']);
+        
+        $connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'] ?? null;
+        if (!empty($connectionId)) {
+            if ($this->getMemoryStorage()->has('access_token_' . $connectionId)) {
+                return $this->getMemoryStorage()->get('access_token_' . $connectionId);
+            }
+
+            $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $connectionId);
             if (!empty($connectionEntity)) {
                 $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+                $this->getMemoryStorage()->set('access_token_' . $connectionId, $connectionData, (int)$connectionData['expires_in'] ?? 600);
             }
         }
 
         return $connectionData;
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    protected function getMemoryStorage(): StorageInterface
+    {
+        return $this->getInjection('memcachedStorage');
     }
 }
