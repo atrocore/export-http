@@ -23,6 +23,7 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
         $this->addDependency('entityManager');
         $this->addDependency(ConnectionOauth2::class);
         $this->addDependency('memcachedStorage');
+        $this->addDependency('connectionFactory');
     }
 
     public function getConnectionData(): array
@@ -37,7 +38,8 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
 
             $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $connectionId);
             if (!empty($connectionEntity)) {
-                $connectionData = $this->getInjection(ConnectionOauth2::class)->connect($connectionEntity);
+                $connection = $this->getInjection('connectionFactory')->create($connectionEntity);
+                $connectionData = $connection->connect($connectionEntity);
                 $this->getMemoryStorage()->set('access_token_' . $connectionId, $connectionData, (int)$connectionData['expires_in'] ?? 600);
             }
         }
