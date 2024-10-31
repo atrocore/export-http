@@ -31,6 +31,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $this->convertor = $this->getDataConvertor();
             $attachment = $exportJob->get('file');
             $url = $exportJob->get('requestUrl');
+            $exportJob->set('shouldResend', false);
         }else{
             $attachment = parent::export($data, $exportJob);
             // save file to export job
@@ -43,10 +44,8 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             }
             // prepare URL
             $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
+            $exportJob->set('requestUrl', $url);
         }
-
-        $exportJob->set('requestUrl', $url);
-        $exportJob->set('shouldResend', false);
 
         // get file contents
         $contents = $this->getEntityManager()->getRepository('File')->getContents($attachment);
