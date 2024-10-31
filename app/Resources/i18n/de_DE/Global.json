@@ -6,5 +6,8 @@
   "scopeNamesPlural": {
     "ExportHttpHeader": "Headers",
     "ExportHttpValidator": "Export Http Validators"
+  },
+  "labels": {
+    "trySendRequestAgain": "Anfrage erneut senden"
   }
 }

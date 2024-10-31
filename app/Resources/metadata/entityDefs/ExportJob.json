@@ -1,0 +1,14 @@
+{
+  "fields": {
+    "requestUrl": {
+      "type": "text",
+      "notStorable": true,
+      "virtualField": true
+    },
+    "shouldResend": {
+      "type": "bool",
+      "notStorable": true,
+      "virtualField": true
+    }
+  }
+}

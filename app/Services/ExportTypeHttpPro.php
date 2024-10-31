@@ -25,20 +25,27 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 {
     public function export(array $data, ExportJob $exportJob): File
     {
-        $attachment = parent::export($data, $exportJob);
 
-        // save file to export job
-        $exportJob->set('fileId', $attachment->get('id'));
-        $this->getEntityManager()->saveEntity($exportJob);
-
-        if (!empty($this->data['feed']['separateJob'])) {
-            $entities = $this->getCollection();
-        } else {
-            $entities = $this->getFullCollection();
+        if(!empty($exportJob->get('shouldResend')) && !empty($exportJob->get('file')) && !empty($exportJob->get('requestUrl'))){
+            $this->setData($data);
+            $this->convertor = $this->getDataConvertor();
+            $attachment = $exportJob->get('file');
+            $url = $exportJob->get('requestUrl');
+            $exportJob->set('shouldResend', false);
+        }else{
+            $attachment = parent::export($data, $exportJob);
+            // save file to export job
+            $exportJob->set('fileId', $attachment->get('id'));
+            $this->getEntityManager()->saveEntity($exportJob);
+            if (!empty($this->data['feed']['separateJob'])) {
+                $entities = $this->getCollection();
+            } else {
+                $entities = $this->getFullCollection();
+            }
+            // prepare URL
+            $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
+            $exportJob->set('requestUrl', $url);
         }
-
-        // prepare URL
-        $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
 
         // get file contents
         $contents = $this->getEntityManager()->getRepository('File')->getContents($attachment);
