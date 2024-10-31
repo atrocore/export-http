@@ -18,7 +18,7 @@ Espo.define('export-http:views/export-job/record/detail', 'export:views/export-j
 
             Dep.prototype.setupActionItems.call(this);
 
-            if (['Failed', 'Canceled'].includes(this.model.get('state')) && && this.model.get('requestUrl') && this.model.get('fileId')) {
+            if (['Failed', 'Canceled'].includes(this.model.get('state')) && this.model.get('requestUrl') && this.model.get('fileId')) {
                 this.dropdownItemList.push({
                     name: 'trySendRequestAgain',
                     action: 'trySendRequestAgain',
