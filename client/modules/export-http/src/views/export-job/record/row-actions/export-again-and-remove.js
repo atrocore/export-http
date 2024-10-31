@@ -17,7 +17,10 @@ Espo.define('export-http:views/export-job/record/row-actions/export-again-and-re
             getActionList() {
                 let list = Dep.prototype.getActionList.call(this) || [];
 
-                if (['Failed', 'Canceled'].includes(this.model.get('state')) && this.model.get('fileId') && this.options.acl.edit) {
+                if (['Failed', 'Canceled'].includes(this.model.get('state'))
+                    && this.model.get('fileId')
+                    && this.model.get('requestUrl')
+                    && this.options.acl.edit) {
                     list.unshift({
                         action: 'trySendRequestAgain',
                         label: 'trySendRequestAgain',
