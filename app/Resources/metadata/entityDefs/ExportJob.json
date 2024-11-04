@@ -9,6 +9,11 @@
       "type": "bool",
       "notStorable": true,
       "virtualField": true
+    },
+    "entityIds": {
+      "type": "array",
+      "notStorable": true,
+      "virtualField": true
     }
   }
 }

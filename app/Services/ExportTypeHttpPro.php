@@ -17,6 +17,7 @@ use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\HttpConnectionInterface;
 use Atro\Entities\File;
 use Atro\Core\Exceptions\BadRequest;
+use Espo\ORM\EntityCollection;
 use Export\Entities\ExportFeed;
 use Export\Entities\ExportJob;
 use Import\Services\ImportFeed;
@@ -26,25 +27,34 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     public function export(array $data, ExportJob $exportJob): File
     {
 
-        if(!empty($exportJob->get('shouldResend')) && !empty($exportJob->get('file')) && !empty($exportJob->get('requestUrl'))){
+        if (!empty($exportJob->get('entityIds'))){
+            $entities = $this->getCollectionFromIds($exportJob->get('entityIds'));
+        }else if (!empty($this->data['feed']['separateJob'])) {
+            $entities = $this->getCollection();
+        } else {
+            $entities = $this->getFullCollection();
+        }
+
+        if (!empty($exportJob->get('shouldResend')) && !empty($exportJob->get('file')) && !empty($exportJob->get('requestUrl'))) {
             $this->setData($data);
             $this->convertor = $this->getDataConvertor();
             $attachment = $exportJob->get('file');
             $url = $exportJob->get('requestUrl');
             $exportJob->set('shouldResend', false);
-        }else{
+        } else {
             $attachment = parent::export($data, $exportJob);
             // save file to export job
             $exportJob->set('fileId', $attachment->get('id'));
             $this->getEntityManager()->saveEntity($exportJob);
-            if (!empty($this->data['feed']['separateJob'])) {
-                $entities = $this->getCollection();
-            } else {
-                $entities = $this->getFullCollection();
-            }
+
             // prepare URL
             $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
             $exportJob->set('requestUrl', $url);
+            $ids = [];
+            foreach ($entities as $entity) {
+                $ids[] = $entity->get('id');
+            }
+            $exportJob->set('entityIds', $ids);
         }
 
         // get file contents
@@ -52,11 +62,17 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         /**
          * Prepare headers
          */
-        $headers = ['Content-Type: ' . $attachment->get('mimeType')];
+
+        $headers = [];
         if (!empty($this->data['feed']['httpHeaders'])) {
             foreach ($this->data['feed']['httpHeaders'] as $v) {
+                $hasContentType = strtolower($v['key']) === 'content-type';
                 $headers[] = "{$v['key']}: {$v['value']}";
             }
+        }
+
+        if(empty($hasContentType)){
+            $headers[] = 'Content-Type: ' . $attachment->get('mimeType');
         }
 
         $response = $this
@@ -146,5 +162,20 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         }
 
         return $this->getContainer()->get('connectionFactory')->createById($httpConnectionId);
+    }
+
+    protected function getCollectionFromIds(array $entityIds): ?EntityCollection
+    {
+        $result = $this->getEntityService()->findEntities([
+            "where" => [
+                [
+                    "attribute" => "id",
+                    "type" => "in",
+                    "value" => $entityIds
+                ]
+            ]
+        ]);
+
+        return $result['collection'];
     }
 }
