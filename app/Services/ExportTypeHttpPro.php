@@ -27,9 +27,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     public function export(array $data, ExportJob $exportJob): File
     {
 
-        if (!empty($exportJob->get('entityIds'))){
+        if (!empty($exportJob->get('entityIds'))) {
             $entities = $this->getCollectionFromIds($exportJob->get('entityIds'));
-        }else if (!empty($this->data['feed']['separateJob'])) {
+        } else if (!empty($this->data['feed']['separateJob'])) {
             $entities = $this->getCollection();
         } else {
             $entities = $this->getFullCollection();
@@ -51,7 +51,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
             $exportJob->set('requestUrl', $url);
 
-            if(empty($exportJob->set('entityIds'))){
+            if (empty($exportJob->set('entityIds'))) {
                 $ids = [];
                 foreach ($entities as $entity) {
                     $ids[] = $entity->get('id');
@@ -69,14 +69,14 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $headers = [];
         if (!empty($this->data['feed']['httpHeaders'])) {
             foreach ($this->data['feed']['httpHeaders'] as $v) {
-                if(strtolower($v['key']) === 'content-type'){
+                if (strtolower($v['key']) === 'content-type') {
                     $hasContentType = true;
                 }
                 $headers[] = "{$v['key']}: {$v['value']}";
             }
         }
 
-        if(empty($hasContentType)){
+        if (empty($hasContentType)) {
             $headers[] = 'Content-Type: ' . $attachment->get('mimeType');
         }
 
