@@ -50,11 +50,14 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             // prepare URL
             $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
             $exportJob->set('requestUrl', $url);
-            $ids = [];
-            foreach ($entities as $entity) {
-                $ids[] = $entity->get('id');
+
+            if(empty($exportJob->set('entityIds'))){
+                $ids = [];
+                foreach ($entities as $entity) {
+                    $ids[] = $entity->get('id');
+                }
+                $exportJob->set('entityIds', $ids);
             }
-            $exportJob->set('entityIds', $ids);
         }
 
         // get file contents
@@ -66,7 +69,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $headers = [];
         if (!empty($this->data['feed']['httpHeaders'])) {
             foreach ($this->data['feed']['httpHeaders'] as $v) {
-                $hasContentType = strtolower($v['key']) === 'content-type';
+                if(strtolower($v['key']) === 'content-type'){
+                    $hasContentType = true;
+                }
                 $headers[] = "{$v['key']}: {$v['value']}";
             }
         }
