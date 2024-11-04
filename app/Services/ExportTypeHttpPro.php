@@ -62,10 +62,10 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
         // get file contents
         $contents = $this->getEntityManager()->getRepository('File')->getContents($attachment);
+
         /**
          * Prepare headers
          */
-
         $headers = [];
         if (!empty($this->data['feed']['httpHeaders'])) {
             foreach ($this->data['feed']['httpHeaders'] as $v) {
