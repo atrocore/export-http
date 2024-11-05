@@ -3,12 +3,26 @@
     "requestUrl": {
       "type": "text",
       "notStorable": true,
-      "virtualField": true
+      "virtualField": true,
+      "filterDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutListDisabled": true
     },
     "shouldResend": {
       "type": "bool",
       "notStorable": true,
-      "virtualField": true
+      "virtualField": true,
+      "filterDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutListDisabled": true
+    },
+    "entityIds": {
+      "type": "array",
+      "notStorable": true,
+      "virtualField": true,
+      "filterDisabled": true,
+      "layoutDetailDisabled": true,
+      "layoutListDisabled": true
     }
   }
 }
