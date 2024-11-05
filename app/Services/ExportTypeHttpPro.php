@@ -27,8 +27,6 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     public function export(array $data, ExportJob $exportJob): File
     {
 
-
-
         if (!empty($exportJob->get('shouldResend')) && !empty($exportJob->get('file')) && !empty($exportJob->get('requestUrl'))) {
             $this->setData($data);
             $this->convertor = $this->getDataConvertor();
