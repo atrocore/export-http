@@ -3,17 +3,20 @@
     "requestUrl": {
       "type": "text",
       "notStorable": true,
-      "virtualField": true
+      "virtualField": true,
+      "filterDisabled": true
     },
     "shouldResend": {
       "type": "bool",
       "notStorable": true,
-      "virtualField": true
+      "virtualField": true,
+      "filterDisabled": true
     },
     "entityIds": {
       "type": "array",
       "notStorable": true,
-      "virtualField": true
+      "virtualField": true,
+      "filterDisabled": true
     }
   }
 }

@@ -27,13 +27,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     public function export(array $data, ExportJob $exportJob): File
     {
 
-        if (!empty($exportJob->get('entityIds'))) {
-            $entities = $this->getCollectionFromIds($exportJob->get('entityIds'));
-        } else if (!empty($this->data['feed']['separateJob'])) {
-            $entities = $this->getCollection();
-        } else {
-            $entities = $this->getFullCollection();
-        }
+
 
         if (!empty($exportJob->get('shouldResend')) && !empty($exportJob->get('file')) && !empty($exportJob->get('requestUrl'))) {
             $this->setData($data);
@@ -47,17 +41,23 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $exportJob->set('fileId', $attachment->get('id'));
             $this->getEntityManager()->saveEntity($exportJob);
 
+            if (!empty($this->data['feed']['separateJob'])) {
+                $entities = $this->getCollection();
+            } else {
+                $entities = $this->getFullCollection();
+            }
+
             // prepare URL
             $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
             $exportJob->set('requestUrl', $url);
 
-            if (empty($exportJob->set('entityIds'))) {
-                $ids = [];
-                foreach ($entities as $entity) {
-                    $ids[] = $entity->get('id');
-                }
-                $exportJob->set('entityIds', $ids);
+            $ids = [];
+
+            foreach ($entities as $entity) {
+                $ids[] = $entity->get('id');
             }
+
+            $exportJob->set('entityIds', $ids);
         }
 
         // get file contents
@@ -92,6 +92,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
         $exportHttpValidator = $exportFeed->get('exportHttpValidator');
         if (!empty($exportHttpValidator)) {
+            if(!isset($entities)){
+                $entities = $this->getCollectionFromIds($exportJob->get('entityIds') ?? []);
+            }
             $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities]);
             $res = trim($res);
             $success = strtolower($res) === 'true' || $res === '1';
@@ -116,6 +119,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
             $formatter = $exportFeed->get('processResponseFormatter');
             if (!empty($formatter)) {
+                if(!isset($entities)){
+                    $entities = $this->getCollectionFromIds($exportJob->get('entityIds') ?? []);
+                }
                 $attachmentContents = $this->renderTemplateContents($formatter, ['responseText' => $output, 'entities' => $entities]);
             }
 
