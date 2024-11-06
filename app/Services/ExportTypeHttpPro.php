@@ -17,7 +17,6 @@ use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\HttpConnectionInterface;
 use Atro\Entities\File;
 use Atro\Core\Exceptions\BadRequest;
-use Espo\ORM\EntityCollection;
 use Export\Entities\ExportFeed;
 use Export\Entities\ExportJob;
 use Import\Services\ImportFeed;
@@ -90,7 +89,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
         $exportHttpValidator = $exportFeed->get('exportHttpValidator');
         if (!empty($exportHttpValidator)) {
-            if(!isset($entities)){
+            if (!isset($entities)) {
                 $entities = $this->getCollectionFromIds($exportJob->get('entityIds') ?? []);
             }
             $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities]);
@@ -117,7 +116,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
             $formatter = $exportFeed->get('processResponseFormatter');
             if (!empty($formatter)) {
-                if(!isset($entities)){
+                if (!isset($entities)) {
                     $entities = $this->getCollectionFromIds($exportJob->get('entityIds') ?? []);
                 }
                 $attachmentContents = $this->renderTemplateContents($formatter, ['responseText' => $output, 'entities' => $entities]);
@@ -173,18 +172,4 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         return $this->getContainer()->get('connectionFactory')->createById($httpConnectionId);
     }
 
-    protected function getCollectionFromIds(array $entityIds): ?EntityCollection
-    {
-        $result = $this->getEntityService()->findEntities([
-            "where" => [
-                [
-                    "attribute" => "id",
-                    "type" => "in",
-                    "value" => $entityIds
-                ]
-            ]
-        ]);
-
-        return $result['collection'];
-    }
 }
