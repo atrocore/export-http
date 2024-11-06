@@ -48,7 +48,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
             $exportJob->set('requestUrl', $url);
 
-            if($entities->count() > 2000) {
+            if($entities->count() < 2000) {
                 $ids = [];
                 foreach ($entities as $entity) {
                     $ids[] = $entity->get('id');
