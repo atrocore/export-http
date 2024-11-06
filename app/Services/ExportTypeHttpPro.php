@@ -50,11 +50,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
             if($entities->count() > 2000) {
                 $ids = [];
-
                 foreach ($entities as $entity) {
                     $ids[] = $entity->get('id');
                 }
-
                 $exportJob->set('entityIds', $ids);
             }
 
