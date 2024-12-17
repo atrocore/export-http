@@ -20,6 +20,7 @@ use Atro\Core\Exceptions\BadRequest;
 use Export\Entities\ExportFeed;
 use Export\Entities\ExportJob;
 use Import\Services\ImportFeed;
+use stdClass;
 
 class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 {
@@ -48,7 +49,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
             $exportJob->set('requestUrl', $url);
 
-            if($entities->count() < 2000) {
+            if ($entities->count() < 2000) {
                 $ids = [];
                 foreach ($entities as $entity) {
                     $ids[] = $entity->get('id');
@@ -152,7 +153,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
                     /** @var ImportFeed $importFeedService */
                     $importFeedService = $this->getService('ImportFeed');
 
-                    $importFeedService->pushJobs($importFeed, $fileData['id']);
+                    $payload = new \stdClass();
+                    $payload->executeNow = true;
+                    $importFeedService->pushJobs($importFeed, $fileData['id'], $payload);
                 }
             } catch (\Throwable $e) {
                 $GLOBALS['log']->error('Response processing failed: ' . $e->getMessage());
