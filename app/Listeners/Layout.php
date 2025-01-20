@@ -13,28 +13,16 @@ declare(strict_types=1);
 
 namespace ExportHttp\Listeners;
 
+use Atro\Listeners\AbstractLayoutListener;
 use Espo\Core\Utils\Json;
 use Atro\Core\EventManager\Event;
 use Atro\Listeners\AbstractListener;
 
-class LayoutController extends AbstractListener
+class Layout extends AbstractLayoutListener
 {
-    public function afterActionRead(Event $event): void
-    {
-        $scope = $event->getArgument('params')['scope'];
-
-        $name = $event->getArgument('params')['name'];
-
-        $method = 'modify' . $scope . ucfirst($name);
-
-        if (method_exists($this, $method)) {
-            $this->{$method}($event);
-        }
-    }
-
     protected function modifyExportFeedDetail(Event $event): void
     {
-        $result = Json::decode($event->getArgument('result'), true);
+        $result = $event->getArgument('result');
 
         $result[1]['rows'][] = [['name' => 'httpMethod'], ['name' => 'httpConnectionId']];
         $result[1]['rows'][] = [['name' => 'httpUrl', 'fullWidth' => true]];
@@ -46,15 +34,15 @@ class LayoutController extends AbstractListener
         $result[0]['rows'][] = [['name' => 'exportHttpValidator'], false];
 
 
-        $event->setArgument('result', Json::encode($result));
+        $event->setArgument('result',  $result);
     }
 
     protected function modifyExportFeedRelationships(Event $event): void
     {
-        $result = Json::decode($event->getArgument('result'), true);
+        $result = $event->getArgument('result');
 
         $result = array_merge([['name' => 'exportHttpHeaders', 'canClose' => false]], $result);
 
-        $event->setArgument('result', Json::encode($result));
+        $event->setArgument('result',  $result);
     }
 }
