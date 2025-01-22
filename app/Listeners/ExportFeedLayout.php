@@ -18,9 +18,9 @@ use Espo\Core\Utils\Json;
 use Atro\Core\EventManager\Event;
 use Atro\Listeners\AbstractListener;
 
-class Layout extends AbstractLayoutListener
+class ExportFeedLayout extends AbstractLayoutListener
 {
-    protected function modifyExportFeedDetail(Event $event): void
+    protected function detail(Event $event): void
     {
         $result = $event->getArgument('result');
 
@@ -37,7 +37,7 @@ class Layout extends AbstractLayoutListener
         $event->setArgument('result',  $result);
     }
 
-    protected function modifyExportFeedRelationships(Event $event): void
+    protected function relationships(Event $event): void
     {
         $result = $event->getArgument('result');
 
