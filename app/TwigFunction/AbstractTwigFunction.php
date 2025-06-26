@@ -13,45 +13,37 @@ declare(strict_types=1);
 
 namespace ExportHttp\TwigFunction;
 
+use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\ConnectionOauth2;
+use Atro\ConnectionType\HttpConnectionInterface;
 use Atro\Core\KeyValueStorages\StorageInterface;
 
 abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFunction
 {
     public function __construct()
     {
-        $this->addDependency('entityManager');
-        $this->addDependency(ConnectionOauth2::class);
-        $this->addDependency('memcachedStorage');
         $this->addDependency('connectionFactory');
+        $this->addDependency(ConnectionHttp::class);
     }
-
-    public function getConnectionData(): array
+    protected  function getHeaders(): array
     {
-        $connectionData = [];
-        
-        $connectionId = $this->getFeedData()['data']['feedFields']['httpConnectionId'] ?? null;
-        if (!empty($connectionId)) {
-            if ($this->getMemoryStorage()->has('access_token_' . $connectionId)) {
-                return $this->getMemoryStorage()->get('access_token_' . $connectionId);
-            }
+        $feed = $this->getFeedData();
 
-            $connectionEntity = $this->getInjection('entityManager')->getEntity('Connection', $connectionId);
-            if (!empty($connectionEntity)) {
-                $connection = $this->getInjection('connectionFactory')->create($connectionEntity);
-                $connectionData = $connection->connect($connectionEntity);
-                $this->getMemoryStorage()->set('access_token_' . $connectionId, $connectionData, (int)$connectionData['expires_in'] ?? 600);
+        $headers = [];
+        if (!empty($feed['httpHeaders'])) {
+            foreach ($feed['httpHeaders'] as $v) {
+                $headers[] = "{$v['key']}: {$v['value']}";
             }
         }
-
-        return $connectionData;
+        return $headers;
     }
 
-    /**
-     * @return StorageInterface
-     */
-    protected function getMemoryStorage(): StorageInterface
+    protected function createConnection(?string $httpConnectionId = null): HttpConnectionInterface
     {
-        return $this->getInjection('memcachedStorage');
+        if (empty($httpConnectionId)) {
+            return $this->getInjection(ConnectionHttp::class);
+        }
+
+        return $this->getInjection('connectionFactory')->createById($httpConnectionId);
     }
 }
