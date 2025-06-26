@@ -20,7 +20,7 @@ class V1Dot7Dot1 extends Base
 {
     public function getMigrationDateTime(): ?\DateTime
     {
-        return new \DateTime('2025-06-12 15:00:00');
+        return new \DateTime('2025-06-27 07:00:00');
     }
     public function up(): void
     {
