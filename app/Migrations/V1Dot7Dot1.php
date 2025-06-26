@@ -24,7 +24,11 @@ class V1Dot7Dot1 extends Base
     }
     public function up(): void
     {
-        $this->exec("ALTER TABLE export_http_header ALTER value TYPE TEXT");
+        if($this->isPgSQL()) {
+            $this->exec("ALTER TABLE export_http_header ALTER value TYPE TEXT");
+        }else{
+            $this->exec("ALTER TABLE export_http_header CHANGE value value LONGTEXT DEFAULT NULL");
+        }
     }
 
     protected function exec(string $query): void
