@@ -12,7 +12,8 @@ Espo.define('export-http:views/export-http-header/modals/edit', 'views/modals/ed
     Dep => {
         return Dep.extend({
 
-            fullFormDisabled: true
+            fullFormDisabled: true,
+            hasRightSideView: false,
 
         });
 
