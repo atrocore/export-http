@@ -3,7 +3,7 @@
   "default": "",
   "require": {
     "atrocore/core": "~2.0.8",
-    "atrocore/export": "~1.9.0"
+    "atrocore/export": "~1.9.12"
   },
   "conflict": {
     "atrocore/pim": "<1.8.3"
