@@ -39,24 +39,29 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $exportJob->set('fileId', $attachment->get('id'));
             $this->getEntityManager()->saveEntity($exportJob);
 
-            if (!empty($this->data['feed']['separateJob'])) {
-                $entities = $this->getCollection();
-            } else {
-                $entities = $this->getFullCollection();
+            $httpUrl = (string)$this->data['feed']['httpUrl'];
+            $templateData = [];
+
+            if (strpos($httpUrl, 'entities') !== false) {
+                if (!empty($this->data['feed']['separateJob'])) {
+                    $templateData['entities'] = $this->getCollection();
+                } else {
+                    $templateData['entities'] = $this->getFullCollection();
+                }
+
+                if ($templateData['entities']->count() < 2000) {
+                    $ids = [];
+                    foreach ($templateData['entities'] as $entity) {
+                        $ids[] = $entity->get('id');
+                    }
+                    $exportJob->set('entityIds', $ids);
+                }
             }
 
             // prepare URL
-            $url = $this->renderTemplateContents((string)$this->data['feed']['httpUrl'], ['entities' => $entities]);
+            $url = $this->renderTemplateContents($httpUrl, $templateData);
+
             $exportJob->set('requestUrl', $url);
-
-            if ($entities->count() < 2000) {
-                $ids = [];
-                foreach ($entities as $entity) {
-                    $ids[] = $entity->get('id');
-                }
-                $exportJob->set('entityIds', $ids);
-            }
-
         }
 
         // get file contents
