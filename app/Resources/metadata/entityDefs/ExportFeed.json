@@ -1,15 +1,5 @@
 {
   "fields": {
-    "type": {
-      "optionsIds": [
-        "__APPEND__",
-        "httpPro"
-      ],
-      "options": [
-        "__APPEND__",
-        "httpPro"
-      ]
-    },
     "httpMethod": {
       "type": "enum",
       "optionsIds": [
