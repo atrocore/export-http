@@ -126,7 +126,11 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
                 if (!isset($entities)) {
                     $entities = $this->getCollectionFromIds($exportJob->get('entityIds') ?? []);
                 }
-                $attachmentContents = $this->renderTemplateContents($formatter, ['responseText' => $output, 'entities' => $entities]);
+                $attachmentContents = $this->renderTemplateContents($formatter, [
+                    'httpCode'     => $httpCode,
+                    'responseText' => $output,
+                    'entities'     => $entities
+                ]);
             }
 
             $attachmentData->name = implode('.', $nameParts);
