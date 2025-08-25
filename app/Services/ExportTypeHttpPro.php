@@ -175,7 +175,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         }
 
         $exportHttpValidator = $exportFeed->get('exportHttpValidator');
-        if (!empty($exportHttpValidator) && str_contains($exportHttpValidator->get('validator'), 'entities')) {
+        if (!empty($exportHttpValidator) && str_contains((string)$exportHttpValidator->get('validator'), 'entities')) {
             return true;
         }
 
