@@ -166,7 +166,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     }
 
 
-    protected function shouldLoadEntities(ExportFeed $exportFeed)
+    protected function shouldLoadEntities(ExportFeed $exportFeed) : bool
     {
         $httpUrl = (string)$this->data['feed']['httpUrl'];
 
