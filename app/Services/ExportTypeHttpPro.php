@@ -17,6 +17,7 @@ use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\HttpConnectionInterface;
 use Atro\Entities\File;
 use Atro\Core\Exceptions\BadRequest;
+use Espo\ORM\EntityCollection;
 use Export\Entities\ExportFeed;
 use Export\Entities\ExportJob;
 use Import\Services\ImportFeed;
@@ -26,6 +27,8 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 {
     public function export(array $data, ExportJob $exportJob): File
     {
+        /** @var ExportFeed $exportFeed */
+        $exportFeed = $exportJob->get('exportFeed');
 
         if (!empty($exportJob->get('shouldResend')) && !empty($exportJob->get('file')) && !empty($exportJob->get('requestUrl'))) {
             $this->setData($data);
@@ -33,6 +36,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $attachment = $exportJob->get('file');
             $url = $exportJob->get('requestUrl');
             $exportJob->set('shouldResend', false);
+            if ($this->shouldLoadEntities($exportFeed)) {
+                $entities = $this->getEntities();
+            }
         } else {
             $attachment = parent::export($data, $exportJob);
             // save file to export job
@@ -42,20 +48,12 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $httpUrl = (string)$this->data['feed']['httpUrl'];
             $templateData = [];
 
-            if (strpos($httpUrl, 'entities') !== false) {
-                if (!empty($this->data['feed']['separateJob'])) {
-                    $templateData['entities'] = $this->getCollection();
-                } else {
-                    $templateData['entities'] = $this->getFullCollection();
-                }
+            if ($this->shouldLoadEntities($exportFeed)) {
+                $entities = $this->getEntities();
+            }
 
-                if ($templateData['entities']->count() < 2000) {
-                    $ids = [];
-                    foreach ($templateData['entities'] as $entity) {
-                        $ids[] = $entity->get('id');
-                    }
-                    $exportJob->set('entityIds', $ids);
-                }
+            if (str_contains($httpUrl, 'entities') && isset($entities)) {
+                $templateData['entities'] = $entities;
             }
 
             // prepare URL
@@ -91,15 +89,9 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $httpCode = $response->getCode();
         $output = $response->getOutput();
 
-        /** @var ExportFeed $exportFeed */
-        $exportFeed = $exportJob->get('exportFeed');
-
         $exportHttpValidator = $exportFeed->get('exportHttpValidator');
         if (!empty($exportHttpValidator)) {
-            if (!isset($entities)) {
-                $entities = $this->getCollectionFromIds($exportJob->get('entityIds') ?? []);
-            }
-            $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities]);
+            $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities ?? []]);
             $res = trim($res);
             $success = strtolower($res) === 'true' || $res === '1';
             if (empty($success)) {
@@ -123,13 +115,10 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
             $formatter = $exportFeed->get('processResponseFormatter');
             if (!empty($formatter)) {
-                if (!isset($entities)) {
-                    $entities = $this->getCollectionFromIds($exportJob->get('entityIds') ?? []);
-                }
                 $attachmentContents = $this->renderTemplateContents($formatter, [
                     'httpCode'     => $httpCode,
                     'responseText' => $output,
-                    'entities'     => $entities
+                    'entities'     => $entities ?? []
                 ]);
             }
 
@@ -174,6 +163,37 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $exportJob->set('stateMessage', $output);
 
         return $attachment;
+    }
+
+
+    protected function shouldLoadEntities(ExportFeed $exportFeed) : bool
+    {
+        $httpUrl = (string)$this->data['feed']['httpUrl'];
+
+        if (str_contains($httpUrl, 'entities')) {
+            return true;
+        }
+
+        $exportHttpValidator = $exportFeed->get('exportHttpValidator');
+        if (!empty($exportHttpValidator) && str_contains((string)$exportHttpValidator->get('validator'), 'entities')) {
+            return true;
+        }
+
+        $formatter = (string)$exportFeed->get('processResponseFormatter');
+        if (str_contains($formatter, 'entities') && !empty($exportFeed->get('processResponse'))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function getEntities(): ?EntityCollection
+    {
+        if (!empty($this->data['feed']['separateJob'])) {
+            return $this->getCollection();
+        } else {
+            return $this->getFullCollection();
+        }
     }
 
     protected function createConnection(?string $httpConnectionId = null): HttpConnectionInterface
