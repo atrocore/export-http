@@ -2,13 +2,6 @@
   "fields": {
     "httpMethod": {
       "type": "enum",
-      "optionsIds": [
-        "POST",
-        "PUT",
-        "PATCH",
-        "DELETE",
-        "GET"
-      ],
       "options": [
         "POST",
         "PUT",
