@@ -2,7 +2,7 @@
   "name": "atrocore/export-http",
   "default": "",
   "require": {
-    "atrocore/core": "~2.0.33",
+    "atrocore/core": "~2.0.40",
     "atrocore/export": "~1.9.12"
   },
   "conflict": {

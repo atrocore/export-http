@@ -21,30 +21,6 @@
           ]
         }
       },
-      "httpMethod": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      },
       "httpUrl": {
         "visible": {
           "conditionGroup": [
