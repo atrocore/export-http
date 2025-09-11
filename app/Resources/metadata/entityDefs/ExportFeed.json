@@ -43,7 +43,20 @@
       "view": "export-http:views/export-feed/fields/http-connection",
       "notStorable": true,
       "filterDisabled": true,
-      "dataField": true
+      "dataField": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "httpPro"
+              ]
+            }
+          ]
+        }
+      }
     },
     "httpConnectionName": {
       "type": "varchar",
@@ -55,7 +68,31 @@
       "notStorable": true,
       "filterDisabled": true,
       "dataField": true,
-      "tooltip": true
+      "tooltip": true,
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "httpPro"
+              ]
+            }
+          ]
+        },
+        "required": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "httpPro"
+              ]
+            }
+          ]
+        }
+      }
     },
     "exportHttpHeaders": {
       "type": "linkMultiple",
@@ -65,7 +102,20 @@
       "importDisabled": true
     },
     "exportHttpValidator": {
-      "type": "link"
+      "type": "link",
+      "conditionalProperties": {
+        "visible": {
+          "conditionGroup": [
+            {
+              "type": "in",
+              "attribute": "type",
+              "value": [
+                "httpPro"
+              ]
+            }
+          ]
+        }
+      }
     }
   },
   "links": {

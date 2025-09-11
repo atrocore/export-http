@@ -5,59 +5,5 @@
       "view": "export-http:views/export-feed/record/panels/headers",
       "rowActionsView": "views/record/row-actions/edit-and-remove"
     }
-  },
-  "dynamicLogic": {
-    "fields": {
-      "httpConnectionId": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      },
-      "httpUrl": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      },
-      "exportHttpValidator": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      }
-    }
   }
 }
