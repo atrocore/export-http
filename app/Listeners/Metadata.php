@@ -24,30 +24,40 @@ class Metadata extends AbstractListener
 
         if (!empty($data['entityDefs']['ImportFeed'])) {
             $data['entityDefs']['ExportFeed']['fields']['processResponse'] = [
-                'type' => 'link'
+                'type'                  => 'link',
+                'conditionalProperties' => [
+                    'visible' => [
+                        'conditionGroup' => [
+                            [
+                                'type'      => 'in',
+                                'attribute' => 'type',
+                                'value'     => [
+                                    'httpPro',
+                                ],
+                            ],
+                        ],
+                    ],
+
+                ],
             ];
             $data['entityDefs']['ExportFeed']['links']['processResponse'] = [
                 'type'   => 'belongsTo',
-                'entity' => 'ImportFeed'
-            ];
-            $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['processResponse']['visible']['conditionGroup'] = [
-                [
-                    'type'      => 'in',
-                    'attribute' => 'type',
-                    'value'     => 'httpPro'
-                ]
+                'entity' => 'ImportFeed',
             ];
 
             $data['entityDefs']['ExportFeed']['fields']['processResponseFormatter'] = [
-                'type' => 'text',
-                "view" => "views/fields/script",
-            ];
-
-            $data['clientDefs']['ExportFeed']['dynamicLogic']['fields']['processResponseFormatter']['visible']['conditionGroup'] = [
-                [
-                    'type'      => 'isNotEmpty',
-                    'attribute' => 'processResponseId'
-                ]
+                'type'                  => 'text',
+                "view"                  => "views/fields/script",
+                'conditionalProperties' => [
+                    'visible' => [
+                        'conditionGroup' => [
+                            [
+                                'type'      => 'isNotEmpty',
+                                'attribute' => 'processResponseId',
+                            ],
+                        ],
+                    ],
+                ],
             ];
         }
 
