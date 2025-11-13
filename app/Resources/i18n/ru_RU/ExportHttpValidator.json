@@ -1,6 +1,6 @@
 {
   "fields": {
-    "validator": ""
+    "validator": "Валидатор"
   },
   "links": {
     "exportFeeds": ""
@@ -9,6 +9,6 @@
     "validator": ""
   },
   "labels": {
-    "Create ExportHttpValidator": ""
+    "Create ExportHttpValidator": "Создание валидатора экспорта Http"
   }
 }
