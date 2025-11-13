@@ -1,9 +1,9 @@
 {
   "fields": {
     "exportHttpHeaders": "En-têtes",
-    "httpUrl": "",
+    "httpUrl": "URL",
     "httpMethod": "Méthode",
-    "httpConnectionId": "",
+    "httpConnectionId": "Connexion",
     "processResponse": "Importation de flux pour le traitement des réponses",
     "processResponseFormatter": "Importation d'un format de pièce jointe à un flux",
     "exportHttpValidator": "Valideur de réponse"
@@ -15,7 +15,7 @@
     "httpPro": "Demande HTTP"
   },
   "tooltips": {
-    "httpUrl": "",
-    "exportHttpTwigBody": ""
+    "httpUrl": "Vous pouvez utiliser la syntaxe pour <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine.",
+    "exportHttpTwigBody": "Vous pouvez utiliser la syntaxe pour <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
   }
 }
