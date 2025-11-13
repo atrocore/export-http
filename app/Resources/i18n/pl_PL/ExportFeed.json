@@ -1,9 +1,9 @@
 {
   "fields": {
     "exportHttpHeaders": "Nagłówki",
-    "httpUrl": "",
+    "httpUrl": "URL AtroCore",
     "httpMethod": "Metoda",
-    "httpConnectionId": "",
+    "httpConnectionId": "Połączenie",
     "processResponse": "Proszę zaimportować plik Feed do przetwarzania odpowiedzi",
     "processResponseFormatter": "Formatowanie załączników Import Feed",
     "exportHttpValidator": "Walidator odpowiedzi"
@@ -15,7 +15,7 @@
     "httpPro": "Żądanie HTTP"
   },
   "tooltips": {
-    "httpUrl": "",
-    "exportHttpTwigBody": ""
+    "httpUrl": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
+    "exportHttpTwigBody": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
   }
 }
