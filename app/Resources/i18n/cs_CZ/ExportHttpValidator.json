@@ -1,14 +1,14 @@
 {
   "fields": {
-    "validator": ""
+    "validator": "Validátor"
   },
   "links": {
-    "exportFeeds": ""
+    "exportFeeds": "Exportní kanály"
   },
   "tooltips": {
-    "validator": ""
+    "validator": "Můžete použít syntaxi pro <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
   },
   "labels": {
-    "Create ExportHttpValidator": ""
+    "Create ExportHttpValidator": "Vytvoření validátoru exportu Http"
   }
 }
