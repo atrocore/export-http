@@ -1,18 +1,18 @@
 {
   "fields": {
-    "exportHttpHeaders": "",
+    "exportHttpHeaders": "Nagłówki",
     "httpUrl": "",
-    "httpMethod": "",
+    "httpMethod": "Metoda",
     "httpConnectionId": "",
-    "processResponse": "",
-    "processResponseFormatter": "",
-    "exportHttpValidator": ""
+    "processResponse": "Proszę zaimportować plik Feed do przetwarzania odpowiedzi",
+    "processResponseFormatter": "Formatowanie załączników Import Feed",
+    "exportHttpValidator": "Walidator odpowiedzi"
   },
   "links": {
-    "exportHttpHeaders": ""
+    "exportHttpHeaders": "Nagłówki"
   },
   "labels": {
-    "httpPro": ""
+    "httpPro": "Żądanie HTTP"
   },
   "tooltips": {
     "httpUrl": "",
