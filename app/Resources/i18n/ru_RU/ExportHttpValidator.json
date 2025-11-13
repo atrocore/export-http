@@ -3,10 +3,10 @@
     "validator": "Валидатор"
   },
   "links": {
-    "exportFeeds": ""
+    "exportFeeds": "Экспортный фид"
   },
   "tooltips": {
-    "validator": ""
+    "validator": "Вы можете использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
   },
   "labels": {
     "Create ExportHttpValidator": "Создание валидатора экспорта Http"
