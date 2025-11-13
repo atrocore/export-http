@@ -1,1 +1,13 @@
-{}
+{
+  "scopeNames": {
+    "ExportHttpHeader": "En-tête",
+    "ExportHttpValidator": "Export Http Validator"
+  },
+  "scopeNamesPlural": {
+    "ExportHttpHeader": "En-têtes",
+    "ExportHttpValidator": "Exportation de validateurs Http"
+  },
+  "labels": {
+    "trySendRequestAgain": "Renvoyer la demande"
+  }
+}
