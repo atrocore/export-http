@@ -1,21 +1,21 @@
 {
   "fields": {
-    "exportHttpHeaders": "",
+    "exportHttpHeaders": "Заголовок",
     "httpUrl": "",
     "httpMethod": "",
-    "httpConnectionId": "",
+    "httpConnectionId": "З'єднання",
     "processResponse": "",
     "processResponseFormatter": "",
     "exportHttpValidator": ""
   },
   "links": {
-    "exportHttpHeaders": ""
+    "exportHttpHeaders": "Заголовок"
   },
   "labels": {
-    "httpPro": ""
+    "httpPro": "HTTP Запит"
   },
   "tooltips": {
-    "httpUrl": "",
-    "exportHttpTwigBody": ""
+    "httpUrl": "Ви можете використовувати синтаксис шаблонізатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
+    "exportHttpTwigBody": "Ви можете використовувати синтаксис шаблонізатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
   }
 }
