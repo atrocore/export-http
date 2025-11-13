@@ -1,21 +1,21 @@
 {
   "fields": {
-    "exportHttpHeaders": "",
+    "exportHttpHeaders": "Záhlaví",
     "httpUrl": "",
-    "httpMethod": "",
+    "httpMethod": "Metoda",
     "httpConnectionId": "",
-    "processResponse": "",
-    "processResponseFormatter": "",
-    "exportHttpValidator": ""
+    "processResponse": "Import Feed pro zpracování odpovědí",
+    "processResponseFormatter": "Formátovač importních příloh Feed",
+    "exportHttpValidator": "Validátor odpovědí"
   },
   "links": {
-    "exportHttpHeaders": ""
+    "exportHttpHeaders": "Záhlaví"
   },
   "labels": {
-    "httpPro": ""
+    "httpPro": "Požadavek HTTP"
   },
   "tooltips": {
-    "httpUrl": "",
-    "exportHttpTwigBody": ""
+    "httpUrl": "Můžete použít syntaxi pro <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine.",
+    "exportHttpTwigBody": "Můžete použít syntaxi pro <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
   }
 }
