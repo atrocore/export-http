@@ -1,10 +1,10 @@
 {
   "fields": {
-    "name": "",
-    "value": "",
-    "exportFeed": ""
+    "name": "Ключ",
+    "value": "Значення",
+    "exportFeed": "Експортний фід"
   },
   "links": {
-    "exportFeed": ""
+    "exportFeed": "Експортний фід"
   }
 }
