@@ -1,9 +1,9 @@
 {
   "fields": {
     "exportHttpHeaders": "Záhlaví",
-    "httpUrl": "",
+    "httpUrl": "URL",
     "httpMethod": "Metoda",
-    "httpConnectionId": "",
+    "httpConnectionId": "Připojení",
     "processResponse": "Import Feed pro zpracování odpovědí",
     "processResponseFormatter": "Formátovač importních příloh Feed",
     "exportHttpValidator": "Validátor odpovědí"
