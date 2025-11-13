@@ -1,1 +1,13 @@
-{}
+{
+  "scopeNames": {
+    "ExportHttpHeader": "Záhlaví",
+    "ExportHttpValidator": "Export Http Validátor"
+  },
+  "scopeNamesPlural": {
+    "ExportHttpHeader": "Záhlaví",
+    "ExportHttpValidator": "Validátory exportu Http"
+  },
+  "labels": {
+    "trySendRequestAgain": "Opětovné odeslání žádosti"
+  }
+}
