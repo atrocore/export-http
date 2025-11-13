@@ -1,10 +1,10 @@
 {
   "fields": {
-    "name": "",
-    "value": "",
-    "exportFeed": ""
+    "name": "Klucz",
+    "value": "Wartość",
+    "exportFeed": "Eksportuj kanał"
   },
   "links": {
-    "exportFeed": ""
+    "exportFeed": "Eksportuj kanał"
   }
 }
