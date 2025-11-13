@@ -1,18 +1,18 @@
 {
   "fields": {
-    "exportHttpHeaders": "",
+    "exportHttpHeaders": "En-têtes",
     "httpUrl": "",
-    "httpMethod": "",
+    "httpMethod": "Méthode",
     "httpConnectionId": "",
-    "processResponse": "",
-    "processResponseFormatter": "",
-    "exportHttpValidator": ""
+    "processResponse": "Importation de flux pour le traitement des réponses",
+    "processResponseFormatter": "Importation d'un format de pièce jointe à un flux",
+    "exportHttpValidator": "Valideur de réponse"
   },
   "links": {
-    "exportHttpHeaders": ""
+    "exportHttpHeaders": "En-têtes"
   },
   "labels": {
-    "httpPro": ""
+    "httpPro": "Demande HTTP"
   },
   "tooltips": {
     "httpUrl": "",
