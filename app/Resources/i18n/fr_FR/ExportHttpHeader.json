@@ -1,10 +1,10 @@
 {
   "fields": {
-    "name": "",
-    "value": "",
-    "exportFeed": ""
+    "name": "Clé",
+    "value": "Valeur",
+    "exportFeed": "Flux d'export"
   },
   "links": {
-    "exportFeed": ""
+    "exportFeed": "Flux d'export"
   }
 }
