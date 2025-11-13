@@ -1,8 +1,13 @@
 {
   "scopeNames": {
-    "ExportHttpHeader": "Заголовок"
+    "ExportHttpHeader": "Заголовок",
+    "ExportHttpValidator": "Экспортный валидатор Http"
   },
   "scopeNamesPlural": {
-    "ExportHttpHeader": "Заголовки"
+    "ExportHttpHeader": "Заголовки",
+    "ExportHttpValidator": "Экспорт валидаторов Http"
+  },
+  "labels": {
+    "trySendRequestAgain": "Повторная отправка запроса"
   }
 }
