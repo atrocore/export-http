@@ -4,7 +4,8 @@
     "ExportHttpValidator": "Експорт Http валідатора"
   },
   "scopeNamesPlural": {
-    "ExportHttpValidator": "Експорт Http валідаторів"
+    "ExportHttpValidator": "Експорт Http валідаторів",
+    "ExportHttpHeader": "Заголовок"
   },
   "labels": {
     "trySendRequestAgain": "Повторний запит"
