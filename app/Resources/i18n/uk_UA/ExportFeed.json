@@ -1,12 +1,12 @@
 {
   "fields": {
     "exportHttpHeaders": "Заголовок",
-    "httpUrl": "",
-    "httpMethod": "",
+    "httpUrl": "URL",
+    "httpMethod": "Метод",
     "httpConnectionId": "З'єднання",
-    "processResponse": "",
-    "processResponseFormatter": "",
-    "exportHttpValidator": ""
+    "processResponse": "Імпортувати стрічку для обробки відповідей",
+    "processResponseFormatter": "Імпорт формату вкладення стрічки",
+    "exportHttpValidator": "Валідатор відповідей"
   },
   "links": {
     "exportHttpHeaders": "Заголовок"
