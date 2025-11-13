@@ -2,9 +2,9 @@
   "fields": {
     "name": "Klíč",
     "value": "Hodnota",
-    "exportFeed": ""
+    "exportFeed": "Exportní kanál"
   },
   "links": {
-    "exportFeed": ""
+    "exportFeed": "Exportní kanál"
   }
 }
