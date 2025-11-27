@@ -1,1 +1,13 @@
-{}
+{
+  "scopeNames": {
+    "ExportHttpHeader": "Intestazione",
+    "ExportHttpValidator": "Validatore Http di esportazione"
+  },
+  "scopeNamesPlural": {
+    "ExportHttpHeader": "Intestazioni",
+    "ExportHttpValidator": "Esportazione di validatori Http"
+  },
+  "labels": {
+    "trySendRequestAgain": "Invia di nuovo la richiesta"
+  }
+}
