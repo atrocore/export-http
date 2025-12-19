@@ -1,14 +1,14 @@
 {
   "fields": {
-    "validator": "Valideur"
+    "validator": "Validateur"
   },
   "links": {
-    "exportFeeds": "Exporter des flux"
+    "exportFeeds": "Flux d'export"
   },
   "tooltips": {
-    "validator": "Vous pouvez utiliser la syntaxe pour <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
+    "validator": "Vous pouvez utiliser la syntaxe du moteur de template <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> ."
   },
   "labels": {
-    "Create ExportHttpValidator": "Créer un validateur Http d'exportation"
+    "Create ExportHttpValidator": "Créer un validateur d'export HTTP"
   }
 }
