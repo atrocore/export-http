@@ -1,0 +1,14 @@
+{
+  "fields": {
+    "validator": "Walidator"
+  },
+  "links": {
+    "exportFeeds": "Eksportuj kanały"
+  },
+  "tooltips": {
+    "validator": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+  },
+  "labels": {
+    "Create ExportHttpValidator": "Tworzenie walidatora eksportu http"
+  }
+}

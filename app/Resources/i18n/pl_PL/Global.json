@@ -1,0 +1,13 @@
+{
+  "scopeNames": {
+    "ExportHttpHeader": "Nagłówek",
+    "ExportHttpValidator": "Export Http Validator"
+  },
+  "scopeNamesPlural": {
+    "ExportHttpHeader": "Nagłówki",
+    "ExportHttpValidator": "Walidatory eksportu http"
+  },
+  "labels": {
+    "trySendRequestAgain": "Proszę wysłać ponownie żądanie"
+  }
+}

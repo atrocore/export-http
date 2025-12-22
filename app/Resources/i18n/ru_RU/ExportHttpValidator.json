@@ -1,0 +1,14 @@
+{
+  "fields": {
+    "validator": "Валидатор"
+  },
+  "links": {
+    "exportFeeds": "Экспортный фид"
+  },
+  "tooltips": {
+    "validator": "Вы можете использовать синтаксис шаблонизатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+  },
+  "labels": {
+    "Create ExportHttpValidator": "Создание валидатора экспорта Http"
+  }
+}

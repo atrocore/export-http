@@ -1,0 +1,21 @@
+{
+  "fields": {
+    "exportHttpHeaders": "Cabeceras",
+    "httpUrl": "URL",
+    "httpMethod": "Método",
+    "httpConnectionId": "Conexión",
+    "processResponse": "Feed de importación para el procesamiento de respuestas",
+    "processResponseFormatter": "Importar el formateador de archivos adjuntos Feed",
+    "exportHttpValidator": "Validador de respuestas"
+  },
+  "links": {
+    "exportHttpHeaders": "Cabeceras"
+  },
+  "labels": {
+    "httpPro": "Solicitud HTTP"
+  },
+  "tooltips": {
+    "httpUrl": "Puede utilizar la sintaxis del motor de plantillas <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
+    "exportHttpTwigBody": "Puede utilizar la sintaxis del motor de plantillas <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+  }
+}

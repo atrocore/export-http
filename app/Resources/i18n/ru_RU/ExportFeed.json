@@ -3,7 +3,10 @@
     "exportHttpHeaders": "Заголовки",
     "httpUrl": "URL",
     "httpMethod": "Метод",
-    "httpConnectionId": "Соединение"
+    "httpConnectionId": "Соединение",
+    "processResponse": "Импортируйте фид для обработки ответов",
+    "processResponseFormatter": "Форматировщик вложений для импорта корма",
+    "exportHttpValidator": "Валидатор ответов"
   },
   "links": {
     "exportHttpHeaders": "Заголовки"

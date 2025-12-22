@@ -1,0 +1,21 @@
+{
+  "fields": {
+    "exportHttpHeaders": "Intestazioni",
+    "httpUrl": "URL",
+    "httpMethod": "Metodo",
+    "httpConnectionId": "Connessione",
+    "processResponse": "Importazione del Feed per l'elaborazione della risposta",
+    "processResponseFormatter": "Importazione del formattatore di allegati del mangime",
+    "exportHttpValidator": "Validatore di risposte"
+  },
+  "links": {
+    "exportHttpHeaders": "Intestazioni"
+  },
+  "labels": {
+    "httpPro": "Richiesta HTTP"
+  },
+  "tooltips": {
+    "httpUrl": "Può utilizzare la sintassi per <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> motore di template.",
+    "exportHttpTwigBody": "Può utilizzare la sintassi per <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> motore di template."
+  }
+}

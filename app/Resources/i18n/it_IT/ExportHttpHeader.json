@@ -1,0 +1,10 @@
+{
+  "fields": {
+    "name": "Chiave",
+    "value": "Valore",
+    "exportFeed": "Esportazione di mangimi"
+  },
+  "links": {
+    "exportFeed": "Esportazione di mangimi"
+  }
+}
