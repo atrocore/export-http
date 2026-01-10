@@ -1,7 +1,7 @@
 {
   "scopeNames": {
     "ExportHttpHeader": "Intestazione",
-    "ExportHttpValidator": "Validatore Http di esportazione"
+    "ExportHttpValidator": "Esportazione del validatore Http"
   },
   "scopeNamesPlural": {
     "ExportHttpHeader": "Intestazioni",
