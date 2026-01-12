@@ -3,7 +3,7 @@
     "validator": "Валідатор"
   },
   "links": {
-    "exportFeeds": "Експортувати стрічки"
+    "exportFeeds": "Експортні фіди"
   },
   "tooltips": {
     "validator": "Ви можете використовувати синтаксис шаблонізатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
