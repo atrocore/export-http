@@ -4,6 +4,14 @@
       "select": false,
       "view": "export-http:views/export-feed/record/panels/headers",
       "rowActionsView": "views/record/row-actions/edit-and-remove"
+    },
+    "exportJobs": {
+      "actions": {
+        "trySendRequestAgain": {
+          "url": "ExportJob/action/resendRequest",
+          "sortOrder": 5
+        }
+      }
     }
   }
 }
