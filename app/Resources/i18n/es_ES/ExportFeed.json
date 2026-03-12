@@ -3,7 +3,6 @@
     "exportHttpHeaders": "Cabeceras",
     "httpUrl": "URL",
     "httpMethod": "Método",
-    "httpConnectionId": "Conexión",
     "processResponse": "Feed de importación para el procesamiento de respuestas",
     "processResponseFormatter": "Importar el formateador de archivos adjuntos Feed",
     "exportHttpValidator": "Validador de respuestas"

@@ -3,7 +3,6 @@
     "exportHttpHeaders": "Intestazioni",
     "httpUrl": "URL",
     "httpMethod": "Metodo",
-    "httpConnectionId": "Connessione",
     "processResponse": "Importazione del Feed per l'elaborazione della risposta",
     "processResponseFormatter": "Importazione del formattatore di allegati del mangime",
     "exportHttpValidator": "Validatore di risposte"

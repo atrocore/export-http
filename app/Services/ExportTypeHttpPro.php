@@ -83,7 +83,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         }
 
         $response = $this
-            ->createConnection($this->data['feed']['data']['feedFields']['httpConnectionId'] ?? null)
+            ->createConnection($this->data['feed']['connectionId'] ?? null)
             ->request($url, $this->data['feed']['httpMethod'], $headers, $contents, false);
 
         $httpCode = $response->getCode();
@@ -196,13 +196,13 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         }
     }
 
-    protected function createConnection(?string $httpConnectionId = null): HttpConnectionInterface
+    protected function createConnection(?string $connectionId = null): HttpConnectionInterface
     {
-        if (empty($httpConnectionId)) {
+        if (empty($connectionId)) {
             return $this->getContainer()->get(ConnectionHttp::class);
         }
 
-        return $this->getContainer()->get('connectionFactory')->createById($httpConnectionId);
+        return $this->getContainer()->get('connectionFactory')->createById($connectionId);
     }
 
 }

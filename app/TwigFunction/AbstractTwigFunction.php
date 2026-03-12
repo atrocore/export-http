@@ -38,12 +38,12 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
         return $headers;
     }
 
-    protected function createConnection(?string $httpConnectionId = null): HttpConnectionInterface
+    protected function createConnection(?string $connectionId = null): HttpConnectionInterface
     {
-        if (empty($httpConnectionId)) {
+        if (empty($connectionId)) {
             return $this->getInjection(ConnectionHttp::class);
         }
 
-        return $this->getInjection('connectionFactory')->createById($httpConnectionId);
+        return $this->getInjection('connectionFactory')->createById($connectionId);
     }
 }

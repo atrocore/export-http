@@ -3,7 +3,6 @@
     "exportHttpHeaders": "Záhlaví",
     "httpUrl": "URL",
     "httpMethod": "Metoda",
-    "httpConnectionId": "Připojení",
     "processResponse": "Import Feed pro zpracování odpovědí",
     "processResponseFormatter": "Formátovač importních příloh Feed",
     "exportHttpValidator": "Validátor odpovědí"
