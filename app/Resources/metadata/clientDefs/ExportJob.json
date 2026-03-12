@@ -1,6 +1,5 @@
 {
   "recordViews": {
-    "list": "export-http:views/export-job/record/list",
     "detail": "export-http:views/export-job/record/detail"
   }
 }
