@@ -33,15 +33,4 @@ class ExportFeedService extends \Atro\Listeners\AbstractListener
 
         $event->setArgument('result', $result);
     }
-
-    public function prepareEntityForOutput(Event $event): void
-    {
-        $entity = $event->getArgument('entity');
-        if (!empty($entity->getFeedField('httpConnectionId'))) {
-            $connection = $this->getEntityManager()->getEntity('Connection', $entity->getFeedField('httpConnectionId'));
-            if (!empty($connection)) {
-                $entity->set('httpConnectionName', $connection->get('name'));
-            }
-        }
-    }
 }

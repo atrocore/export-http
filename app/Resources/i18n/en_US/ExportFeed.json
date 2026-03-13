@@ -3,7 +3,6 @@
     "exportHttpHeaders": "Headers",
     "httpUrl": "URL",
     "httpMethod": "Method",
-    "httpConnectionId": "Connection",
     "processResponse": "Import Feed for response processing",
     "processResponseFormatter": "Import Feed attachment formatter",
     "exportHttpValidator": "Response Validator"
