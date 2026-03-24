@@ -2,8 +2,8 @@
   "name": "atrocore/export-http",
   "default": "",
   "require": {
-    "atrocore/core": ">=2.2.27 <2.3.0",
-    "atrocore/export": "~1.10.0"
+    "atrocore/core": "~2.3.0",
+    "atrocore/export": "~1.12.0"
   },
   "conflict": {
     "atrocore/pim": "<1.8.3"
