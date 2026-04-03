@@ -24,7 +24,7 @@ class ExportFeedLayout extends AbstractLayoutListener
     {
         $result = $event->getArgument('result');
 
-        $result[1]['rows'][] = [['name' => 'httpMethod'], ['name' => 'httpConnectionId']];
+        $result[1]['rows'][count($result[1]['rows']) - 1][] = ['name' => 'httpMethod'];
         $result[1]['rows'][] = [['name' => 'httpUrl', 'fullWidth' => true]];
 
         if ($this->getMetadata()->get(['entityDefs', 'ExportFeed', 'fields', 'processResponse'])) {
@@ -34,7 +34,7 @@ class ExportFeedLayout extends AbstractLayoutListener
         $result[0]['rows'][] = [['name' => 'exportHttpValidator'], false];
 
 
-        $event->setArgument('result',  $result);
+        $event->setArgument('result', $result);
     }
 
     public function relationships(Event $event): void
@@ -43,6 +43,6 @@ class ExportFeedLayout extends AbstractLayoutListener
 
         $result = array_merge([['name' => 'exportHttpHeaders', 'canClose' => false]], $result);
 
-        $event->setArgument('result',  $result);
+        $event->setArgument('result', $result);
     }
 }

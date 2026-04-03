@@ -3,7 +3,6 @@
     "exportHttpHeaders": "Заголовок",
     "httpUrl": "URL",
     "httpMethod": "Метод",
-    "httpConnectionId": "З'єднання",
     "processResponse": "Імпортувати стрічку для обробки відповідей",
     "processResponseFormatter": "Імпорт формату вкладення стрічки",
     "exportHttpValidator": "Валідатор відповідей"

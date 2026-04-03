@@ -2,5 +2,8 @@
   "duplicatableRelations": [
     "__APPEND__",
     "exportHttpHeaders"
-  ]
+  ],
+  "connectionTypes": {
+    "httpPro": []
+  }
 }
