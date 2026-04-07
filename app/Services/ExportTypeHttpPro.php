@@ -146,14 +146,14 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             }
 
             try {
-                $fileData = $this->getService('File')->createFileViaContents($attachmentData, $attachmentContents);
-                if (!empty($fileData['id'])) {
+                $fileId = $this->getService('File')->createFileViaContents($attachmentData, $attachmentContents);
+                if (!empty($fileId)) {
                     /** @var ImportFeed $importFeedService */
                     $importFeedService = $this->getService('ImportFeed');
 
                     $payload = new \stdClass();
                     $payload->executeNow = true;
-                    $importFeedService->pushJobs($importFeed, $fileData['id'], $payload);
+                    $importFeedService->pushJobs($importFeed, $fileId, $payload);
                 }
             } catch (\Throwable $e) {
                 $GLOBALS['log']->error('Response processing failed: ' . $e->getMessage());
