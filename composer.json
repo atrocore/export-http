@@ -16,7 +16,7 @@
   "extra": {
     "atroId": "ExportHttp",
     "name": {
-      "default": "Export: HTTP Request "
+      "default": "Export: HTTP Request"
     },
     "description": {
       "default": "This module allows you to use a template engine to configure and export any structured data of any complexity manually or fully automatically via HTTP request. Any REST/SOAP API calls can be executed. You can use an export feed like a webhook too."
