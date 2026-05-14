@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace ExportHttp\Listeners;
 
-use Atro\Listeners\AbstractListener;
 use Atro\Core\EventManager\Event;
+use Atro\Listeners\AbstractMetadataListener;
 
-class Metadata extends AbstractListener
+class Metadata extends AbstractMetadataListener
 {
     public function modify(Event $event): void
     {
