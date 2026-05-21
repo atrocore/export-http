@@ -100,7 +100,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         } else {
             // Standard validation
             if ($httpCode < 200 || $httpCode >= 300) {
-                throw new BadRequest("Response Code: $httpCode Body: $output");
+                throw new BadRequest("Url: $url\nResponse Code: $httpCode\nBody: $output");
             }
         }
 

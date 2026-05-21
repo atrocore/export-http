@@ -15,7 +15,7 @@
     "exportJobs": {
       "actions": {
         "trySendRequestAgain": {
-          "url": "ExportJob/action/resendRequest",
+          "url": "ExportJob/{{id}}/resendRequest",
           "sortOrder": 5
         }
       }
