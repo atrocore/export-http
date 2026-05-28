@@ -37,7 +37,6 @@ class Module extends AbstractModule
     public function getEntityTypeHandlerExcludes(): array
     {
         return [
-            // ExportHttpHeader — managed exclusively via ExportFeed; direct CRUD is not allowed
             ListHandler::class                   => ['ExportHttpHeader'],
             ListLinkedHandler::class             => ['ExportHttpHeader'],
             MassUpdateHandler::class             => ['ExportHttpHeader'],
