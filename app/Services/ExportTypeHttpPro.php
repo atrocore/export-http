@@ -33,8 +33,8 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         if (!empty($exportJob->get('shouldResend')) && !empty($exportJob->get('file')) && !empty($exportJob->get('requestUrl'))) {
             $this->setData($data);
             $this->convertor = $this->getDataConvertor();
-            $attachment = $exportJob->get('file');
-            $url = $exportJob->get('requestUrl');
+            $attachment      = $exportJob->get('file');
+            $url             = $exportJob->get('requestUrl');
             $exportJob->set('shouldResend', false);
             if ($this->shouldLoadEntities($exportFeed)) {
                 $entities = $this->getEntities();
@@ -45,7 +45,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $exportJob->set('fileId', $attachment->get('id'));
             $this->getEntityManager()->saveEntity($exportJob);
 
-            $httpUrl = (string)$this->data['feed']['httpUrl'];
+            $httpUrl      = (string)$this->data['feed']['httpUrl'];
             $templateData = [];
 
             if ($this->shouldLoadEntities($exportFeed)) {
@@ -86,13 +86,14 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             ->createConnection($this->data['feed']['connectionId'] ?? null)
             ->request($url, $this->data['feed']['httpMethod'], $headers, $contents, false);
 
-        $httpCode = $response->getCode();
-        $output = $response->getOutput();
+        $httpCode        = $response->getCode();
+        $output          = $response->getOutput();
+        $responseHeaders = $response->getHeaders();
 
         $exportHttpValidator = $exportFeed->get('exportHttpValidator');
         if (!empty($exportHttpValidator)) {
-            $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities ?? []]);
-            $res = trim($res);
+            $res     = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'responseHeaders' => $responseHeaders, 'entities' => $entities ?? []]);
+            $res     = trim($res);
             $success = strtolower($res) === 'true' || $res === '1';
             if (empty($success)) {
                 throw new BadRequest("Validation failed for validator {$exportHttpValidator->get('name')}. \n Result: $res \n Response Code: $httpCode \n Body: $output");
@@ -104,7 +105,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             }
         }
 
-        if (!empty($output) && !empty($importFeed = $exportFeed->get('processResponse'))) {
+        if ((!empty($output) || !empty($responseHeaders)) && !empty($importFeed = $exportFeed->get('processResponse'))) {
             $attachmentData = new \stdClass();
 
             $nameParts = $attachment->get('name');
@@ -116,31 +117,32 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $formatter = $exportFeed->get('processResponseFormatter');
             if (!empty($formatter)) {
                 $attachmentContents = $this->renderTemplateContents($formatter, [
-                    'httpCode'     => $httpCode,
-                    'responseText' => $output,
-                    'entities'     => $entities ?? []
+                    'httpCode'        => $httpCode,
+                    'responseText'    => $output,
+                    'responseHeaders' => $responseHeaders,
+                    'entities'        => $entities ?? []
                 ]);
             }
 
-            $attachmentData->name = implode('.', $nameParts);
+            $attachmentData->name     = implode('.', $nameParts);
             $attachmentData->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
-            $attachmentData->hidden = true;
+            $attachmentData->hidden   = true;
 
             switch ($importFeed->getFeedField('format')) {
                 case 'CSV':
-                    $attachmentData->name .= '.csv';
+                    $attachmentData->name     .= '.csv';
                     $attachmentData->mimeType = 'text/csv';
                     break;
                 case 'Excel':
-                    $attachmentData->name .= '.xlsx';
+                    $attachmentData->name     .= '.xlsx';
                     $attachmentData->mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                     break;
                 case 'JSON':
-                    $attachmentData->name .= '.json';
+                    $attachmentData->name     .= '.json';
                     $attachmentData->mimeType = 'application/json';
                     break;
                 case 'XML':
-                    $attachmentData->name .= '.xml';
+                    $attachmentData->name     .= '.xml';
                     $attachmentData->mimeType = 'application/xml';
                     break;
             }
@@ -151,7 +153,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
                     /** @var ImportFeed $importFeedService */
                     $importFeedService = $this->getService('ImportFeed');
 
-                    $payload = new \stdClass();
+                    $payload             = new \stdClass();
                     $payload->executeNow = true;
                     $importFeedService->pushJobs($importFeed, $fileId, $payload);
                 }
@@ -166,7 +168,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
     }
 
 
-    protected function shouldLoadEntities(ExportFeed $exportFeed) : bool
+    protected function shouldLoadEntities(ExportFeed $exportFeed): bool
     {
         $httpUrl = (string)$this->data['feed']['httpUrl'];
 
