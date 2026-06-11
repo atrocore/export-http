@@ -88,10 +88,11 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
         $httpCode = $response->getCode();
         $output = $response->getOutput();
+        $responseHeaders = $response->getHeaders();
 
         $exportHttpValidator = $exportFeed->get('exportHttpValidator');
         if (!empty($exportHttpValidator)) {
-            $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'entities' => $entities ?? []]);
+            $res = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'responseHeaders' => $responseHeaders, 'entities' => $entities ?? []]);
             $res = trim($res);
             $success = strtolower($res) === 'true' || $res === '1';
             if (empty($success)) {
@@ -116,9 +117,10 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $formatter = $exportFeed->get('processResponseFormatter');
             if (!empty($formatter)) {
                 $attachmentContents = $this->renderTemplateContents($formatter, [
-                    'httpCode'     => $httpCode,
-                    'responseText' => $output,
-                    'entities'     => $entities ?? []
+                    'httpCode'       => $httpCode,
+                    'responseText'   => $output,
+                    'responseHeaders' => $responseHeaders,
+                    'entities'       => $entities ?? []
                 ]);
             }
 
