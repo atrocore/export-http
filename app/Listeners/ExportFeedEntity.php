@@ -24,6 +24,10 @@ class ExportFeedEntity extends AbstractListener
     {
         $entity = $event->getArgument('entity');
 
+        if ($entity->get('type') !== 'httpPro') {
+            return;
+        }
+
         if (!empty($entity->get('connectionId'))) {
             $connection = $this->getEntityManager()->getEntity('Connection', $entity->get('connectionId'));
             if (!empty($connection)) {
