@@ -5,8 +5,14 @@
       "required": true
     },
     "validator": {
-      "type": "text",
-      "view": "views/fields/script",
+      "type": "code",
+      "engine": "Twig",
+      "variables": [
+        "httpCode",
+        "responseText",
+        "responseHeaders",
+        "entities"
+      ],
       "default": "{#ResponseText: \"{{responseText}}\" httpCode: \"{{httpCode}}\"#}\n{% set success = true %}\n{{ success }}",
       "tooltip": true,
       "required": true
