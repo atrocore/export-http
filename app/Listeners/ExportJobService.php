@@ -34,7 +34,7 @@ class ExportJobService extends AbstractListener
             && ($this->getUser()->isAdmin() ?? $this->getAcl()->check($entity, 'edit'))
             && $entity->get('fileId') && $entity->get('requestUrl');
 
-        $entity->setMetaPermission('trySendRequestAgain', $condition);
+        $entity->setAvailableAction('trySendRequestAgain', $condition);
 
     }
 
