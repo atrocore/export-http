@@ -128,7 +128,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             $attachmentData->folderId = $this->createExportFileFolder($exportJob->get('exportFeed'))->get('id');
             $attachmentData->hidden   = true;
 
-            switch ($importFeed->getFeedField('format')) {
+            switch ($importFeed->get('format')) {
                 case 'CSV':
                     $attachmentData->name     .= '.csv';
                     $attachmentData->mimeType = 'text/csv';
