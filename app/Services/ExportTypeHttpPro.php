@@ -90,7 +90,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
         $output          = $response->getOutput();
         $responseHeaders = $response->getHeaders();
 
-        $exportHttpValidator = $exportFeed->get('exportHttpValidator');
+        $exportHttpValidator = $exportFeed->getSubtype()->get('exportHttpValidator');
         if (!empty($exportHttpValidator)) {
             $res     = $this->renderTemplateContents($exportHttpValidator->get('validator'), ['httpCode' => $httpCode, 'responseText' => $output, 'responseHeaders' => $responseHeaders, 'entities' => $entities ?? []]);
             $res     = trim($res);
@@ -105,7 +105,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             }
         }
 
-        if ((!empty($output) || !empty($responseHeaders)) && !empty($importFeed = $exportFeed->get('processResponse'))) {
+        if ((!empty($output) || !empty($responseHeaders)) && !empty($importFeed = $exportFeed->getSubtype()->get('processResponse'))) {
             $attachmentData = new \stdClass();
 
             $nameParts = $attachment->get('name');
@@ -114,7 +114,7 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
             $attachmentContents = $output;
 
-            $formatter = $exportFeed->get('processResponseFormatter');
+            $formatter = $exportFeed->getSubtype()->get('processResponseFormatter');
             if (!empty($formatter)) {
                 $attachmentContents = $this->renderTemplateContents($formatter, [
                     'httpCode'        => $httpCode,
@@ -176,13 +176,13 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
             return true;
         }
 
-        $exportHttpValidator = $exportFeed->get('exportHttpValidator');
+        $exportHttpValidator = $exportFeed->getSubtype()->get('exportHttpValidator');
         if (!empty($exportHttpValidator) && str_contains((string)$exportHttpValidator->get('validator'), 'entities')) {
             return true;
         }
 
-        $formatter = (string)$exportFeed->get('processResponseFormatter');
-        if (str_contains($formatter, 'entities') && !empty($exportFeed->get('processResponse'))) {
+        $formatter = (string)$exportFeed->getSubtype()->get('processResponseFormatter');
+        if (str_contains($formatter, 'entities') && !empty($exportFeed->getSubtype()->get('processResponse'))) {
             return true;
         }
 

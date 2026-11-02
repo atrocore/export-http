@@ -1,96 +1,11 @@
 {
   "fields": {
-    "httpMethod": {
-      "type": "enum",
-      "options": [
-        "POST",
-        "PUT",
-        "PATCH",
-        "DELETE",
-        "GET"
-      ],
-      "default": "POST",
-      "notStorable": true,
-      "filterDisabled": true,
-      "dataField": true,
-      "conditionalProperties": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    "httpUrl": {
-      "type": "text",
-      "notStorable": true,
-      "filterDisabled": true,
-      "dataField": true,
-      "tooltip": true,
-      "conditionalProperties": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        },
-        "required": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      }
-    },
     "exportHttpHeaders": {
       "type": "linkMultiple",
       "layoutDetailDisabled": true,
       "layoutMassUpdateDisabled": true,
       "noLoad": true,
       "importDisabled": true
-    },
-    "exportHttpValidator": {
-      "type": "link",
-      "conditionalProperties": {
-        "visible": {
-          "conditionGroup": [
-            {
-              "type": "in",
-              "attribute": "type",
-              "value": [
-                "httpPro"
-              ]
-            }
-          ]
-        }
-      }
     }
   },
   "links": {
@@ -98,11 +13,6 @@
       "type": "hasMany",
       "foreign": "exportFeed",
       "entity": "ExportHttpHeader"
-    },
-    "exportHttpValidator": {
-      "type": "belongsTo",
-      "foreign": "exportFeeds",
-      "entity": "ExportHttpValidator"
     }
   }
 }

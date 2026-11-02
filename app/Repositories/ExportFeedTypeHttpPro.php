@@ -11,25 +11,24 @@
 
 declare(strict_types=1);
 
-namespace ExportHttp\Listeners;
+namespace ExportHttp\Repositories;
 
 use Atro\ConnectionType\HttpConnectionInterface;
-use Atro\Core\EventManager\Event;
-use Espo\Core\Exceptions\BadRequest;
-use Atro\Listeners\AbstractListener;
+use Atro\Core\Exceptions\BadRequest;
+use Atro\Core\Templates\Repositories\Subtype;
+use Espo\ORM\Entity;
 
-class ExportFeedEntity extends AbstractListener
+/**
+ * An HTTP export feed sends the exported file via an HTTP request of its connection.
+ */
+class ExportFeedTypeHttpPro extends Subtype
 {
-    public function beforeSave(Event $event): void
+    protected function beforeSave(Entity $entity, array $options = [])
     {
-        $entity = $event->getArgument('entity');
-
-        if ($entity->get('type') !== 'httpPro') {
-            return;
-        }
+        parent::beforeSave($entity, $options);
 
         if (!empty($entity->get('connectionId'))) {
-            $connection = $this->getEntityManager()->getEntity('Connection', $entity->get('connectionId'));
+            $connection = $this->getEntityManager()->getRepository('Connection')->get($entity->get('connectionId'));
             if (!empty($connection)) {
                 $connectionClass = $this->getMetadata()->get(['app', 'connectionTypes', $connection->get('type')]);
                 if (!is_a($connectionClass, HttpConnectionInterface::class, true)) {

@@ -48,7 +48,7 @@
     "exportFeeds": {
       "type": "hasMany",
       "foreign": "exportHttpValidator",
-      "entity": "ExportFeed"
+      "entity": "ExportFeedTypeHttpPro"
     }
   },
   "collection": {

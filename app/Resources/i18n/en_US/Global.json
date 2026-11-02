@@ -1,11 +1,13 @@
 {
   "scopeNames": {
     "ExportHttpHeader": "Header",
-    "ExportHttpValidator": "Export Http Validator"
+    "ExportHttpValidator": "Export Http Validator",
+    "ExportFeedTypeHttpPro": "Export Feed: HTTP Request"
   },
   "scopeNamesPlural": {
     "ExportHttpHeader": "Headers",
-    "ExportHttpValidator": "Export Http Validators"
+    "ExportHttpValidator": "Export Http Validators",
+    "ExportFeedTypeHttpPro": "Export Feed: HTTP Request"
   },
   "labels": {
     "trySendRequestAgain": "Resend Request"
