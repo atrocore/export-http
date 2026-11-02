@@ -1,0 +1,41 @@
+{
+  "fields": {
+    "connection": {
+      "type": "link",
+      "view": "export:views/export-feed/fields/connection"
+    },
+    "httpMethod": {
+      "type": "enum",
+      "options": [
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "GET"
+      ],
+      "default": "POST",
+      "filterDisabled": true,
+      "required": true
+    },
+    "httpUrl": {
+      "type": "text",
+      "filterDisabled": true,
+      "tooltip": true,
+      "required": true
+    },
+    "exportHttpValidator": {
+      "type": "link"
+    }
+  },
+  "links": {
+    "connection": {
+      "type": "belongsTo",
+      "entity": "Connection"
+    },
+    "exportHttpValidator": {
+      "type": "belongsTo",
+      "foreign": "exportFeeds",
+      "entity": "ExportHttpValidator"
+    }
+  }
+}

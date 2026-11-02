@@ -23,29 +23,15 @@ class Metadata extends AbstractMetadataListener
         $data = $event->getArgument('data');
 
         if (!empty($data['entityDefs']['ImportFeed'])) {
-            $data['entityDefs']['ExportFeed']['fields']['processResponse'] = [
-                'type'                  => 'link',
-                'conditionalProperties' => [
-                    'visible' => [
-                        'conditionGroup' => [
-                            [
-                                'type'      => 'in',
-                                'attribute' => 'type',
-                                'value'     => [
-                                    'httpPro',
-                                ],
-                            ],
-                        ],
-                    ],
-
-                ],
+            $data['entityDefs']['ExportFeedTypeHttpPro']['fields']['processResponse'] = [
+                'type' => 'link',
             ];
-            $data['entityDefs']['ExportFeed']['links']['processResponse'] = [
+            $data['entityDefs']['ExportFeedTypeHttpPro']['links']['processResponse'] = [
                 'type'   => 'belongsTo',
                 'entity' => 'ImportFeed',
             ];
 
-            $data['entityDefs']['ExportFeed']['fields']['processResponseFormatter'] = [
+            $data['entityDefs']['ExportFeedTypeHttpPro']['fields']['processResponseFormatter'] = [
                 'type'                  => 'text',
                 "view"                  => "views/fields/script",
                 'conditionalProperties' => [

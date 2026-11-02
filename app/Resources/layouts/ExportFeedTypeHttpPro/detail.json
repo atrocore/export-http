@@ -1,0 +1,195 @@
+[
+  {
+    "label": "Details",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "isActive"
+        },
+        false
+      ],
+      [
+        {
+          "name": "name"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      [
+        {
+          "name": "description"
+        },
+        {
+          "name": "code"
+        }
+      ],
+      [
+        {
+          "name": "limit"
+        },
+        {
+          "name": "separateJob"
+        }
+      ],
+      [
+        {
+          "name": "maxWorkers"
+        },
+        {
+          "name": "replaceExistingFile"
+        }
+      ],
+      [
+        {
+          "name": "lastStatus"
+        },
+        {
+          "name": "lastTime"
+        }
+      ],
+      [
+        {
+          "name": "exportHttpValidator"
+        },
+        false
+      ]
+    ]
+  },
+  {
+    "label": "Export Data Settings",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "fileType",
+          "inlineEditDisabled": true
+        },
+        {
+          "name": "numberOfHeaders"
+        }
+      ],
+      [
+        {
+          "name": "csvFieldDelimiter"
+        },
+        {
+          "name": "csvTextQualifier"
+        }
+      ],
+      [
+        {
+          "name": "useQuoteForAll"
+        },
+        false
+      ],
+      [
+        {
+          "name": "originTemplateName"
+        },
+        {
+          "name": "isTemplateEditable"
+        }
+      ],
+      [
+        {
+          "name": "originTemplate",
+          "fullWidth": true
+        }
+      ],
+      [
+        {
+          "name": "template",
+          "fullWidth": true
+        }
+      ],
+      [
+        {
+          "name": "folder"
+        },
+        false
+      ],
+      [
+        {
+          "name": "connection"
+        },
+        {
+          "name": "httpMethod"
+        }
+      ],
+      [
+        {
+          "name": "httpUrl",
+          "fullWidth": true
+        }
+      ]
+    ]
+  },
+  {
+    "label": "Feed Settings",
+    "style": "default",
+    "rows": [
+      [
+        {
+          "name": "entity"
+        },
+        false
+      ],
+      [
+        {
+          "name": "sortOrderField"
+        },
+        {
+          "name": "sortOrderDirection"
+        }
+      ],
+      [
+        {
+          "name": "locale"
+        },
+        {
+          "name": "contentLanguage"
+        }
+      ],
+      [
+        {
+          "name": "emptyValue"
+        },
+        {
+          "name": "nullValue"
+        }
+      ],
+      [
+        {
+          "name": "markForNoRelation"
+        },
+        {
+          "name": "markForUnlinkedAttribute"
+        }
+      ],
+      [
+        {
+          "name": "convertCollectionToString"
+        },
+        {
+          "name": "delimiter"
+        }
+      ],
+      [
+        {
+          "name": "convertRelationsToString"
+        },
+        {
+          "name": "fieldDelimiterForRelation"
+        }
+      ],
+      [
+        {
+          "name": "exportByMaxDepth"
+        },
+        false
+      ]
+    ]
+  }
+]
