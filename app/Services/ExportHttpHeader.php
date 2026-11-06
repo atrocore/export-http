@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\Services;
 
-use Espo\Core\Templates\Services\Base;
+use Atro\Core\Templates\Services\Base;
 
 class ExportHttpHeader extends Base
 {

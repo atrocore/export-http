@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ExportHttp\Entities;
 
-class ExportHttpHeader extends \Espo\Core\Templates\Entities\Base
+class ExportHttpHeader extends \Atro\Core\Templates\Entities\Base
 {
     protected $entityType = "ExportHttpHeader";
 }
