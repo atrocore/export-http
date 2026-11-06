@@ -9,5 +9,8 @@
   },
   "labels": {
     "trySendRequestAgain": "Anfrage erneut senden"
+  },
+  "subtypeDescriptions": {
+    "ExportFeedTypeHttpPro": "Sendet die exportierten Daten mit HTTP-Anfragen an eine API."
   }
 }
