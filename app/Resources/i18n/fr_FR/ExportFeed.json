@@ -16,5 +16,10 @@
   "tooltips": {
     "httpUrl": "Vous pouvez utiliser la syntaxe du moteur de template <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> .",
     "exportHttpTwigBody": "Vous pouvez utiliser la syntaxe du moteur de template <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> ."
+  },
+  "options": {
+    "type": {
+      "httpPro": "Requête HTTP"
+    }
   }
 }
