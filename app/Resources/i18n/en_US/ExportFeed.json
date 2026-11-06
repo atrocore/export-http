@@ -16,5 +16,10 @@
   "tooltips": {
     "httpUrl": "You can use the syntax for <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine.",
     "exportHttpTwigBody": "You can use the syntax for <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> template engine."
+  },
+  "options": {
+    "type": {
+      "httpPro": "HTTP Request"
+    }
   }
 }

@@ -9,5 +9,8 @@
   },
   "labels": {
     "trySendRequestAgain": "Повторний запит"
+  },
+  "subtypeDescriptions": {
+    "ExportFeedTypeHttpPro": "Надсилає експортовані дані в API HTTP-запитами."
   }
 }

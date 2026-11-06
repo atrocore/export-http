@@ -9,5 +9,8 @@
   },
   "labels": {
     "trySendRequestAgain": "Renvoyer la requête"
+  },
+  "subtypeDescriptions": {
+    "ExportFeedTypeHttpPro": "Envoie les données exportées à une API par des requêtes HTTP."
   }
 }

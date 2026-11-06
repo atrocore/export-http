@@ -16,5 +16,10 @@
   "tooltips": {
     "httpUrl": "Ви можете використовувати синтаксис шаблонізатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
     "exportHttpTwigBody": "Ви можете використовувати синтаксис шаблонізатора <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+  },
+  "options": {
+    "type": {
+      "httpPro": "HTTP-запит"
+    }
   }
 }
