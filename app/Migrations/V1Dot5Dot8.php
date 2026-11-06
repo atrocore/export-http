@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace ExportHttp\Migrations;
 
 use Atro\Core\Migration\Base;
-use Espo\Core\Exceptions\Error;
+use Atro\Core\Exceptions\Error;
 
 class V1Dot5Dot8 extends Base
 {
