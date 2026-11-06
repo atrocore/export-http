@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace ExportHttp\Services;
+namespace ExportHttp\ExportTypes;
 
 use Atro\ConnectionType\ConnectionHttp;
 use Atro\ConnectionType\HttpConnectionInterface;
@@ -23,7 +23,7 @@ use Export\Entities\ExportJob;
 use Import\Services\ImportFeed;
 use stdClass;
 
-class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
+class HttpPro extends \Export\ExportTypes\Simple
 {
     public function export(array $data, ExportJob $exportJob): File
     {
@@ -166,7 +166,6 @@ class ExportTypeHttpPro extends \Export\Services\ExportTypeSimple
 
         return $attachment;
     }
-
 
     protected function shouldLoadEntities(ExportFeed $exportFeed): bool
     {

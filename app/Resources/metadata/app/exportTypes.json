@@ -1,5 +1,6 @@
 {
   "httpPro": {
+    "className": "\\ExportHttp\\ExportTypes\\HttpPro",
     "fileTypeRequired": false,
     "fileTypes": [
       "json",
