@@ -20,11 +20,6 @@ use Atro\Core\KeyValueStorages\StorageInterface;
 
 abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFunction
 {
-    public function __construct()
-    {
-        $this->addDependency('connectionFactory');
-        $this->addDependency(ConnectionHttp::class);
-    }
     protected  function getHeaders(): array
     {
         $feed = $this->getFeedData();
@@ -41,9 +36,9 @@ abstract class AbstractTwigFunction extends \Export\TwigFunction\AbstractTwigFun
     protected function createConnection(?string $connectionId = null): HttpConnectionInterface
     {
         if (empty($connectionId)) {
-            return $this->getInjection(ConnectionHttp::class);
+            return $this->container->get(ConnectionHttp::class);
         }
 
-        return $this->getInjection('connectionFactory')->createById($connectionId);
+        return $this->container->get('connectionFactory')->createById($connectionId);
     }
 }
