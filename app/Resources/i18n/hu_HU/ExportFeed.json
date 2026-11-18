@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "exportHttpHeaders": "",
+    "httpUrl": "",
+    "httpMethod": "",
+    "processResponse": "",
+    "processResponseFormatter": "",
+    "exportHttpValidator": ""
+  },
+  "links": {
+    "exportHttpHeaders": ""
+  },
+  "labels": {
+    "httpPro": ""
+  },
+  "tooltips": {
+    "httpUrl": "",
+    "exportHttpTwigBody": ""
+  },
+  "options": {
+    "type": {
+      "httpPro": ""
+    }
+  }
+}
