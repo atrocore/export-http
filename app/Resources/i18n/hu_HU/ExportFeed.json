@@ -1,25 +1,25 @@
 {
   "fields": {
-    "exportHttpHeaders": "",
-    "httpUrl": "",
-    "httpMethod": "",
-    "processResponse": "",
-    "processResponseFormatter": "",
-    "exportHttpValidator": ""
+    "exportHttpHeaders": "Fejlécek",
+    "httpUrl": "URL",
+    "httpMethod": "Módszer",
+    "processResponse": "Importálási adatfolyam a válasz feldolgozásához",
+    "processResponseFormatter": "Importálási adatfolyam mellékletformázója",
+    "exportHttpValidator": "Válaszellenőrző"
   },
   "links": {
-    "exportHttpHeaders": ""
+    "exportHttpHeaders": "Fejlécek"
   },
   "labels": {
-    "httpPro": ""
+    "httpPro": "HTTP-kérés"
   },
   "tooltips": {
-    "httpUrl": "",
-    "exportHttpTwigBody": ""
+    "httpUrl": "A(z) <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> sablonmotor szintaxisát használhatja.",
+    "exportHttpTwigBody": "Használhatja a(z) <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> sablonmotor szintaxisát."
   },
   "options": {
     "type": {
-      "httpPro": ""
+      "httpPro": "HTTP-kérés"
     }
   }
 }
