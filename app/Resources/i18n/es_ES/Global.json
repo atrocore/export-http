@@ -1,13 +1,18 @@
 {
   "scopeNamesPlural": {
     "ExportHttpValidator": "Validadores Http de exportación",
-    "ExportHttpHeader": "Cabeceras"
+    "ExportHttpHeader": "Cabeceras",
+    "ExportFeedTypeHttpPro": ""
   },
   "labels": {
     "trySendRequestAgain": "Reenviar solicitud"
   },
   "scopeNames": {
     "ExportHttpHeader": "Encabezado",
-    "ExportHttpValidator": "Validador Http de exportación"
+    "ExportHttpValidator": "Validador Http de exportación",
+    "ExportFeedTypeHttpPro": ""
+  },
+  "subtypeDescriptions": {
+    "ExportFeedTypeHttpPro": ""
   }
 }
