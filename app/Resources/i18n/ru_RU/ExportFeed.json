@@ -19,7 +19,7 @@
   },
   "options": {
     "type": {
-      "httpPro": ""
+      "httpPro": "HTTP-запрос"
     }
   }
 }
