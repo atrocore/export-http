@@ -1,0 +1,14 @@
+{
+  "fields": {
+    "validator": ""
+  },
+  "links": {
+    "exportFeeds": ""
+  },
+  "tooltips": {
+    "validator": ""
+  },
+  "labels": {
+    "Create ExportHttpValidator": ""
+  }
+}
