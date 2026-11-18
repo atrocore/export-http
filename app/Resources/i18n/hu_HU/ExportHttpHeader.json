@@ -1,10 +1,10 @@
 {
   "fields": {
-    "name": "",
-    "value": "",
-    "exportFeed": ""
+    "name": "Kulcs",
+    "value": "Érték",
+    "exportFeed": "Exportcsatorna"
   },
   "links": {
-    "exportFeed": ""
+    "exportFeed": "Exportálási adatfolyam"
   }
 }
