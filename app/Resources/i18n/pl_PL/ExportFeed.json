@@ -16,5 +16,10 @@
   "tooltips": {
     "httpUrl": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
     "exportHttpTwigBody": "Możesz używać składni silnika szablonów <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+  },
+  "options": {
+    "type": {
+      "httpPro": "Żądanie HTTP"
+    }
   }
 }
