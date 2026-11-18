@@ -1,11 +1,13 @@
 {
   "scopeNames": {
     "ExportHttpHeader": "Заголовок",
-    "ExportHttpValidator": "Експорт Http валідатора"
+    "ExportHttpValidator": "Експорт Http валідатора",
+    "ExportFeedTypeHttpPro": ""
   },
   "scopeNamesPlural": {
     "ExportHttpValidator": "Експорт Http валідаторів",
-    "ExportHttpHeader": "Заголовок"
+    "ExportHttpHeader": "Заголовок",
+    "ExportFeedTypeHttpPro": ""
   },
   "labels": {
     "trySendRequestAgain": "Повторний запит"
