@@ -18,20 +18,13 @@ use Pim\Entities\Category;
 
 class CategoryFromChannel extends AbstractTwigFunction
 {
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->addDependency('serviceFactory');
-    }
-
     public function run($category, $channelId): bool
     {
         if (empty($category) || !($category instanceof Category) || empty($channelId)) {
             return false;
         }
 
-        $channel = $this->getInjection('serviceFactory')->create('Channel')->getEntity($channelId);
+        $channel = $this->container->get('serviceFactory')->create('Channel')->getEntity($channelId);
         if (empty($channel)) {
             return false;
         }
