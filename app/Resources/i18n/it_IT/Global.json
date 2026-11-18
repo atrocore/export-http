@@ -2,17 +2,17 @@
   "scopeNames": {
     "ExportHttpHeader": "Intestazione",
     "ExportHttpValidator": "Esportazione del validatore Http",
-    "ExportFeedTypeHttpPro": ""
+    "ExportFeedTypeHttpPro": "Feed di esportazione: richiesta HTTP"
   },
   "scopeNamesPlural": {
     "ExportHttpHeader": "Intestazioni",
     "ExportHttpValidator": "Esportazione di validatori Http",
-    "ExportFeedTypeHttpPro": ""
+    "ExportFeedTypeHttpPro": "Feed di esportazione: richiesta HTTP"
   },
   "labels": {
     "trySendRequestAgain": "Invia di nuovo la richiesta"
   },
   "subtypeDescriptions": {
-    "ExportFeedTypeHttpPro": ""
+    "ExportFeedTypeHttpPro": "Invia i dati esportati a un'API tramite richieste HTTP."
   }
 }
