@@ -1,13 +1,18 @@
 {
   "scopeNames": {
     "ExportHttpHeader": "Záhlaví",
-    "ExportHttpValidator": "Export Http Validátor"
+    "ExportHttpValidator": "Export Http Validátor",
+    "ExportFeedTypeHttpPro": "Exportní kanál: požadavek HTTP"
   },
   "scopeNamesPlural": {
     "ExportHttpHeader": "Záhlaví",
-    "ExportHttpValidator": "Validátory exportu Http"
+    "ExportHttpValidator": "Validátory exportu Http",
+    "ExportFeedTypeHttpPro": "Exportní feed: HTTP požadavek"
   },
   "labels": {
     "trySendRequestAgain": "Opětovné odeslání žádosti"
+  },
+  "subtypeDescriptions": {
+    "ExportFeedTypeHttpPro": "Odesílá exportovaná data do API pomocí požadavků HTTP."
   }
 }
