@@ -1,13 +1,18 @@
 {
   "scopeNames": {
     "ExportHttpHeader": "Nagłówek",
-    "ExportHttpValidator": "Export Http Validator"
+    "ExportHttpValidator": "Export Http Validator",
+    "ExportFeedTypeHttpPro": "Kanał eksportu: żądanie HTTP"
   },
   "scopeNamesPlural": {
     "ExportHttpHeader": "Nagłówki",
-    "ExportHttpValidator": "Walidatory eksportu http"
+    "ExportHttpValidator": "Walidatory eksportu http",
+    "ExportFeedTypeHttpPro": "Kanał eksportu: żądanie HTTP"
   },
   "labels": {
     "trySendRequestAgain": "Proszę wysłać ponownie żądanie"
+  },
+  "subtypeDescriptions": {
+    "ExportFeedTypeHttpPro": "Wysyła wyeksportowane dane do API za pomocą żądań HTTP."
   }
 }

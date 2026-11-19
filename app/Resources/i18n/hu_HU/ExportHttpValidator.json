@@ -1,0 +1,14 @@
+{
+  "fields": {
+    "validator": "Validátor"
+  },
+  "links": {
+    "exportFeeds": "Exportcsatornák"
+  },
+  "tooltips": {
+    "validator": "A <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> sablonmotor szintaxisa használható."
+  },
+  "labels": {
+    "Create ExportHttpValidator": "Export HTTP-validátor létrehozása"
+  }
+}

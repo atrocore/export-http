@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "exportHttpHeaders": "Fejlécek",
+    "httpUrl": "URL",
+    "httpMethod": "Módszer",
+    "processResponse": "Importálási adatfolyam a válasz feldolgozásához",
+    "processResponseFormatter": "Importálási adatfolyam mellékletformázója",
+    "exportHttpValidator": "Válaszellenőrző"
+  },
+  "links": {
+    "exportHttpHeaders": "Fejlécek"
+  },
+  "labels": {
+    "httpPro": "HTTP-kérés"
+  },
+  "tooltips": {
+    "httpUrl": "A(z) <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> sablonmotor szintaxisát használhatja.",
+    "exportHttpTwigBody": "Használhatja a(z) <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a> sablonmotor szintaxisát."
+  },
+  "options": {
+    "type": {
+      "httpPro": "HTTP-kérés"
+    }
+  }
+}

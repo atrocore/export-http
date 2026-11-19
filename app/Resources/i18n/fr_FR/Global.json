@@ -1,11 +1,13 @@
 {
   "scopeNames": {
     "ExportHttpHeader": "En-tête",
-    "ExportHttpValidator": "Validateur de l'export HTTP"
+    "ExportHttpValidator": "Validateur de l'export HTTP",
+    "ExportFeedTypeHttpPro": "Flux d’export : requête HTTP"
   },
   "scopeNamesPlural": {
     "ExportHttpHeader": "En-têtes",
-    "ExportHttpValidator": "Validateur d'export HTTP"
+    "ExportHttpValidator": "Validateur d'export HTTP",
+    "ExportFeedTypeHttpPro": "Flux d’export : requête HTTP"
   },
   "labels": {
     "trySendRequestAgain": "Renvoyer la requête"

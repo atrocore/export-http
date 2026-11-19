@@ -16,5 +16,10 @@
   "tooltips": {
     "httpUrl": "Puede utilizar la sintaxis del motor de plantillas <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>.",
     "exportHttpTwigBody": "Puede utilizar la sintaxis del motor de plantillas <a href=\"https://twig.symfony.com\" target=\"_blank\">Twig</a>."
+  },
+  "options": {
+    "type": {
+      "httpPro": "Solicitud HTTP"
+    }
   }
 }

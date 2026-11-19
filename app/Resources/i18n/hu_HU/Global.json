@@ -1,0 +1,18 @@
+{
+  "scopeNames": {
+    "ExportHttpHeader": "Fejléc",
+    "ExportHttpValidator": "Export HTTP-validátor",
+    "ExportFeedTypeHttpPro": "Exportálási adatfolyam: HTTP-kérés"
+  },
+  "scopeNamesPlural": {
+    "ExportHttpHeader": "Fejlécek",
+    "ExportHttpValidator": "Export HTTP-validátorok",
+    "ExportFeedTypeHttpPro": "Exportadatfolyam: HTTP-kérés"
+  },
+  "labels": {
+    "trySendRequestAgain": "Kérés újbóli küldése"
+  },
+  "subtypeDescriptions": {
+    "ExportFeedTypeHttpPro": "Az exportált adatokat HTTP-kérésekkel küldi el egy API-nak."
+  }
+}
