@@ -16,7 +16,6 @@ namespace ExportHttp\Migrations;
 use Atro\Core\Migration\Base;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Schema\Schema;
-use Ramsey\Uuid\Uuid;
 
 class V1Dot11Dot0 extends Base
 {
@@ -87,8 +86,8 @@ class V1Dot11Dot0 extends Base
     }
 
     /**
-     * The table of a subtype: its own id, the unique link to the supertype record that is removed together with
-     * it, the columns of the subtype fields.
+     * The table of a subtype: the id of the supertype record, which links the subtype record to it and removes it
+     * together with it, the columns of the subtype fields.
      */
     protected function createSubtypeTable(Schema $schema, string $supertypeTable, string $type, array $columns): void
     {
@@ -99,7 +98,6 @@ class V1Dot11Dot0 extends Base
 
         $table = $schema->createTable($tableName);
         $table->addColumn('id', 'string', ['length' => 36, 'notnull' => true]);
-        $table->addColumn('supertype_id', 'string', ['length' => 36, 'notnull' => false]);
 
         $indexes = [];
         foreach ($columns as $options) {
@@ -113,11 +111,8 @@ class V1Dot11Dot0 extends Base
         }
 
         $table->setPrimaryKey(['id']);
-        $table->addUniqueIndex(['supertype_id']);
 
-        $foreignKeyName = $this->generateForeignKeyName($tableName . '_supertype_id');
-        $table->addForeignKeyConstraint($supertypeTable, ['supertype_id'], ['id'], ['onDelete' => 'CASCADE'], $foreignKeyName);
-        $table->addIndex(['supertype_id'], $foreignKeyName);
+        $table->addForeignKeyConstraint($supertypeTable, ['id'], ['id'], ['onDelete' => 'CASCADE'], $this->generateForeignKeyName($tableName . '_id'));
 
         foreach ($indexes as $column) {
             $table->addIndex([$column], $this->generateIndexName($tableName . '_' . $column));
@@ -132,7 +127,7 @@ class V1Dot11Dot0 extends Base
         $exists = $conn->createQueryBuilder()
             ->select('id')
             ->from($tableName)
-            ->where('supertype_id = :supertypeId')
+            ->where('id = :supertypeId')
             ->setParameter('supertypeId', $supertypeId)
             ->fetchOne();
 
@@ -143,9 +138,7 @@ class V1Dot11Dot0 extends Base
         $qb = $conn->createQueryBuilder()
             ->insert($tableName)
             ->setValue('id', ':id')
-            ->setValue('supertype_id', ':supertypeId')
-            ->setParameter('id', Uuid::uuid7()->toString())
-            ->setParameter('supertypeId', $supertypeId);
+            ->setParameter('id', $supertypeId);
 
         foreach ($columns as $field => $options) {
             if (!array_key_exists($field, $data) || $data[$field] === null) {
