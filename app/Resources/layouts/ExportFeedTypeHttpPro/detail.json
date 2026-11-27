@@ -53,7 +53,9 @@
         {
           "name": "exportHttpValidator"
         },
-        false
+        {
+          "name": "disableNotifications"
+        }
       ]
     ]
   },
